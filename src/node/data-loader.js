@@ -32,16 +32,16 @@ getDbConnection(function(){
     });
 });
 
-function addDriver() {
+function addBook() {
     d = [{
-        "firstName":    "John",
-        "lastName":     "Malkovich",
-        "emailAddress":        "john@malkovich.com"
+        "name":    "The Old Man And The Sea",
+        "genre":     "Literary fiction",
+        "level":        "6"
     },
         {
-            "firstName":    "Robert",
-            "lastName":     "Redford",
-            "emailAddress":        "robert@redford.com"
+         "name":    "The Lord of the Rings",
+            "lastName":     "Fantasy Fiction",
+            "emailAddress":        "9"
         }];
     var drivers = dbConnection.collection('drivers');
     drivers.insertOne(d[0], function(err,doc){

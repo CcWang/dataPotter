@@ -1,7 +1,6 @@
 package edu.cmu.sv.app17.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.mongodb.MongoSocketOpenException;
 import edu.cmu.sv.app17.exceptions.APPBadRequestException;
 import edu.cmu.sv.app17.exceptions.APPInternalServerException;
 import edu.cmu.sv.app17.exceptions.APPNotFoundException;
@@ -13,7 +12,7 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.result.DeleteResult;
-import edu.cmu.sv.app17.models.Car;
+import edu.cmu.sv.app17.models.FavoriteList;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.json.JSONException;
@@ -26,43 +25,41 @@ import java.util.ArrayList;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
 
-@Path("cars")
-public class CarsInterface {
+@Path("favoriteLists")
+public class FavoriteListInterface {
 
     private MongoCollection<Document> collection = null;
     private ObjectWriter ow;
 
-    public CarsInterface() {
+    public FavoriteListInterface() {
         MongoClient mongoClient = new MongoClient();
-        MongoDatabase database = mongoClient.getDatabase("app17-5");
-        collection = database.getCollection("cars");
+        MongoDatabase database = mongoClient.getDatabase("dataPotter");
+        collection = database.getCollection("favoriteLists");
         ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
     }
 
 
     @GET
     @Produces({ MediaType.APPLICATION_JSON})
-    public ArrayList<Car> getAll() {
+    public ArrayList<FavoriteList> getAll() {
 
-        ArrayList<Car> carList = new ArrayList<Car>();
+        ArrayList<FavoriteList> favoriteListList = new ArrayList<FavoriteList>();
 
         try {
             FindIterable<Document> results = collection.find();
             for (Document item : results) {
-                String make = item.getString("make");
-                Car car = new Car(
-                        make,
-                        item.getString("model"),
-                        item.getInteger("year", -1),
-                        item.getString("size"),
-                        item.getString("color"),
-                        item.getInteger("odometer"),
-                        item.getString("driverId")
+                String users_id = item.getString("userID");
+                FavoriteList favoriteList = new FavoriteList(
+                        users_id,
+                        item.getString("movieID"),
+                        item.getString("tvShowID"),
+                        item.getString("bookID"),
+                        item.getString("audioBookID")
                 );
-                car.setId(item.getObjectId("_id").toString());
-                carList.add(car);
+                favoriteList.setId(item.getObjectId("_id").toString());
+                favoriteListList.add(favoriteList);
             }
-            return carList;
+            return favoriteListList;
 
         } catch(Exception e) {
             System.out.println("EXCEPTION!!!!");
@@ -75,7 +72,7 @@ public class CarsInterface {
     @GET
     @Path("{id}")
     @Produces({ MediaType.APPLICATION_JSON})
-    public Car getOne(@PathParam("id") String id) {
+    public FavoriteList getOne(@PathParam("id") String id) {
 
 
         BasicDBObject query = new BasicDBObject();
@@ -84,19 +81,17 @@ public class CarsInterface {
             query.put("_id", new ObjectId(id));
             Document item = collection.find(query).first();
             if (item == null) {
-                throw new APPNotFoundException(0, "No such car, my friend");
+                throw new APPNotFoundException(0, "No such book, my friend");
             }
-            Car car = new Car(
-                    item.getString("make"),
-                    item.getString("model"),
-                    item.getInteger("year", -1),
-                    item.getString("size"),
-                    item.getString("color"),
-                    item.getInteger("odometer"),
-                    item.getString("driverId")
+            FavoriteList favoriteList = new FavoriteList(
+                    item.getString("userID"),
+                    item.getString("movieID"),
+                    item.getString("tvShowID"),
+                    item.getString("bookID"),
+                    item.getString("audioBookID")
             );
-            car.setId(item.getObjectId("_id").toString());
-            return car;
+            favoriteList.setId(item.getObjectId("_id").toString());
+            return favoriteList;
 
         } catch(IllegalArgumentException e) {
             throw new APPBadRequestException(45,"Doesn't look like MongoDB ID");
@@ -108,11 +103,11 @@ public class CarsInterface {
     }
 
 
-    @PATCH
-    @Path("{id}")
+    @POST
+    @Path("{id}/favoriteList")
     @Consumes({ MediaType.APPLICATION_JSON})
     @Produces({ MediaType.APPLICATION_JSON})
-    public Object update(@PathParam("id") String id, Object request) {
+    public Object create(@PathParam("id") String id, Object request) {
         JSONObject json = null;
         try {
             json = new JSONObject(ow.writeValueAsString(request));
@@ -120,32 +115,23 @@ public class CarsInterface {
         catch (JsonProcessingException e) {
             throw new APPBadRequestException(33, e.getMessage());
         }
+        if (!json.has("userID"))
+            throw new APPBadRequestException(55,"missing userID");
+        if (!json.has("movieID"))
+            throw new APPBadRequestException(55,"missing movieID");
+        if (!json.has("tvShowID"))
+            throw new APPBadRequestException(55,"missing tvShowID");
+        if (!json.has("bookID"))
+            throw new APPBadRequestException(55,"missing bookID");
+        if (!json.has("audioBookID"))
+            throw new APPBadRequestException(55,"missing audioBookID");
 
-        try {
-
-            BasicDBObject query = new BasicDBObject();
-            query.put("_id", new ObjectId(id));
-
-            Document doc = new Document();
-            if (json.has("make"))
-                doc.append("make",json.getString("make"));
-            if (json.has("model"))
-                doc.append("model",json.getString("model"));
-            if (json.has("color"))
-                doc.append("color",json.getString("color"));
-            if (json.has("size"))
-                doc.append("size",json.getString("size"));
-            if (json.has("year"))
-                doc.append("year",json.getInt("year"));
-            if (json.has("odometer"))
-                doc.append("odometer",json.getString("odometer"));
-            Document set = new Document("$set", doc);
-            collection.updateOne(query,set);
-
-        } catch(JSONException e) {
-            System.out.println("Failed to create a document");
-
-        }
+        Document doc = new Document("userID", json.getString("userID"))
+                .append("movieID", json.getString("movieID"))
+                .append("tvShowID", json.getString("tvShowID"))
+                .append("bookID", json.getString("bookID"))
+                .append("audioBookID", json.getInt("audioBookID"));
+        collection.insertOne(doc);
         return request;
     }
 
