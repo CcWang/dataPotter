@@ -7,7 +7,7 @@ var lockCount = 0;
 
 
 function getDbConnection(callback){
-    MongoClient.connect("mongodb://localhost/app17-5", function(err, db){
+    MongoClient.connect("mongodb://localhost/dataPotter", function(err, db){
         if(err){
             console.log("Unable to connect to Mongodb");
         }else{
@@ -28,94 +28,105 @@ getDbConnection(function(){
         if (err)
             console.log("Could not drop database");
         else
-            addDriver();
+            addUser();
     });
 });
-
-function addDriver() {
-    d = [{
-        "firstName":    "John",
-        "lastName":     "Malkovich",
-        "emailAddress":        "john@malkovich.com"
+/*
+* username  string
+* email     string
+* password  string
+* nativeLanguage    string
+* englishLevel  string
+* phone     string
+* gender    string
+* birthday Date
+* */
+function addUser() {
+    u = [{
+        "username":    "John",
+        "email":        "john@malkovich.com",
+        "password": "3355691",
+        "nativeLanguage": "English",
+        "englishLevel":7,
+        "phone":"0000000000",
+        "gender":"male",
+        "birthday":new Date(1990, 10, 9)
     },
         {
-            "firstName":    "Robert",
-            "lastName":     "Redford",
-            "emailAddress":        "robert@redford.com"
+            "username":    "Shanshan",
+            "email":        "ss@cmu.com",
+            "password": "33hu5691",
+            "nativeLanguage": "Chinese",
+            "englishLevel":4,
+            "phone":"0010000000",
+            "gender":"female",
+            "birthday":new Date(1995, 8, 19)
         }];
-    var drivers = dbConnection.collection('drivers');
-    drivers.insertOne(d[0], function(err,doc){
+    var users = dbConnection.collection('users');
+    users.insertOne(u[0], function(err,doc){
         if (err){
             console.log("Could not add driver 1");
         }
         else {
-            addCarstoDriver0(doc.ops[0]._id.toString());
+            addlanguageLevelUser0(doc.ops[0]._id.toString());
         }
     })
-    drivers.insertOne(d[1], function(err,doc){
+    users.insertOne(u[1], function(err,doc){
         if (err){
             console.log("Could not add driver 1");
         }
         else {
-            addCarstoDriver1(doc.ops[0]._id.toString());
+            addlanguageLevelUser1(doc.ops[0]._id.toString());
         }
     })
 }
-
-function addCarstoDriver0(driverId) {
-    c = [{
-        "make" : "Ford",
-        "model" : "Fiesta",
-        "year" : 2011,
-        "size" : "Compact",
-        "odometer" : 34523,
-        "color" : "red",
-        "driverId" : driverId
+// need to finish
+function addlanguageLevelUser0(userID) {
+    ll = [{
+        "movies_level" : 8,
+        "tvshows_level" : 10,
+        "books_level" : 1,
+        "audioBooks_level" : 7,
+        "usersId" : userID
     },{
-        "make" : "Buick",
-        "model" : "Regal",
-        "year" : 2014,
-        "size" : "Full",
-        "odometer" : 12342,
-        "color" : "black",
-        "driverId" : driverId
-    },{
-        "make" : "Toyota",
-        "model" : "Camry",
-        "year" : 2010,
-        "size" : "Intermediate",
-        "odometer" : 34111,
-        "color" : "blue",
-        "driverId" : driverId
+        "movies_level" : 6,
+        "tvshows_level" : 2,
+        "books_level" : 1,
+        "audioBooks_level" : 7,
+        "usersId" : userID
     }];
-    c.forEach(function(car){
-        var cars = dbConnection.collection('cars');
-        cars.insertOne(car);
+
+    var langLevel = dbConnection.collection('langs');
+    langLevel.insertOne(ll[0], function(err,doc){
+        if (err){
+            console.log("Could not add driver 1");
+        }
+
     })
 
 }
 
-function addCarstoDriver1(driverId) {
-    c = [{
-        "make" : "BMW",
-        "model" : "X3",
-        "year" : 2016,
-        "size" : "Compact",
-        "odometer" : 5823,
-        "color" : "red",
-        "driverId" : driverId
+function addlanguageLevelUser1(userID) {
+    ll = [{
+        "movies_level" : 8,
+        "tvshows_level" : 10,
+        "books_level" : 1,
+        "audioBooks_level" : 7,
+        "usersId" : userID
     },{
-        "make" : "Toyota",
-        "model" : "Prius",
-        "year" : 2011,
-        "size" : "Compact",
-        "odometer" : 29233,
-        "color" : "white",
-        "driverId" : driverId
+        "movies_level" : 6,
+        "tvshows_level" : 2,
+        "books_level" : 1,
+        "audioBooks_level" : 7,
+        "usersId" : userID
     }];
-    c.forEach(function(car){
-        var cars = dbConnection.collection('cars');
-        cars.insertOne(car);
+
+    var langLevel = dbConnection.collection('langs');
+    langLevel.insertOne(ll[1], function(err,doc){
+        if (err){
+            console.log("Could not add driver 1");
+        }
+
     })
 
 }
