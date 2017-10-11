@@ -62,6 +62,68 @@ function addDriver() {
     })
 }
 
+function addMovie() {
+    m = [{
+        "name": "Harry Potter and the Sorcer Stone",
+        "genre": "Adventure/Fantasy",
+        "level": 6
+    },
+        {
+            "name": "Shrek",
+            "genre": "Adventure/Fantasy",
+            "level": 4
+        }];
+    var movies = dbConnection.collection('movie');
+    movies.insertOne(m[0], function(err,doc){
+        if (err){
+            console.log("Could not add driver 1");
+        }
+        else {
+            addWatchList(doc.ops[0]._id.toString());
+        }
+    })
+    drivers.insertOne(m[1], function(err,doc){
+        if (err){
+            console.log("Could not add driver 1");
+        }
+        else {
+            addWatchList(doc.ops[0]._id.toString());
+        }
+    })
+}
+
+function addWatchList(userID, movieID) {
+    m = [{
+        "userID": userID,
+        "movieID": movieID,
+        "tvShowID": null,
+        "bookID": null,
+        "audiobookID": null
+    }, {
+        "userID": userID,
+        "movieID": movieID,
+        "tvShowID": null,
+        "bookID": null,
+        "audiobookID": null
+    }, {
+        "userID": userID,
+        "movieID": null,
+        "tvShowID": null,
+        "bookID": bookID,
+        "audiobookID": null
+    }, {
+        "userID": userID,
+        "movieID": null,
+        "tvShowID": null,
+        "bookID": bookID,
+        "audiobookID": null
+        }];
+    c.forEach(function(movieList){
+        var movieLists = dbConnection.collection('movieList');
+        movieLists.insertOne(movieList);
+    })
+}
+
 function addCarstoDriver0(driverId) {
     c = [{
         "make" : "Ford",
