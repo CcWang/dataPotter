@@ -52,11 +52,11 @@ public class WatchListInterface {
         }
         for (Document item : results) {
             WatchList watchList = new WatchList(
-                    item.getInteger("userID"),
-                    item.getInteger("movieID"),
-                    item.getInteger("tvShowID"),
-                    item.getInteger("bookID"),
-                    item.getInteger("audiobookID")
+                    item.getString("userID"),
+                    item.getString("movieID"),
+                    item.getString("tvShowID"),
+                    item.getString("bookID"),
+                    item.getString("audiobookID")
             );
             watchList.setId(item.getObjectId("_id").toString());
             watchListList.add(watchList);
@@ -76,11 +76,11 @@ public class WatchListInterface {
                 throw new APPNotFoundException(0, "No WatchList found, my friend");
             }
             WatchList watchList = new WatchList(
-                    item.getInteger("userID"),
-                    item.getInteger("movieID"),
-                    item.getInteger("tvShowID"),
-                    item.getInteger("bookID"),
-                    item.getInteger("audiobookID")
+                    item.getString("userID"),
+                    item.getString("movieID"),
+                    item.getString("tvShowID"),
+                    item.getString("bookID"),
+                    item.getString("audiobookID")
             );
             watchList.setId(item.getObjectId("_id").toString());
             return watchList;
@@ -97,32 +97,29 @@ public class WatchListInterface {
     }
 
     @GET
-    @Path("{id}/cars")
+    @Path("{id}/watchlist")
     @Produces({MediaType.APPLICATION_JSON})
-    public ArrayList<Car> getCarsForDriver(@PathParam("id") String id) {
+    public ArrayList<WatchList> getWatchListForUser(@PathParam("id") String id) {
 
-        ArrayList<Car> carList = new ArrayList<Car>();
+        ArrayList<WatchList> watchListList = new ArrayList<WatchList>();
 
         try {
             BasicDBObject query = new BasicDBObject();
-            query.put("driverId", id);
+            query.put("userID", id);
 
-            FindIterable<Document> results = carCollection.find(query);
+            FindIterable<Document> results = watchListCollection.find(query);
             for (Document item : results) {
-                String make = item.getString("make");
-                Car car = new Car(
-                        make,
-                        item.getString("model"),
-                        item.getInteger("year", -1),
-                        item.getString("size"),
-                        item.getString("color"),
-                        item.getInteger("odometer"),
-                        item.getString("driverId")
+                WatchList watchList = new WatchList(
+                        item.getString("userID"),
+                        item.getString("movieID"),
+                        item.getString("tvShowID"),
+                        item.getString("bookID"),
+                        item.getString("audiobookID")
                 );
-                car.setId(item.getObjectId("_id").toString());
-                carList.add(car);
+                watchList.setId(item.getObjectId("_id").toString());
+                watchListList.add(watchList);
             }
-            return carList;
+            return watchListList;
 
         } catch(Exception e) {
             System.out.println("EXCEPTION!!!!");
@@ -134,7 +131,7 @@ public class WatchListInterface {
 
 
     @POST
-    @Path("{id}/cars")
+    @Path("{id}/watchList")
     @Consumes({ MediaType.APPLICATION_JSON})
     @Produces({ MediaType.APPLICATION_JSON})
     public Object create(@PathParam("id") String id, Object request) {
@@ -145,29 +142,24 @@ public class WatchListInterface {
         catch (JsonProcessingException e) {
             throw new APPBadRequestException(33, e.getMessage());
         }
-        if (!json.has("make"))
-            throw new APPBadRequestException(55,"missing make");
-        if (!json.has("model"))
-            throw new APPBadRequestException(55,"missing model");
-        if (!json.has("color"))
-            throw new APPBadRequestException(55,"missing color");
-        if (!json.has("year"))
-            throw new APPBadRequestException(55,"missing year");
-        if (!json.has("size"))
-            throw new APPBadRequestException(55,"missing size");
-        if (!json.has("odometer"))
-            throw new APPBadRequestException(55,"missing odometer");
-        if (json.getInt("odometer") < 0) {
-            throw new APPBadRequestException(56, "Invalid odometer - cannot be less than 0");
-        }
-        Document doc = new Document("make", json.getString("make"))
-                .append("model", json.getString("model"))
-                .append("size", json.getString("size"))
-                .append("color", json.getString("color"))
-                .append("year", json.getInt("year"))
-                .append("odometer", json.getInt("odometer"))
-                .append("driverId", id);
-        carCollection.insertOne(doc);
+        if (!json.has("userID"))
+            throw new APPBadRequestException(55,"missing userID");
+        if (!json.has("movieID"))
+            throw new APPBadRequestException(55,"missing movieID");
+        if (!json.has("tvShowID"))
+            throw new APPBadRequestException(55,"missing tvShowID");
+        if (!json.has("bookID"))
+            throw new APPBadRequestException(55,"missing bookID");
+        if (!json.has("audiobookID"))
+            throw new APPBadRequestException(55,"missing audiobookID");
+
+        Document doc = new Document("userID", json.getString("userID"))
+                .append("movieID", json.getString("movieID"))
+                .append("tvShowID", json.getString("tvShowID"))
+                .append("bookID", json.getString("bookID"))
+                .append("audiobookID", json.getString("audiobookID"));
+
+        collection.insertOne(doc);
         return request;
     }
 
