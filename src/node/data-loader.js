@@ -130,9 +130,9 @@ function addWatchList(userID, movieID) {
         "bookID": null,
         "audiobookID": null
     }];
-    m.forEach(function(movieList){
-        var movieLists = dbConnection.collection('movieList');
-        movieLists.insertOne(movieList);
+    m.forEach(function(watchList){
+        var watchLists = dbConnection.collection('watchList');
+        watchLists.insertOne(watchList);
     })
 }
 
