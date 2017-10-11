@@ -97,7 +97,43 @@ public class WatchListInterface {
 
     }
 
+    @POST
+    @Consumes({ MediaType.APPLICATION_JSON})
+    @Produces({ MediaType.APPLICATION_JSON})
+    public Object create( Object request) {
+        JSONObject json = null;
+        try {
+            json = new JSONObject(ow.writeValueAsString(request));
+        }
+        catch (JsonProcessingException e) {
+            throw new APPBadRequestException(33, e.getMessage());
+        }
+        if (!json.has("userID"))
+            throw new APPBadRequestException(55,"missing userID");
 
+        Document doc = new Document("userID", json.getString("userID"));
+//                .append("movieID", json.getString("movieID"))
+//                .append("tvShowID", json.getString("tvShowID"))
+//                .append("bookID", json.getString("bookID"))
+//                .append("audiobookID", json.getString("audiobookID"));
+        if(json.has("movieID")){
+            doc.append("movieID", json.getString("movieID"));
+        }
+        if(json.has("tvShowID")){
+            doc.append("tvShowID", json.getString("tvShowID"));
+        }
+        if(json.has("bookID")){
+            doc.append("bookID", json.getString("bookID"));
+        }
+        if(json.has("audiobookID")){
+            doc.append("audiobookID", json.getString("audiobookID"));
+        }
+
+        collection.insertOne(doc);
+        return request;
+    }
+
+    /*
     @POST
     @Path("{id}/watchList")
     @Consumes({ MediaType.APPLICATION_JSON})
@@ -130,6 +166,7 @@ public class WatchListInterface {
         collection.insertOne(doc);
         return request;
     }
+*/
 
     @DELETE
     @Path("{id}")

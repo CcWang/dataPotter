@@ -99,6 +99,30 @@ public class MovieInterface {
 
     }
 
+    @POST
+    @Consumes({ MediaType.APPLICATION_JSON})
+    @Produces({ MediaType.APPLICATION_JSON})
+    public Object create( Object request) {
+        JSONObject json = null;
+        try {
+            json = new JSONObject(ow.writeValueAsString(request));
+        }
+        catch (JsonProcessingException e) {
+            throw new APPBadRequestException(33, e.getMessage());
+        }
+        if (!json.has("name"))
+            throw new APPBadRequestException(55,"missing name");
+        if (!json.has("genre"))
+            throw new APPBadRequestException(55,"missing genre");
+        if (!json.has("level"))
+            throw new APPBadRequestException(55,"missing level");
+
+        Document doc = new Document("name", json.getString("name"))
+                .append("genre", json.getString("genre"))
+                .append("level", json.getInt("level"));
+        collection.insertOne(doc);
+        return request;
+    }
 
     @PATCH
     @Path("{id}")
