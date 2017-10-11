@@ -8,6 +8,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.result.DeleteResult;
 import edu.cmu.sv.app17.exceptions.APPBadRequestException;
 import edu.cmu.sv.app17.exceptions.APPInternalServerException;
 import edu.cmu.sv.app17.exceptions.APPNotFoundException;
@@ -96,39 +97,6 @@ public class WatchListInterface {
 
     }
 
-    @GET
-    @Path("{id}/watchlist")
-    @Produces({MediaType.APPLICATION_JSON})
-    public ArrayList<WatchList> getWatchListForUser(@PathParam("id") String id) {
-
-        ArrayList<WatchList> watchListList = new ArrayList<WatchList>();
-
-        try {
-            BasicDBObject query = new BasicDBObject();
-            query.put("userID", id);
-
-            FindIterable<Document> results = watchListCollection.find(query);
-            for (Document item : results) {
-                WatchList watchList = new WatchList(
-                        item.getString("userID"),
-                        item.getString("movieID"),
-                        item.getString("tvShowID"),
-                        item.getString("bookID"),
-                        item.getString("audiobookID")
-                );
-                watchList.setId(item.getObjectId("_id").toString());
-                watchListList.add(watchList);
-            }
-            return watchListList;
-
-        } catch(Exception e) {
-            System.out.println("EXCEPTION!!!!");
-            e.printStackTrace();
-            throw new APPInternalServerException(99,e.getMessage());
-        }
-
-    }
-
 
     @POST
     @Path("{id}/watchList")
@@ -163,5 +131,17 @@ public class WatchListInterface {
         return request;
     }
 
+    @DELETE
+    @Path("{id}")
+    @Produces({ MediaType.APPLICATION_JSON})
+    public Object delete(@PathParam("id") String id) {
+        BasicDBObject query = new BasicDBObject();
+        query.put("_id", new ObjectId(id));
 
+        DeleteResult deleteResult = collection.deleteOne(query);
+        if (deleteResult.getDeletedCount() < 1)
+            throw new APPNotFoundException(66,"Could not delete");
+
+        return new JSONObject();
+    }
 }
