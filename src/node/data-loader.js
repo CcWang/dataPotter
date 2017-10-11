@@ -4,7 +4,8 @@ var dbConnection = null;
 
 var lockCount = 0;
 
-
+var userID0;
+var userID1;
 
 function getDbConnection(callback){
     MongoClient.connect("mongodb://localhost/dataPotter", function(err, db){
@@ -29,6 +30,8 @@ getDbConnection(function(){
             console.log("Could not drop database");
         else
             addUser();
+            addMovie();
+            addBook();
     });
 });
 /*
@@ -68,6 +71,7 @@ function addUser() {
             console.log("Could not add driver 1");
         }
         else {
+            userID0 =doc.ops[0]._id.toString();
             addlanguageLevelUser0(doc.ops[0]._id.toString());
         }
     })
@@ -76,6 +80,7 @@ function addUser() {
             console.log("Could not add driver 1");
         }
         else {
+            userID1 =doc.ops[0]._id.toString();
             addlanguageLevelUser1(doc.ops[0]._id.toString());
         }
     })
@@ -95,18 +100,18 @@ function addMovie() {
     var movies = dbConnection.collection('movie');
     movies.insertOne(m[0], function(err,doc){
         if (err){
-            console.log("Could not add driver 1");
+            console.log("Could not add movie 1");
         }
         else {
-            addWatchList(doc.ops[0]._id.toString());
+            addWatchList(userID0,doc.ops[0]._id.toString());
         }
     })
-    drivers.insertOne(m[1], function(err,doc){
+    movies.insertOne(m[1], function(err,doc){
         if (err){
-            console.log("Could not add driver 1");
+            console.log("Could not add movie 2");
         }
         else {
-            addWatchList(doc.ops[0]._id.toString());
+            addWatchList(userID1,doc.ops[0]._id.toString());
         }
     })
 }
@@ -124,36 +129,75 @@ function addWatchList(userID, movieID) {
         "tvShowID": null,
         "bookID": null,
         "audiobookID": null
-    }, {
-        "userID": userID,
-        "movieID": null,
-        "tvShowID": null,
-        "bookID": bookID,
-        "audiobookID": null
-    }, {
-        "userID": userID,
-        "movieID": null,
-        "tvShowID": null,
-        "bookID": bookID,
-        "audiobookID": null
-        }];
-    c.forEach(function(movieList){
+    }];
+    m.forEach(function(movieList){
         var movieLists = dbConnection.collection('movieList');
         movieLists.insertOne(movieList);
     })
 }
 
-function addCarstoDriver0(driverId) {
-    c = [{
-        "make": "Ford",
-        "model": "Fiesta",
-        "year": 2011,
-        "size": "Compact",
-        "odometer": 34523,
-        "color": "red",
-        "driverId": driverId
-    }]
+function addBook() {
+    bb = [{
+        "name": "Great Expectations",
+        "genre": "Adventure",
+        "level": 9
+    },
+        {
+            "name": "Snoopy",
+            "genre": "Comedy",
+            "level": 2
+        }];
+    var books = dbConnection.collection('books');
+    books.insertOne(bb[0], function(err,doc){
+        if (err){
+            console.log("Could not add book 1");
+        }
+        else {
+            // addWatchList(userID0,doc.ops[0]._id.toString());
+            addFavoriteList(userID0,doc.ops[0]._id.toString())
+        }
+    })
+    books.insertOne(bb[1], function(err,doc){
+        if (err){
+            console.log("Could not add book 2");
+        }
+        else {
+            addFavoriteList(userID1,doc.ops[0]._id.toString());
+        }
+    })
 }
+
+function addFavoriteList(userID, bookID) {
+    ff = [{
+        "userID": userID,
+        "movieID": null,
+        "tvShowID": null,
+        "bookID": bookID,
+        "audiobookID": null
+    }, {
+        "userID": userID,
+        "movieID": null,
+        "tvShowID": null,
+        "bookID": bookID,
+        "audiobookID": null
+    }];
+    ff.forEach(function(movieList){
+        var favoriteLists = dbConnection.collection('favoriteLists');
+        favoriteLists.insertOne(movieList);
+    })
+}
+
+// function addCarstoDriver0(driverId) {
+//     c = [{
+//         "make": "Ford",
+//         "model": "Fiesta",
+//         "year": 2011,
+//         "size": "Compact",
+//         "odometer": 34523,
+//         "color": "red",
+//         "driverId": driverId
+//     }]
+// }
 
 // need to finish
 function addlanguageLevelUser0(userID) {
