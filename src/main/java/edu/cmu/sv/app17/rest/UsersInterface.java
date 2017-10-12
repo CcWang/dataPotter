@@ -23,6 +23,7 @@ import edu.cmu.sv.app17.exceptions.APPBadRequestException;
 import edu.cmu.sv.app17.exceptions.APPInternalServerException;
 import edu.cmu.sv.app17.exceptions.APPNotFoundException;
 import edu.cmu.sv.app17.helpers.PATCH;
+import edu.cmu.sv.app17.models.LanguageLevel;
 import edu.cmu.sv.app17.models.User;
 
 import org.bson.Document;
@@ -37,6 +38,7 @@ import java.util.ArrayList;
 public class UsersInterface {
 
     private MongoCollection<Document> collection;
+    private MongoCollection<Document> langLevelCollection;
     private ObjectWriter ow;
 
 
@@ -45,6 +47,7 @@ public class UsersInterface {
         MongoDatabase database = mongoClient.getDatabase("dataPotter");
 
         this.collection = database.getCollection("users");
+        this.langLevelCollection = database.getCollection("langs");
         ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 
     }
@@ -116,27 +119,46 @@ public class UsersInterface {
     @POST
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
-    public Object create(JSONObject obj){
+    public Object create(Object request){
+
+        JSONObject json = null;
         try {
-            Document doc = new Document("username", obj.getString("username"))
-                    .append("email", obj.getString("email"))
-                    .append("password", obj.getString("password"))
-                    .append("nativeLanguage", obj.getString("nativeLanguage"))
-                    .append("englishLevel", obj.getInt("englishLevel"))
-                    .append("phone", obj.getString("phone"))
-                    .append("gender", obj.getString("gender"))
-                    .append("birthday", obj.getString("birthday"));
-
-            collection.insertOne(doc);
-
-        } catch(APPNotFoundException e) {
-            throw new APPNotFoundException(0,"No such user");
-        } catch(IllegalArgumentException e) {
-            throw new APPBadRequestException(45,"Doesn't look like MongoDB ID");
-        }  catch(Exception e) {
-            throw new APPInternalServerException(99,"Something happened, pinch me!");
+            json = new JSONObject(ow.writeValueAsString(request));
         }
-        return obj;
+        catch (JsonProcessingException e) {
+            throw new APPBadRequestException(33, e.getMessage());
+        }
+        if (!json.has("username"))
+            throw new APPBadRequestException(55,"username");
+        if (!json.has("email"))
+            throw new APPBadRequestException(55,"email");
+        if (!json.has("password"))
+            throw new APPBadRequestException(55,"password");
+        if (!json.has("nativeLanguage"))
+            throw new APPBadRequestException(55,"nativeLanguage");
+        if (!json.has("englishLevel"))
+            throw new APPBadRequestException(55,"englishLevel");
+        if (!json.has("phone"))
+            throw new APPBadRequestException(55,"phone");
+        if(!json.has("gender"))
+            throw new APPBadRequestException (55,"missing gender");
+        if(!json.has("birthday"))
+            throw new APPBadRequestException (55,"birthday");
+//        if (json.getInt("odometer") < 0) {
+//            throw new APPBadRequestException(56, "Invalid odometer - cannot be less than 0");
+//        }
+        Document doc = new Document("username", json.getString("username"))
+                .append("email", json.getString("email"))
+                .append("password", json.getString("password"))
+                .append("nativeLanguage", json.getString("nativeLanguage"))
+                .append("englishLevel", json.getInt("englishLevel"))
+                .append("phone", json.getString("phone"))
+                .append("gender", json.getString("gender"))
+                .append("birthday", json.getString("birthday"));
+
+        collection.insertOne(doc);
+        return request;
+
     }
 
     @PATCH
@@ -181,6 +203,71 @@ public class UsersInterface {
         return obj;
     }
 
+    @GET
+    @Path("{id}/langs")
+    @Produces({MediaType.APPLICATION_JSON})
+    public ArrayList<LanguageLevel> getLangLevelForUser(@PathParam("id") String id) {
+
+        ArrayList<LanguageLevel> lanList = new ArrayList<LanguageLevel>();
+
+        try {
+            BasicDBObject query = new BasicDBObject();
+            query.put("usersId", id);
+
+            FindIterable<Document> results = langLevelCollection.find(query);
+            for (Document item : results) {
+                LanguageLevel lang = new LanguageLevel(
+                        item.getString("usersId"),
+                        item.getInteger("movies_level"),
+                        item.getInteger("tvshows_level"),
+                        item.getInteger("books_level"),
+                        item.getInteger("audioBooks_level")
+
+                );
+                lang.setId(item.getObjectId("_id").toString());
+                lanList.add(lang);
+            }
+            return lanList;
+
+        } catch(Exception e) {
+            System.out.println("EXCEPTION!!!!");
+            e.printStackTrace();
+            throw new APPInternalServerException(99,e.getMessage());
+        }
+
+    }
+
+    @POST
+    @Path("{id}/langs")
+    @Consumes({ MediaType.APPLICATION_JSON})
+    @Produces({ MediaType.APPLICATION_JSON})
+    public Object create(@PathParam("id") String id, Object request) {
+        JSONObject json = null;
+        try {
+            json = new JSONObject(ow.writeValueAsString(request));
+        }
+        catch (JsonProcessingException e) {
+            throw new APPBadRequestException(33, e.getMessage());
+        }
+
+        if (!json.has("movies_level"))
+            throw new APPBadRequestException(55,"movies_level");
+        if (!json.has("tvshows_level"))
+            throw new APPBadRequestException(55,"tvshows_level");
+        if (!json.has("books_level"))
+            throw new APPBadRequestException(55,"books_level");
+        if (!json.has("audioBooks_level"))
+            throw new APPBadRequestException(55,"audioBooks_level");
+
+        Document doc = new Document("usersId", id)
+                .append("movies_level", json.getInt("movies_level"))
+                .append("tvshows_level", json.getInt("tvshows_level"))
+                .append("books_level", json.getInt("books_level"))
+                .append("audioBooks_level",json.getInt("audioBooks_level"));
+
+        langLevelCollection.insertOne(doc);
+        return request;
+    }
 
 
 
