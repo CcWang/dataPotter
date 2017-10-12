@@ -81,7 +81,7 @@ public class FavoriteListInterface {
             query.put("_id", new ObjectId(id));
             Document item = collection.find(query).first();
             if (item == null) {
-                throw new APPNotFoundException(0, "No such book, my friend");
+                throw new APPNotFoundException(0, "No such favoriteList, my friend");
             }
             FavoriteList favoriteList = new FavoriteList(
                     item.getString("userID"),
@@ -104,10 +104,9 @@ public class FavoriteListInterface {
 
 
     @POST
-    @Path("{id}/favoriteList")
     @Consumes({ MediaType.APPLICATION_JSON})
     @Produces({ MediaType.APPLICATION_JSON})
-    public Object create(@PathParam("id") String id, Object request) {
+    public Object create( Object request) {
         JSONObject json = null;
         try {
             json = new JSONObject(ow.writeValueAsString(request));
@@ -117,20 +116,23 @@ public class FavoriteListInterface {
         }
         if (!json.has("userID"))
             throw new APPBadRequestException(55,"missing userID");
-        if (!json.has("movieID"))
-            throw new APPBadRequestException(55,"missing movieID");
-        if (!json.has("tvShowID"))
-            throw new APPBadRequestException(55,"missing tvShowID");
-        if (!json.has("bookID"))
-            throw new APPBadRequestException(55,"missing bookID");
-        if (!json.has("audioBookID"))
-            throw new APPBadRequestException(55,"missing audioBookID");
-
-        Document doc = new Document("userID", json.getString("userID"))
-                .append("movieID", json.getString("movieID"))
-                .append("tvShowID", json.getString("tvShowID"))
-                .append("bookID", json.getString("bookID"))
-                .append("audioBookID", json.getInt("audioBookID"));
+        Document doc = new Document("userID", json.getString("userID"));
+//                .append("movieID", json.getString("movieID"))
+//                .append("tvShowID", json.getString("tvShowID"))
+//                .append("bookID", json.getString("bookID"))
+//                .append("audiobookID", json.getString("audiobookID"));
+        if(json.has("movieID")){
+            doc.append("movieID", json.getString("movieID"));
+        }
+        if(json.has("tvShowID")){
+            doc.append("tvShowID", json.getString("tvShowID"));
+        }
+        if(json.has("bookID")){
+            doc.append("bookID", json.getString("bookID"));
+        }
+        if(json.has("audiobookID")){
+            doc.append("audiobookID", json.getString("audiobookID"));
+        }
         collection.insertOne(doc);
         return request;
     }

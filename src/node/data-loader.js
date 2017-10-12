@@ -4,10 +4,11 @@ var dbConnection = null;
 
 var lockCount = 0;
 
-
+var userID0;
+var userID1;
 
 function getDbConnection(callback){
-    MongoClient.connect("mongodb://localhost/app17-5", function(err, db){
+    MongoClient.connect("mongodb://localhost/dataPotter", function(err, db){
         if(err){
             console.log("Unable to connect to Mongodb");
         }else{
@@ -28,94 +29,215 @@ getDbConnection(function(){
         if (err)
             console.log("Could not drop database");
         else
-            addDriver();
+            addUser();
+            addMovie();
+            addBook();
     });
 });
 
-function addBook() {
-    d = [{
-        "name":    "The Old Man And The Sea",
-        "genre":     "Literary fiction",
-        "level":        "6"
+
+function addUser() {
+    u = [{
+        "username":    "John",
+        "email":        "john@malkovich.com",
+        "password": "3355691",
+        "nativeLanguage": "English",
+        "englishLevel":7,
+        "phone":"0000000000",
+        "gender":"male",
+        "birthday":new Date(1990, 10, 9)
     },
         {
-         "name":    "The Lord of the Rings",
-            "lastName":     "Fantasy Fiction",
-            "emailAddress":        "9"
+        "username": "Shanshan",
+            "email": "ss@cmu.com",
+            "password": "33hu5691",
+            "nativeLanguage": "Chinese",
+            "englishLevel": 4,
+            "phone": "0010000000",
+            "gender": "female",
+            "birthday": new Date(1995, 8, 19)
         }];
-    var drivers = dbConnection.collection('drivers');
-    drivers.insertOne(d[0], function(err,doc){
+    var users = dbConnection.collection('users');
+    users.insertOne(u[0], function(err,doc){
         if (err){
             console.log("Could not add driver 1");
         }
         else {
-            addCarstoDriver0(doc.ops[0]._id.toString());
+            userID0 =doc.ops[0]._id.toString();
+            addlanguageLevelUser0(doc.ops[0]._id.toString());
         }
     })
-    drivers.insertOne(d[1], function(err,doc){
+    users.insertOne(u[1], function(err,doc){
         if (err){
             console.log("Could not add driver 1");
         }
         else {
-            addCarstoDriver1(doc.ops[0]._id.toString());
+            userID1 =doc.ops[0]._id.toString();
+            addlanguageLevelUser1(doc.ops[0]._id.toString());
         }
     })
 }
 
-function addCarstoDriver0(driverId) {
-    c = [{
-        "make" : "Ford",
-        "model" : "Fiesta",
-        "year" : 2011,
-        "size" : "Compact",
-        "odometer" : 34523,
-        "color" : "red",
-        "driverId" : driverId
-    },{
-        "make" : "Buick",
-        "model" : "Regal",
-        "year" : 2014,
-        "size" : "Full",
-        "odometer" : 12342,
-        "color" : "black",
-        "driverId" : driverId
-    },{
-        "make" : "Toyota",
-        "model" : "Camry",
-        "year" : 2010,
-        "size" : "Intermediate",
-        "odometer" : 34111,
-        "color" : "blue",
-        "driverId" : driverId
+function addMovie() {
+    m = [{
+        "name": "Harry Potter and the Sorcer Stone",
+        "genre": "Adventure/Fantasy",
+        "level": 6
+    },
+        {
+            "name": "Shrek",
+            "genre": "Adventure/Fantasy",
+            "level": 4
+        }];
+    var movies = dbConnection.collection('movie');
+    movies.insertOne(m[0], function(err,doc){
+        if (err){
+            console.log("Could not add movie 1");
+        }
+        else {
+            addWatchList(userID0,doc.ops[0]._id.toString());
+        }
+    })
+    movies.insertOne(m[1], function(err,doc){
+        if (err){
+            console.log("Could not add movie 2");
+        }
+        else {
+            addWatchList(userID1,doc.ops[0]._id.toString());
+        }
+    })
+}
+
+function addWatchList(userID, movieID) {
+    m = [{
+        "userID": userID,
+        "movieID": movieID,
+        "tvShowID": null,
+        "bookID": null,
+        "audiobookID": null
+    }, {
+        "userID": userID,
+        "movieID": movieID,
+        "tvShowID": null,
+        "bookID": null,
+        "audiobookID": null
     }];
-    c.forEach(function(car){
-        var cars = dbConnection.collection('cars');
-        cars.insertOne(car);
+    m.forEach(function(movieList){
+        var movieLists = dbConnection.collection('movieList');
+        movieLists.insertOne(movieList);
+    })
+}
+
+function addBook() {
+    bb = [{
+        "name": "Great Expectations",
+        "genre": "Adventure",
+        "level": 9
+    },
+        {
+            "name": "Snoopy",
+            "genre": "Comedy",
+            "level": 2
+        }];
+    var books = dbConnection.collection('books');
+    books.insertOne(bb[0], function(err,doc){
+        if (err){
+            console.log("Could not add book 1");
+        }
+        else {
+            // addWatchList(userID0,doc.ops[0]._id.toString());
+            addFavoriteList(userID0,doc.ops[0]._id.toString())
+        }
+    })
+    books.insertOne(bb[1], function(err,doc){
+        if (err){
+            console.log("Could not add book 2");
+        }
+        else {
+            addFavoriteList(userID1,doc.ops[0]._id.toString());
+        }
+    })
+}
+
+function addFavoriteList(userID, bookID) {
+    ff = [{
+        "userID": userID,
+        "movieID": null,
+        "tvShowID": null,
+        "bookID": bookID,
+        "audiobookID": null
+    }, {
+        "userID": userID,
+        "movieID": null,
+        "tvShowID": null,
+        "bookID": bookID,
+        "audiobookID": null
+    }];
+    ff.forEach(function(movieList){
+        var favoriteLists = dbConnection.collection('favoriteLists');
+        favoriteLists.insertOne(movieList);
+    })
+}
+
+// function addCarstoDriver0(driverId) {
+//     c = [{
+//         "make": "Ford",
+//         "model": "Fiesta",
+//         "year": 2011,
+//         "size": "Compact",
+//         "odometer": 34523,
+//         "color": "red",
+//         "driverId": driverId
+//     }]
+// }
+
+// need to finish
+function addlanguageLevelUser0(userID) {
+    ll = [{
+        "movies_level" : 8,
+        "tvshows_level" : 10,
+        "books_level" : 1,
+        "audioBooks_level" : 7,
+        "usersId" : userID
+    },{
+        "movies_level" : 6,
+        "tvshows_level" : 2,
+        "books_level" : 1,
+        "audioBooks_level" : 7,
+        "usersId" : userID
+    }];
+
+    var langLevel = dbConnection.collection('langs');
+    langLevel.insertOne(ll[0], function(err,doc){
+        if (err){
+            console.log("Could not add driver 1");
+        }
+
     })
 
 }
 
-function addCarstoDriver1(driverId) {
-    c = [{
-        "make" : "BMW",
-        "model" : "X3",
-        "year" : 2016,
-        "size" : "Compact",
-        "odometer" : 5823,
-        "color" : "red",
-        "driverId" : driverId
+function addlanguageLevelUser1(userID) {
+    ll = [{
+        "movies_level" : 8,
+        "tvshows_level" : 10,
+        "books_level" : 1,
+        "audioBooks_level" : 7,
+        "usersId" : userID
     },{
-        "make" : "Toyota",
-        "model" : "Prius",
-        "year" : 2011,
-        "size" : "Compact",
-        "odometer" : 29233,
-        "color" : "white",
-        "driverId" : driverId
+        "movies_level" : 6,
+        "tvshows_level" : 2,
+        "books_level" : 1,
+        "audioBooks_level" : 7,
+        "usersId" : userID
     }];
-    c.forEach(function(car){
-        var cars = dbConnection.collection('cars');
-        cars.insertOne(car);
+
+    var langLevel = dbConnection.collection('langs');
+    langLevel.insertOne(ll[1], function(err,doc){
+        if (err){
+            console.log("Could not add driver 1");
+        }
+
     })
 
 }
