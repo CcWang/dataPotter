@@ -5,6 +5,7 @@ import edu.cmu.sv.app17.exceptions.APPBadRequestException;
 import edu.cmu.sv.app17.exceptions.APPInternalServerException;
 import edu.cmu.sv.app17.exceptions.APPNotFoundException;
 import edu.cmu.sv.app17.helpers.PATCH;
+import edu.cmu.sv.app17.helpers.APPResponse;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
@@ -41,7 +42,7 @@ public class FavoriteListInterface {
 
     @GET
     @Produces({ MediaType.APPLICATION_JSON})
-    public ArrayList<FavoriteList> getAll() {
+    public APPResponse getAll() {
 
         ArrayList<FavoriteList> favoriteListList = new ArrayList<FavoriteList>();
 
@@ -59,7 +60,7 @@ public class FavoriteListInterface {
                 favoriteList.setId(item.getObjectId("_id").toString());
                 favoriteListList.add(favoriteList);
             }
-            return favoriteListList;
+            return new APPResponse(favoriteListList);
 
         } catch(Exception e) {
             System.out.println("EXCEPTION!!!!");
@@ -72,7 +73,7 @@ public class FavoriteListInterface {
     @GET
     @Path("{id}")
     @Produces({ MediaType.APPLICATION_JSON})
-    public FavoriteList getOne(@PathParam("id") String id) {
+    public APPResponse getOne(@PathParam("id") String id) {
 
 
         BasicDBObject query = new BasicDBObject();
@@ -91,7 +92,7 @@ public class FavoriteListInterface {
                     item.getString("audioBookID")
             );
             favoriteList.setId(item.getObjectId("_id").toString());
-            return favoriteList;
+            return new APPResponse(favoriteList);
 
         } catch(IllegalArgumentException e) {
             throw new APPBadRequestException(45,"Doesn't look like MongoDB ID");
@@ -106,7 +107,7 @@ public class FavoriteListInterface {
     @POST
     @Consumes({ MediaType.APPLICATION_JSON})
     @Produces({ MediaType.APPLICATION_JSON})
-    public Object create( Object request) {
+    public APPResponse create( Object request) {
         JSONObject json = null;
         try {
             json = new JSONObject(ow.writeValueAsString(request));
@@ -134,7 +135,7 @@ public class FavoriteListInterface {
             doc.append("audiobookID", json.getString("audiobookID"));
         }
         collection.insertOne(doc);
-        return request;
+        return new APPResponse(request);
     }
 
 
