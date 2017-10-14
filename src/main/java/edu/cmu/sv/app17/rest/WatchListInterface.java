@@ -12,8 +12,8 @@ import com.mongodb.client.result.DeleteResult;
 import edu.cmu.sv.app17.exceptions.APPBadRequestException;
 import edu.cmu.sv.app17.exceptions.APPInternalServerException;
 import edu.cmu.sv.app17.exceptions.APPNotFoundException;
-//import edu.cmu.sv.app17.models.Car;
-//import edu.cmu.sv.app17.models.Driver;
+import edu.cmu.sv.app17.helpers.APPResponse;
+
 import edu.cmu.sv.app17.models.WatchList;
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -43,13 +43,13 @@ public class WatchListInterface {
 
     @GET
     @Produces({ MediaType.APPLICATION_JSON})
-    public ArrayList<WatchList> getAll() {
+    public APPResponse getAll() {
 
         ArrayList<WatchList> watchListList = new ArrayList<WatchList>();
 
         FindIterable<Document> results = collection.find();
         if (results == null) {
-            return  watchListList;
+            return  new APPResponse(watchListList);
         }
         for (Document item : results) {
             WatchList watchList = new WatchList(
@@ -62,13 +62,13 @@ public class WatchListInterface {
             watchList.setId(item.getObjectId("_id").toString());
             watchListList.add(watchList);
         }
-        return watchListList;
+        return new APPResponse(watchListList);
     }
 
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_JSON})
-    public WatchList getOne(@PathParam("id") String id) {
+    public APPResponse getOne(@PathParam("id") String id) {
         BasicDBObject query = new BasicDBObject();
         try {
             query.put("_id", new ObjectId(id));
@@ -84,7 +84,7 @@ public class WatchListInterface {
                     item.getString("audiobookID")
             );
             watchList.setId(item.getObjectId("_id").toString());
-            return watchList;
+            return new APPResponse(watchList);
 
         } catch(APPNotFoundException e) {
             throw new APPNotFoundException(0,"No such media");
@@ -102,7 +102,7 @@ public class WatchListInterface {
     @Path("{id}/watchList")
     @Consumes({ MediaType.APPLICATION_JSON})
     @Produces({ MediaType.APPLICATION_JSON})
-    public Object create(@PathParam("id") String id, Object request) {
+    public APPResponse create(@PathParam("id") String id, Object request) {
         JSONObject json = null;
         try {
             json = new JSONObject(ow.writeValueAsString(request));
@@ -128,7 +128,7 @@ public class WatchListInterface {
                 .append("audiobookID", json.getString("audiobookID"));
 
         collection.insertOne(doc);
-        return request;
+        return new APPResponse(request);
     }
 
     @DELETE

@@ -123,9 +123,9 @@ function addWatchList(userID, movieID) {
         "bookID": null,
         "audiobookID": null
     }];
-    m.forEach(function(movieList){
-        var movieLists = dbConnection.collection('movieList');
-        movieLists.insertOne(movieList);
+    m.forEach(function(watchList){
+        var watchLists = dbConnection.collection('watchList');
+        watchLists.insertOne(watchList);
     })
 }
 
@@ -174,9 +174,9 @@ function addFavoriteList(userID, bookID) {
         "bookID": bookID,
         "audiobookID": null
     }];
-    ff.forEach(function(movieList){
+    ff.forEach(function(WatchList){
         var favoriteLists = dbConnection.collection('favoriteLists');
-        favoriteLists.insertOne(movieList);
+        favoriteLists.insertOne(WatchList);
     })
 }
 
