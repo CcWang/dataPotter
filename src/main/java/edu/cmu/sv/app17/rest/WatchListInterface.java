@@ -23,7 +23,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
 
-@Path("watchlist")
+@Path("watchlists")
 public class WatchListInterface {
 
     private MongoCollection<Document> collection;
