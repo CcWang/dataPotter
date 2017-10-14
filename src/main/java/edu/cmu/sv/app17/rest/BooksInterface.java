@@ -13,6 +13,7 @@ import edu.cmu.sv.app17.exceptions.APPBadRequestException;
 import edu.cmu.sv.app17.exceptions.APPInternalServerException;
 import edu.cmu.sv.app17.exceptions.APPNotFoundException;
 import edu.cmu.sv.app17.helpers.PATCH;
+import edu.cmu.sv.app17.helpers.APPResponse;
 import edu.cmu.sv.app17.models.FavoriteList;
 import edu.cmu.sv.app17.models.Book;
 import edu.cmu.sv.app17.models.Movie;
@@ -45,7 +46,7 @@ public class BooksInterface {
 
     @GET
     @Produces({MediaType.APPLICATION_JSON})
-    public ArrayList<Book> getAll() {
+    public APPResponse getAll() {
 
         ArrayList<Book> bookList = new ArrayList<Book>();
 
@@ -60,7 +61,7 @@ public class BooksInterface {
             book.setId(item.getObjectId("_id").toString());
             bookList.add(book);
             }
-            return bookList;
+            return new APPResponse(bookList);
 
         } catch(Exception e) {
             System.out.println("EXCEPTION!!!!");
@@ -74,7 +75,7 @@ public class BooksInterface {
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_JSON})
-    public Book getOne(@PathParam("id") String id) {
+    public APPResponse getOne(@PathParam("id") String id) {
         BasicDBObject query = new BasicDBObject();
         try {
             query.put("_id", new ObjectId(id));
@@ -88,7 +89,7 @@ public class BooksInterface {
                     item.getInteger("level")
             );
             book.setId(item.getObjectId("_id").toString());
-            return book;
+            return new APPResponse(book);
 
         } catch (APPNotFoundException e) {
             throw new APPNotFoundException(0, "No such book");
@@ -103,7 +104,7 @@ public class BooksInterface {
 //        @Path("{id}/books")
         @Consumes({ MediaType.APPLICATION_JSON})
         @Produces({ MediaType.APPLICATION_JSON})
-        public Object create( Object request) {
+        public APPResponse create( Object request) {
             JSONObject json = null;
             try {
                 json = new JSONObject(ow.writeValueAsString(request));
@@ -123,7 +124,7 @@ public class BooksInterface {
                     .append("genre", json.getString("genre"))
                     .append("level", json.getInt("level"));
             collection.insertOne(doc);
-            return request;
+            return new APPResponse(request);
         }
 
 
@@ -131,7 +132,7 @@ public class BooksInterface {
     @Path("{id}")
     @Consumes({ MediaType.APPLICATION_JSON})
     @Produces({ MediaType.APPLICATION_JSON})
-    public Object update(@PathParam("id") String id, Object request) {
+    public APPResponse update(@PathParam("id") String id, Object request) {
         JSONObject json = null;
         try {
             json = new JSONObject(ow.writeValueAsString(request));
@@ -159,7 +160,7 @@ public class BooksInterface {
             System.out.println("Failed to create a document");
 
         }
-        return request;
+        return new APPResponse(request);
     }
 
     @DELETE

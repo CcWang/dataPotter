@@ -13,6 +13,7 @@ import edu.cmu.sv.app17.exceptions.APPBadRequestException;
 import edu.cmu.sv.app17.exceptions.APPInternalServerException;
 import edu.cmu.sv.app17.exceptions.APPNotFoundException;
 import edu.cmu.sv.app17.helpers.PATCH;
+import edu.cmu.sv.app17.helpers.APPResponse;
 import edu.cmu.sv.app17.models.LanguageLevel;
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -39,7 +40,7 @@ public class LanguageLevelInterface {
 
     @GET
     @Produces({ MediaType.APPLICATION_JSON})
-    public ArrayList<LanguageLevel> getAll() {
+    public APPResponse getAll() {
 
         ArrayList<LanguageLevel> lanLevelList = new ArrayList<LanguageLevel>();
         try {
@@ -57,7 +58,7 @@ public class LanguageLevelInterface {
                 lanLevel.setId(item.getObjectId("_id").toString());
                 lanLevelList.add(lanLevel);
             }
-            return lanLevelList;
+            return new APPResponse(lanLevelList);
 
         } catch(Exception e) {
             System.out.println("EXCEPTION!!!!");
@@ -70,7 +71,7 @@ public class LanguageLevelInterface {
     @GET
     @Path("{id}")
     @Produces({ MediaType.APPLICATION_JSON})
-    public LanguageLevel getOne(@PathParam("id") String id) {
+    public APPResponse getOne(@PathParam("id") String id) {
 
         BasicDBObject query = new BasicDBObject();
 
@@ -88,7 +89,7 @@ public class LanguageLevelInterface {
                     item.getInteger("audioBooks_level",0)
             );
             lanlevel.setId(item.getObjectId("_id").toString());
-            return lanlevel;
+            return new APPResponse(lanlevel);
 
         } catch(IllegalArgumentException e) {
             throw new APPBadRequestException(45,"Doesn't look like MongoDB ID");
@@ -102,7 +103,7 @@ public class LanguageLevelInterface {
     @POST
     @Consumes({ MediaType.APPLICATION_JSON})
     @Produces({ MediaType.APPLICATION_JSON})
-    public Object create(JSONObject obj) {
+    public APPResponse create(JSONObject obj) {
         try {
             Document doc = new Document("usersId",obj.getString("usersId"))
                     .append("movies_level", obj.getInt("movies_level"))
@@ -116,7 +117,7 @@ public class LanguageLevelInterface {
             System.out.println("Failed to create a document");
         }
 //
-        return obj;
+        return new APPResponse(obj);
     }
 
 
@@ -124,7 +125,7 @@ public class LanguageLevelInterface {
     @Path("{id}")
     @Consumes({ MediaType.APPLICATION_JSON})
     @Produces({ MediaType.APPLICATION_JSON})
-    public Object update(@PathParam("id") String id, Object request) {
+    public APPResponse update(@PathParam("id") String id, Object request) {
         JSONObject json = null;
         try {
             json = new JSONObject(ow.writeValueAsString(request));
@@ -155,7 +156,7 @@ public class LanguageLevelInterface {
             System.out.println("Failed to create a document");
 
         }
-        return request;
+        return new APPResponse(request);
     }
 
 
