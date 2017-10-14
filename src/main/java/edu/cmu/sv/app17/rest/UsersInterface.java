@@ -22,6 +22,7 @@ import com.mongodb.client.MongoDatabase;
 import edu.cmu.sv.app17.exceptions.APPBadRequestException;
 import edu.cmu.sv.app17.exceptions.APPInternalServerException;
 import edu.cmu.sv.app17.exceptions.APPNotFoundException;
+import edu.cmu.sv.app17.helpers.APPResponse;
 import edu.cmu.sv.app17.helpers.PATCH;
 import edu.cmu.sv.app17.models.LanguageLevel;
 import edu.cmu.sv.app17.models.User;
@@ -54,13 +55,13 @@ public class UsersInterface {
 
     @GET
     @Produces({ MediaType.APPLICATION_JSON})
-    public ArrayList<User> getAll() {
+    public APPResponse getAll() {
 
         ArrayList<User> userList = new ArrayList<User>();
 
         FindIterable<Document> results = collection.find();
         if (results == null) {
-            return  userList;
+            return  new APPResponse(userList);
         }
         for (Document item : results) {
             User user = new User(
@@ -76,13 +77,14 @@ public class UsersInterface {
             user.setId(item.getObjectId("_id").toString());
             userList.add(user);
         }
-        return userList;
+        return new APPResponse(userList);
+
     }
 
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_JSON})
-    public User getOne(@PathParam("id") String id) {
+    public APPResponse getOne(@PathParam("id") String id) {
 //        need to change
 //  need to check if name and pwd are match
         BasicDBObject query = new BasicDBObject();
@@ -103,7 +105,8 @@ public class UsersInterface {
                     item.getDate("birthday")
             );
             user.setId(item.getObjectId("_id").toString());
-            return user;
+            return new APPResponse(user);
+//            return user;
 
         } catch(APPNotFoundException e) {
             throw new APPNotFoundException(0,"No such car");
@@ -119,7 +122,7 @@ public class UsersInterface {
     @POST
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
-    public Object create(Object request){
+    public APPResponse create(Object request){
 
         JSONObject json = null;
         try {
@@ -157,7 +160,7 @@ public class UsersInterface {
                 .append("birthday", json.getString("birthday"));
 
         collection.insertOne(doc);
-        return request;
+        return new APPResponse(request);
 
     }
 
@@ -165,7 +168,7 @@ public class UsersInterface {
     @Path("{id}")
     @Consumes({ MediaType.APPLICATION_JSON})
     @Produces({ MediaType.APPLICATION_JSON})
-    public Object update(@PathParam("id") String id, JSONObject obj) {
+    public APPResponse update(@PathParam("id") String id, JSONObject obj) {
         try {
 
             BasicDBObject query = new BasicDBObject();
@@ -200,13 +203,13 @@ public class UsersInterface {
         }  catch(Exception e) {
             throw new APPInternalServerException(99,"Something happened, pinch me!");
         }
-        return obj;
+        return new APPResponse(obj);
     }
 
     @GET
     @Path("{id}/langs")
     @Produces({MediaType.APPLICATION_JSON})
-    public ArrayList<LanguageLevel> getLangLevelForUser(@PathParam("id") String id) {
+    public APPResponse getLangLevelForUser(@PathParam("id") String id) {
 
         ArrayList<LanguageLevel> lanList = new ArrayList<LanguageLevel>();
 
@@ -227,7 +230,7 @@ public class UsersInterface {
                 lang.setId(item.getObjectId("_id").toString());
                 lanList.add(lang);
             }
-            return lanList;
+            return new APPResponse(lanList);
 
         } catch(Exception e) {
             System.out.println("EXCEPTION!!!!");
@@ -241,7 +244,7 @@ public class UsersInterface {
     @Path("{id}/langs")
     @Consumes({ MediaType.APPLICATION_JSON})
     @Produces({ MediaType.APPLICATION_JSON})
-    public Object create(@PathParam("id") String id, Object request) {
+    public APPResponse create(@PathParam("id") String id, Object request) {
         JSONObject json = null;
         try {
             json = new JSONObject(ow.writeValueAsString(request));
@@ -266,7 +269,7 @@ public class UsersInterface {
                 .append("audioBooks_level",json.getInt("audioBooks_level"));
 
         langLevelCollection.insertOne(doc);
-        return request;
+        return new APPResponse(request);
     }
 
 
