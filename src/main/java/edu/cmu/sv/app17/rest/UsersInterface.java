@@ -24,8 +24,7 @@ import edu.cmu.sv.app17.exceptions.APPInternalServerException;
 import edu.cmu.sv.app17.exceptions.APPNotFoundException;
 import edu.cmu.sv.app17.helpers.APPResponse;
 import edu.cmu.sv.app17.helpers.PATCH;
-import edu.cmu.sv.app17.models.LanguageLevel;
-import edu.cmu.sv.app17.models.User;
+import edu.cmu.sv.app17.models.*;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -40,6 +39,7 @@ public class UsersInterface {
 
     private MongoCollection<Document> collection;
     private MongoCollection<Document> langLevelCollection;
+    private MongoCollection<Document> bookCollection;
     private ObjectWriter ow;
 
 
@@ -49,6 +49,7 @@ public class UsersInterface {
 
         this.collection = database.getCollection("users");
         this.langLevelCollection = database.getCollection("langs");
+        this.bookCollection = database.getCollection("books");
         ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 
     }
@@ -185,11 +186,11 @@ public class UsersInterface {
                 doc.append("nativeLanguage",obj.getString("nativeLanguage"));
             if (obj.has("englishLevel"))
                 doc.append("englishLevel",obj.getInt("englishLevel"));
-            if (obj.has("addressLineOne"))
-                doc.append("phone",obj.getString("phone"));
             if (obj.has("phone"))
-                doc.append("gender",obj.getString("gender"));
+                doc.append("phone",obj.getString("phone"));
             if (obj.has("gender"))
+                doc.append("gender",obj.getString("gender"));
+            if (obj.has("birthday"))
                 doc.append("birthday",obj.getString("birthday"));
 
 
@@ -271,6 +272,8 @@ public class UsersInterface {
         langLevelCollection.insertOne(doc);
         return new APPResponse(request);
     }
+
+
 
 
 
