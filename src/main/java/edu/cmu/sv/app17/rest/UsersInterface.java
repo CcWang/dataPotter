@@ -185,11 +185,11 @@ public class UsersInterface {
                 doc.append("nativeLanguage",obj.getString("nativeLanguage"));
             if (obj.has("englishLevel"))
                 doc.append("englishLevel",obj.getInt("englishLevel"));
-            if (obj.has("addressLineOne"))
-                doc.append("phone",obj.getString("phone"));
             if (obj.has("phone"))
-                doc.append("gender",obj.getString("gender"));
+                doc.append("phone",obj.getString("phone"));
             if (obj.has("gender"))
+                doc.append("gender",obj.getString("gender"));
+            if (obj.has("birthday"))
                 doc.append("birthday",obj.getString("birthday"));
 
 
