@@ -15,7 +15,7 @@ $( document ).ready(function() {
                 var userID = user.id;
                 var html = "<tr><td>"+user.username+"</td><td>"+user.email+"</td><td>"+user.nativeLanguage+"</td><td>"
                 +user.englishLevel+"</td><td>"+user.phone+"</td><td>"+gender+"</td><td>"+dob+"</td><td><button type='button' id="+userID+" class='btn btn-primary btn-sm'>see</button></td></td>";
-                console.log(html);
+                // console.log(html);
                 $('#user_list tr:last').after(html);
                 // $("tbody").appendTo(html);
                 $("#loading").hide();
@@ -40,15 +40,15 @@ $( document ).ready(function() {
 
 var getUserLan = function (userId) {
     $.ajax({
-        url:"/api/users/"+userId+"/langs",
-        type:"GET"
+        url: "/api/users/" + userId + "/langs",
+        type: "GET"
     })
-    .done(function(data){
-        // console.log(data.content[0])
-        data = data.content[0];
-        var msg = "Hello, here are your level scores - movies: "+data.movies_level+" TV shows: "+ data.tvshows_level
-        +" Books: "+ data.books_level + " Audio Books: "+ data.audioBooks_level+"."
-        alert(msg);
+        .done(function (data) {
+            // console.log(data.content[0])
+            data = data.content[0];
+            var msg = "Hello, here are your level scores - movies: " + data.movies_level + " TV shows: " + data.tvshows_level
+                + " Books: " + data.books_level + " Audio Books: " + data.audioBooks_level + "."
+            alert(msg);
 
-    });
-}
+        });
+};
