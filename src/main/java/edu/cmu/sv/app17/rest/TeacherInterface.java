@@ -72,9 +72,9 @@ public class TeacherInterface {
                     item.getString("password"),
                     item.getString("nativeLanguage"),
                     item.getString("phone"),
-                    item.getString("gender"),
-                    item.getInteger("exp"),
-                    item.getBoolean("newStudent")
+                    item.getString("gender")
+//                    item.getInteger("exp"),
+//                    item.getBoolean("newStudent")
             );
             teacher.setId(item.getObjectId("_id").toString());
             teacherList.add(teacher);
@@ -102,9 +102,9 @@ public class TeacherInterface {
                     item.getString("password"),
                     item.getString("nativeLanguage"),
                     item.getString("phone"),
-                    item.getString("gender"),
-                    item.getInteger("exp"),
-                    item.getBoolean("newStudent")
+                    item.getString("gender")
+//                    item.getInteger("exp"),
+//                    item.getBoolean("newStudent")
             );
             teacher.setId(item.getObjectId("_id").toString());
             return new APPResponse(teacher);

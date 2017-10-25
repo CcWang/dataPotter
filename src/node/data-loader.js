@@ -112,48 +112,7 @@ function addUser() {
     // })
 }
 
-function addTeacher() {
-    tt = [{
-        "teacherName":    "Alex",
-        "email":        "alex@malkovich.com",
-        "password": "121212",
-        "nativeLanguage": "English",
-        "phone":"0000000000",
-        "gender":"male",
-        "exp":7,
-        "newStudent":true
-    },
-        {
-            "teacherName":    "Ben",
-            "email":        "ben@malkovich.com",
-            "password": "343434",
-            "nativeLanguage": "French",
-            "phone":"1111111111",
-            "gender":"female",
-            "exp":9,
-            "newStudent":false
-        }];
-    var teachers = dbConnection.collection('teachers');
-    teachers.insertOne(tt[0], function(err,doc){
-        if (err){
-            console.log("Could not add teacher 1");
-        }
-        else {
-            teacherID0 =doc.ops[0]._id.toString();
-            addbookTeacher0(doc.ops[0]._id.toString());
-        }
-    })
-    users.insertOne(tt[1], function(err,doc){
-        if (err){
-            console.log("Could not add teacher 2");
-        }
-        else {
-            teacherID1 =doc.ops[0]._id.toString();
-            addbookTeacher1(doc.ops[0]._id.toString());
 
-        }
-    })
-}
 function addContributor() {
     var cc = [{
         "name": "Alex",
@@ -172,25 +131,15 @@ function addContributor() {
             "gender": "female"
         }];
     var contributors = dbConnection.collection('contributors');
-    for (var i=0; i<length(cc); i++){
+    for (var i=0; i<cc.length; i++){
         contributors.insertOne(cc[i],function(err,doc){
             if(err){
                 console.log("could not add contributor"+i);
             }else{
+                addBookstoContributor(doc.ops[0]._id.toString(),45);
 
             }
         })
-    }
-    contributors.insertOne(tt[0], function (err, doc) {
-        if (err) {
-            console.log("Could not add contributor");
-        }
-        else {
-            contributorID[i] = doc.ops[0]._id.toString();
-
-
-        }
-    });
 }
 
 
@@ -268,13 +217,47 @@ function addBook() {
                 console.log("Could not add book"+i);
             }else{
                 addFavoriteList(userID[i],doc.ops[0]._id.toString())
-
             }
 
         })
     }
 
 }
+
+
+nameList = ['AA','BB','CC','DD','EE','FF','GG','HH','II','JJ','KK'];
+genreList = ['Science fiction','Drama','Action and Adventure','Romance','Mystery','Horror'];
+
+function addBookstoContributor(contributorId,count) {
+    sequence = Array(count);
+    console.log("sequence",sequence);
+    var c = [];
+    for (i=0;i<count;i++){
+        console.log("Trying")
+        var name = nameList[Math.floor(Math.random() * nameList.length)];
+        var genre = genreList[Math.floor(Math.random() * genreList.length)];
+        var level = Number(Math.floor(Math.random()*10));
+
+        c.push ({
+            name: name,
+            genre: genre,
+            level: level,
+            contributorId: contributorId
+        });
+
+    }
+
+    c.forEach(function(book){
+        var books = dbConnection.collection('books');
+        books.insertOne(book);
+    })
+
+}
+
+setTimeout(closeConnection,5000);
+
+
+
 
 function addFavoriteList(userID, bookID) {
     var ff = [{
