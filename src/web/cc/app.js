@@ -83,11 +83,26 @@ $( document ).ready(function() {
 
         }
     })
+    $("#sortG").click(function(e){
+        e.preventDefault();
+        getMovies("genre");
+    })
 
+    $("#sortN").click(function(e){
+        e.preventDefault();
+        getMovies("name");
+    })
 
-    var getMovies = function () {
+    var getMovies = function (sort_term) {
+        //?sort=genre&count=30&offset=20
+        var getUrl;
+        if (sort_term){
+            getUrl = "/api/contributors/"+ contributorId+"/movies?sort="+sort_term+"&offset="+offset + "&count=" +count;
+        }else{
+            getUrl = "/api/contributors/"+ contributorId+"/movies?offset="+offset+"&count=" +count;
+        }
         $.ajax({
-            url:"/api/contributors/"+ contributorId+"/movies?offset="+offset+"&count=" +count,
+            url:getUrl,
             type:"GET"
         }).done(function (data) {
             console.log(data.content);

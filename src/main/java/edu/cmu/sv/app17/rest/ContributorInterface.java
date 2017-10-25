@@ -39,6 +39,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Path("contributors")
 public class ContributorInterface {
@@ -240,9 +242,14 @@ public class ContributorInterface {
     @Path("{id}/movies")
     @Produces({MediaType.APPLICATION_JSON})
     public APPListResponse getMoviesForContributor(@Context HttpHeaders headers, @PathParam("id") String id, @DefaultValue("20") @QueryParam("count") int count,
-    @DefaultValue("0") @QueryParam("offset") int offset) {
+    @DefaultValue("0") @QueryParam("offset") int offset, @DefaultValue("_id") @QueryParam("sort") String sortArg) {
 
         ArrayList<Movie> movielist = new ArrayList<>();
+        BasicDBObject sortParams = new BasicDBObject();
+        List<String> sortList = Arrays.asList(sortArg.split(","));
+        sortList.forEach(sortItem -> {
+            sortParams.put(sortItem,1);
+        });
 
         try {
             BasicDBObject query = new BasicDBObject();
@@ -250,7 +257,7 @@ public class ContributorInterface {
 
             long resultCount = movieCollection.count(query);
 
-            FindIterable<Document> results = movieCollection.find(query).skip(offset).limit(count);
+            FindIterable<Document> results = movieCollection.find(query).skip(offset).limit(count).sort(sortParams);
             for (Document item : results) {
                 Movie m = new Movie(
                         item.getString("name"),
