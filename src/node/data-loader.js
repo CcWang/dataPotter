@@ -30,6 +30,7 @@ getDbConnection(function(){
             console.log("Could not drop database");
         else
             addUser();
+            addTeacher();
             addMovie();
             addBook();
     });
@@ -78,6 +79,50 @@ function addUser() {
         }
     })
 }
+
+function addTeacher() {
+    tt = [{
+        "teacherName":    "Alex",
+        "email":        "alex@malkovich.com",
+        "password": "121212",
+        "nativeLanguage": "English",
+        "phone":"0000000000",
+        "gender":"male",
+        "exp":7,
+        "newStudent":true
+    },
+        {
+            "teacherName":    "Ben",
+            "email":        "ben@malkovich.com",
+            "password": "343434",
+            "nativeLanguage": "French",
+            "phone":"1111111111",
+            "gender":"female",
+            "exp":9,
+            "newStudent":false
+        }];
+    var teachers = dbConnection.collection('teachers');
+    teachers.insertOne(tt[0], function(err,doc){
+        if (err){
+            console.log("Could not add teacher 1");
+        }
+        else {
+            teacherID0 =doc.ops[0]._id.toString();
+            addbookTeacher0(doc.ops[0]._id.toString());
+        }
+    })
+    users.insertOne(tt[1], function(err,doc){
+        if (err){
+            console.log("Could not add teacher 2");
+        }
+        else {
+            teacherID1 =doc.ops[0]._id.toString();
+            addbookTeacher1(doc.ops[0]._id.toString());
+
+        }
+    })
+}
+
 
 function addMovie() {
     m = [{
@@ -133,12 +178,14 @@ function addBook() {
     bb = [{
         "name": "Great Expectations",
         "genre": "Adventure",
-        "level": 9
+        "level": 9,
+        "teacherId": "123"
     },
         {
             "name": "Snoopy",
             "genre": "Comedy",
-            "level": 2
+            "level": 2,
+            "teacherId": "456"
         }];
     var books = dbConnection.collection('books');
     books.insertOne(bb[0], function(err,doc){

@@ -6,12 +6,14 @@ public class Book {
     String name;
     String genre;
     Number level;
+    String teacherId;
 
     public Book(String name,
-                String genre, Number level) {
+                String genre, Number level, String teacherId) {
         this.name = name;
         this.genre = genre;
         this.level = level;
+        this.teacherId = teacherId;
     }
 
     public void setId(String id) {
