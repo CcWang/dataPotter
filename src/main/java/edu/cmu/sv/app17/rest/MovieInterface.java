@@ -52,10 +52,13 @@ public class MovieInterface {
             FindIterable<Document> results = collection.find();
             for (Document item : results) {
 //                String genre[] = String[] item.getString("genre");
-                List<Document> genres = (List<Document>) item.get("genre");
+//                List<Document> genres = (List<Document>) item.get("genre");
+
+                List<Document> genres = item.get("genre", List.class);
+
                 Movie movie = new Movie(
                         item.getString("name"),
-                        ArrayList.getStrings("genre"),
+                        genres,
                         item.getInteger("level")
                 );
                 movie.setId(item.getObjectId("_id").toString());
