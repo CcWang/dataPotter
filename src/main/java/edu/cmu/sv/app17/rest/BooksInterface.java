@@ -56,7 +56,8 @@ public class BooksInterface {
                 Book book = new Book(
                         item.getString("name"),
                         item.getString("genre"),
-                        item.getInteger("level")
+                        item.getInteger("level"),
+                        item.getString("teacherId")
                 );
             book.setId(item.getObjectId("_id").toString());
             bookList.add(book);
@@ -86,7 +87,8 @@ public class BooksInterface {
             Book book = new Book(
                     item.getString("name"),
                     item.getString("genre"),
-                    item.getInteger("level")
+                    item.getInteger("level"),
+                    item.getString("teacherId")
             );
             book.setId(item.getObjectId("_id").toString());
             return new APPResponse(book);

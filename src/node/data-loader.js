@@ -2,7 +2,6 @@ var MongoClient = require('mongodb').MongoClient;
 
 var dbConnection = null;
 
-var lockCount = 0;
 
 
 var userID = [];
@@ -30,6 +29,7 @@ getDbConnection(function(){
             console.log("Could not drop database");
         else
             addUser();
+            addTeacher();
             addMovie();
             addBook();
     });
@@ -110,6 +110,78 @@ function addUser() {
     //     }
     // })
 }
+
+function addTeacher() {
+    tt = [{
+        "teacherName":    "Alex",
+        "email":        "alex@malkovich.com",
+        "password": "121212",
+        "nativeLanguage": "English",
+        "phone":"0000000000",
+        "gender":"male",
+        "exp":7,
+        "newStudent":true
+    },
+        {
+            "teacherName":    "Ben",
+            "email":        "ben@malkovich.com",
+            "password": "343434",
+            "nativeLanguage": "French",
+            "phone":"1111111111",
+            "gender":"female",
+            "exp":9,
+            "newStudent":false
+        }];
+    var teachers = dbConnection.collection('teachers');
+    teachers.insertOne(tt[0], function(err,doc){
+        if (err){
+            console.log("Could not add teacher 1");
+        }
+        else {
+            teacherID0 =doc.ops[0]._id.toString();
+            addbookTeacher0(doc.ops[0]._id.toString());
+        }
+    })
+    users.insertOne(tt[1], function(err,doc){
+        if (err){
+            console.log("Could not add teacher 2");
+        }
+        else {
+            teacherID1 =doc.ops[0]._id.toString();
+            addbookTeacher1(doc.ops[0]._id.toString());
+
+        }
+    })
+}
+function addContributor() {
+    tt = [{
+        "name": "Alex",
+        "email": "alex@malkovich.com",
+        "password": "121212",
+        "nativeLanguage": "English",
+        "phone": "0000000000",
+        "gender": "male"
+    },
+        {
+            "name": "Ben",
+            "email": "ben@malkovich.com",
+            "password": "343434",
+            "nativeLanguage": "French",
+            "phone": "1111111111",
+            "gender": "female"
+        }];
+    var contributors = dbConnection.collection('contributors');
+    contributors.insertOne(tt[0], function (err, doc) {
+        if (err) {
+            console.log("Could not add contributor");
+        }
+        else {
+            contributorId = doc.ops[0]._id.toString();
+
+        }
+    });
+}
+
 
 function addMovie() {
     var m = [{

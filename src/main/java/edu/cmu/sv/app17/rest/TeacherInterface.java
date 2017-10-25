@@ -1,15 +1,16 @@
 package edu.cmu.sv.app17.rest;
 
 /*
-* username  string
+* teacherName  string
 * email     string
 * password  string
 * nativeLanguage    string
-* englishLevel  string
 * phone     string
 * gender    string
-* birthday Date
+* year of teaching experience  Number
+* open to accept new student Boolean
 * */
+import java.util.Date;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,39 +25,32 @@ import edu.cmu.sv.app17.exceptions.APPInternalServerException;
 import edu.cmu.sv.app17.exceptions.APPNotFoundException;
 import edu.cmu.sv.app17.helpers.APPResponse;
 import edu.cmu.sv.app17.helpers.PATCH;
-import edu.cmu.sv.app17.models.*;
-
 import edu.cmu.sv.app17.models.LanguageLevel;
-import edu.cmu.sv.app17.models.FavoriteList;
+import edu.cmu.sv.app17.models.Book;
+import edu.cmu.sv.app17.models.Teacher;
 import edu.cmu.sv.app17.models.User;
-
-
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.json.JSONObject;
-import java.util.Date;
+
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
 
-@Path("users")
-public class UsersInterface {
+@Path("teachers")
+public class TeacherInterface {
 
     private MongoCollection<Document> collection;
-    private MongoCollection<Document> langLevelCollection;
-    private MongoCollection<Document> bookCollection;
-    private MongoCollection<Document> favoriteListsCollection;
-
+    private MongoCollection<Document> booksCollection;
     private ObjectWriter ow;
 
 
-    public UsersInterface() {
+    public TeacherInterface() {
         MongoClient mongoClient = new MongoClient();
         MongoDatabase database = mongoClient.getDatabase("dataPotter");
 
-        this.collection = database.getCollection("users");
-        this.langLevelCollection = database.getCollection("langs");
-        this.bookCollection = database.getCollection("books");
+        this.collection = database.getCollection("teachers");
+        this.booksCollection = database.getCollection("books");
         ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 
     }
@@ -65,27 +59,27 @@ public class UsersInterface {
     @Produces({ MediaType.APPLICATION_JSON})
     public APPResponse getAll() {
 
-        ArrayList<User> userList = new ArrayList<User>();
+        ArrayList<Teacher> teacherList = new ArrayList<Teacher>();
 
         FindIterable<Document> results = collection.find();
         if (results == null) {
-            return  new APPResponse(userList);
+            return  new APPResponse(teacherList);
         }
         for (Document item : results) {
-            User user = new User(
-                    item.getString("username"),
+            Teacher teacher = new Teacher(
+                    item.getString("teachername"),
                     item.getString("email"),
                     item.getString("password"),
                     item.getString("nativeLanguage"),
-                    item.getInteger("englishLevel"),
                     item.getString("phone"),
                     item.getString("gender"),
-                    item.getDate("birthday")
+                    item.getInteger("exp"),
+                    item.getBoolean("newStudent")
             );
-            user.setId(item.getObjectId("_id").toString());
-            userList.add(user);
+            teacher.setId(item.getObjectId("_id").toString());
+            teacherList.add(teacher);
         }
-        return new APPResponse(userList);
+        return new APPResponse(teacherList);
 
     }
 
@@ -102,22 +96,22 @@ public class UsersInterface {
             if (item == null) {
                 throw new APPNotFoundException(0, "Sorry, we cannot find you. Sign up? ");
             }
-            User user = new User(
-                    item.getString("username"),
+            Teacher teacher = new Teacher(
+                    item.getString("teachername"),
                     item.getString("email"),
                     item.getString("password"),
                     item.getString("nativeLanguage"),
-                    item.getInteger("englishLevel"),
                     item.getString("phone"),
                     item.getString("gender"),
-                    item.getDate("birthday")
+                    item.getInteger("exp"),
+                    item.getBoolean("newStudent")
             );
-            user.setId(item.getObjectId("_id").toString());
-            return new APPResponse(user);
-//            return user;
+            teacher.setId(item.getObjectId("_id").toString());
+            return new APPResponse(teacher);
+//            return teacher;
 
         } catch(APPNotFoundException e) {
-            throw new APPNotFoundException(0,"No such car");
+            throw new APPNotFoundException(0,"No such teacher");
         } catch(IllegalArgumentException e) {
             throw new APPBadRequestException(45,"Doesn't look like MongoDB ID");
         }  catch(Exception e) {
@@ -153,19 +147,21 @@ public class UsersInterface {
             throw new APPBadRequestException(55,"phone");
         if(!json.has("gender"))
             throw new APPBadRequestException (55,"missing gender");
-        if(!json.has("birthday"))
-            throw new APPBadRequestException (55,"birthday");
+        if (!json.has("exp"))
+            throw new APPBadRequestException(55,"exp");
+        if (!json.has("newStudent"))
+            throw new APPBadRequestException(55,"newStudent");
 //        if (json.getInt("odometer") < 0) {
 //            throw new APPBadRequestException(56, "Invalid odometer - cannot be less than 0");
 //        }
-        Document doc = new Document("username", json.getString("username"))
+        Document doc = new Document("teachername", json.getString("teachername"))
                 .append("email", json.getString("email"))
                 .append("password", json.getString("password"))
                 .append("nativeLanguage", json.getString("nativeLanguage"))
-                .append("englishLevel", json.getInt("englishLevel"))
                 .append("phone", json.getString("phone"))
                 .append("gender", json.getString("gender"))
-                .append("birthday", json.getString("birthday"));
+                .append("exp", json.getInt("exp"))
+                .append("newStudent", json.getBoolean("newStudent"));
 
         collection.insertOne(doc);
         return new APPResponse(request);
@@ -191,21 +187,21 @@ public class UsersInterface {
                 doc.append("password",obj.getString("password"));
             if (obj.has("nativeLanguage"))
                 doc.append("nativeLanguage",obj.getString("nativeLanguage"));
-            if (obj.has("englishLevel"))
-                doc.append("englishLevel",obj.getInt("englishLevel"));
             if (obj.has("phone"))
                 doc.append("phone",obj.getString("phone"));
             if (obj.has("gender"))
                 doc.append("gender",obj.getString("gender"));
-            if (obj.has("birthday"))
-                doc.append("birthday",obj.getString("birthday"));
+            if (obj.has("exp"))
+                doc.append("exp",obj.getInt("exp"));
+            if (obj.has("newStudent"))
+                doc.append("newStudent",obj.getBoolean("newStudent"));
 
 
             Document set = new Document("$set", doc);
             collection.updateOne(query,set);
 
         } catch(APPNotFoundException e) {
-            throw new APPNotFoundException(0,"No such user");
+            throw new APPNotFoundException(0,"No such teacher");
         } catch(IllegalArgumentException e) {
             throw new APPBadRequestException(45,"Doesn't look like MongoDB ID");
         }  catch(Exception e) {
@@ -215,30 +211,28 @@ public class UsersInterface {
     }
 
     @GET
-    @Path("{id}/langs")
+    @Path("{id}/books")
     @Produces({MediaType.APPLICATION_JSON})
-    public APPResponse getLangLevelForUser(@PathParam("id") String id) {
+    public APPResponse getBooksForTeacer(@PathParam("id") String id) {
 
-        ArrayList<LanguageLevel> lanList = new ArrayList<LanguageLevel>();
+        ArrayList<Book> bookList = new ArrayList<Book>();
 
         try {
             BasicDBObject query = new BasicDBObject();
-            query.put("usersId", id);
+            query.put("teacherId", id);
 
-            FindIterable<Document> results = langLevelCollection.find(query);
+            FindIterable<Document> results = booksCollection.find(query);
             for (Document item : results) {
-                LanguageLevel lang = new LanguageLevel(
-                        item.getString("usersId"),
-                        item.getInteger("movies_level"),
-                        item.getInteger("tvshows_level"),
-                        item.getInteger("books_level"),
-                        item.getInteger("audioBooks_level")
-
+                Book book = new Book(
+                        item.getString("name"),
+                        item.getString("genre"),
+                        item.getInteger("level"),
+                        item.getString("teacherId")
                 );
-                lang.setId(item.getObjectId("_id").toString());
-                lanList.add(lang);
+                book.setId(item.getObjectId("_id").toString());
+                bookList.add(book);
             }
-            return new APPResponse(lanList);
+            return new APPResponse(bookList);
 
         } catch(Exception e) {
             System.out.println("EXCEPTION!!!!");
@@ -249,7 +243,7 @@ public class UsersInterface {
     }
 
     @POST
-    @Path("{id}/langs")
+    @Path("{id}/books")
     @Consumes({ MediaType.APPLICATION_JSON})
     @Produces({ MediaType.APPLICATION_JSON})
     public APPResponse create(@PathParam("id") String id, Object request) {
@@ -261,29 +255,23 @@ public class UsersInterface {
             throw new APPBadRequestException(33, e.getMessage());
         }
 
-        if (!json.has("movies_level"))
-            throw new APPBadRequestException(55,"movies_level");
-        if (!json.has("tvshows_level"))
-            throw new APPBadRequestException(55,"tvshows_level");
-        if (!json.has("books_level"))
-            throw new APPBadRequestException(55,"books_level");
-        if (!json.has("audioBooks_level"))
-            throw new APPBadRequestException(55,"audioBooks_level");
+        if (!json.has("name"))
+            throw new APPBadRequestException(55,"name");
+        if (!json.has("genre"))
+            throw new APPBadRequestException(55,"genre");
+        if (!json.has("level"))
+            throw new APPBadRequestException(55,"level");
+        if (!json.has("teacherId"))
+            throw new APPBadRequestException(55,"teacherId");
 
         Document doc = new Document("usersId", id)
-                .append("movies_level", json.getInt("movies_level"))
-                .append("tvshows_level", json.getInt("tvshows_level"))
-                .append("books_level", json.getInt("books_level"))
-                .append("audioBooks_level",json.getInt("audioBooks_level"));
+                .append("name", json.getString("name"))
+                .append("genre", json.getString("genre"))
+                .append("level", json.getString("level"))
+                .append("teacherId",json.getInt("teacherId"));
 
-        langLevelCollection.insertOne(doc);
+        booksCollection.insertOne(doc);
         return new APPResponse(request);
     }
 
-
-
-
-
-
 }
-

@@ -3,15 +3,15 @@ package edu.cmu.sv.app17.models;
 public class FavoriteList {
 
     String id = null;
-    String userID;
+    String usersID;
     String movieID;
     String tvShowID;
     String bookID;
     String audioBookID;
 
-    public FavoriteList(String userID, String movieID,
+    public FavoriteList(String usersID, String movieID,
         String tvShowID, String bookID, String audioBookID){
-        this.userID= userID;
+        this.usersID= usersID;
         this.movieID = movieID;
         this.tvShowID = tvShowID;
         this.bookID = bookID;
