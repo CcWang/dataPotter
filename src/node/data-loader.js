@@ -172,7 +172,7 @@ function addContributor() {
             "gender": "female"
         }];
     var contributors = dbConnection.collection('contributors');
-    for (var i=0; i<length(cc); i++){
+    for (var i=0; i<cc.length; i++){
         contributors.insertOne(cc[i],function(err,doc){
             if(err){
                 console.log("could not add contributor"+i);
@@ -180,40 +180,30 @@ function addContributor() {
 
             }
         })
-    }
-    contributors.insertOne(tt[0], function (err, doc) {
-        if (err) {
-            console.log("Could not add contributor");
-        }
-        else {
-            contributorID[i] = doc.ops[0]._id.toString();
-
-
-        }
-    });
+    };
 }
 
 
 function addMovie() {
     var m = [{
         "name": "Harry Potter and the Sorcer Stone",
-        "genre": "Adventure/Fantasy",
-        "level": 6
+        "genre": ["Adventure","Fantasy"],
+        "level": {"avg":7,"wordsLevel":8,"speed":6}
     },
         {
             "name": "Shrek",
-            "genre": "Adventure/Fantasy",
-            "level": 4
+            "genre": ["Adventure","Fantasy"],
+            "level": {"avg":8,"wordsLevel":6,"speed":7}
         },
         {
             "name": "X-Men (2000)",
-            "genre": "Action/Adventure",
-            "level": 2
+            "genre": ["Action","Adventure"],
+            "level": {"avg":10,"wordsLevel":4,"speed":5}
         },
         {
             "name": "Black Swan",
-            "genre": "Drama/Thriller ",
-            "level": 6
+            "genre": ["Drama","Thriller"],
+            "level": {"avg":6,"wordsLevel":9,"speed":9}
         }];
     var movies = dbConnection.collection('movie');
     for (var i = 0; i < m.length; i++){
