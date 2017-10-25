@@ -23,6 +23,7 @@ import org.json.JSONException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -52,11 +53,15 @@ public class MovieInterface {
             FindIterable<Document> results = collection.find();
             for (Document item : results) {
 //                String genre[] = String[] item.getString("genre");
-                List<Document> genres = (List<Document>) item.get("genre");
+//                List<Document> genres = (List<Document>) item.get("genre");
+
+                List<String> genres = item.get("genre", List.class);
+                HashMap levels = item.get("level", HashMap.class);
                 Movie movie = new Movie(
                         item.getString("name"),
-                        ArrayList.getStrings("genre"),
-                        item.getInteger("level")
+                        genres,
+                        levels,
+                        item.getString("contributorId")
                 );
                 movie.setId(item.getObjectId("_id").toString());
                 movieList.add(movie);
@@ -85,10 +90,13 @@ public class MovieInterface {
             if (item == null) {
                 throw new APPNotFoundException(0, "No such movie, my friend");
             }
+            List<String> genres = item.get("genre", List.class);
+            HashMap levels = item.get("level", HashMap.class);
             Movie movie = new Movie(
                     item.getString("name"),
-                    item.getString("genre"),
-                    item.getInteger("level")
+                    genres,
+                    levels,
+                    item.getString("contributorId")
             );
             movie.setId(item.getObjectId("_id").toString());
             return new APPResponse(movie);
@@ -127,7 +135,9 @@ public class MovieInterface {
             if (json.has("genre"))
                 doc.append("genre",json.getString("genre"));
             if (json.has("level"))
-                doc.append("level",json.getInt("level"));
+//                doc.append("level",json.getItem("level"));
+            if(json.has("contributorId"))
+                doc.append("contributorId", json.getInt("contributorId"));
             Document set = new Document("$set", doc);
             collection.updateOne(query,set);
 

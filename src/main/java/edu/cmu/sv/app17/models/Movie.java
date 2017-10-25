@@ -2,18 +2,22 @@ package edu.cmu.sv.app17.models;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Movie {
      String id = null;
      String name;
-     ArrayList genre;
-     Number level;
-    public Movie(String name, ArrayList genre,
-                 Number level) {
+     List<String> genre;
+//     Number level;
+     HashMap level;
+     String contributorId;
+    public Movie(String name, List<String> genre,
+                 HashMap level, String contributorId) {
         this.name = name;
         this.genre = genre;
         this.level = level;
+        this.contributorId = contributorId;
     }
     public void setId(String id) {
         this.id = id;
