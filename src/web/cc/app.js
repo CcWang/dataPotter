@@ -66,8 +66,10 @@ $( document ).ready(function() {
     })
     $("#next").click(function(e){
         e.preventDefault();
+        console.log(offset,count)
         if (offset+count < total) {
             offset = offset+count;
+            console.log(offset,count)
             getMovies();
         }
     })
@@ -85,17 +87,15 @@ $( document ).ready(function() {
 
     var getMovies = function () {
         $.ajax({
-            url:"/api/contributors/"+ contributorId+"/movies",
+            url:"/api/contributors/"+ contributorId+"/movies?offset="+offset+"&count=" +count,
             type:"GET"
         }).done(function (data) {
             console.log(data.content);
 
-            total = data.content.length;
+            total = data.metadata.total;
             $("#page").text("Page " + Math.floor(offset/count+1) + " of " + (Math.ceil(total/count)));
             $("#movieTable").find(".cloned").remove();
-            console.log(offset, count)
-            for (var i=offset; i<offset+count; i++){
-                var item = data.content[i];
+            data.content.forEach(function(item){
                 $( "#movieRow" ).clone().prop("id",item.id).appendTo( "#movieTable" );
                 $("#"+item.id).find("#id").text(item.id);
                 $("#"+item.id).find("#name").text(item.name);
@@ -103,17 +103,8 @@ $( document ).ready(function() {
                 $("#"+item.id).find("#level").text(item.level);
                 $("#"+item.id).find("#contributorId").text(item.contributorId);
                 $("#"+item.id).prop("class","cloned");
-            }
-            // data.content.forEach(function(item){
-            //     $( "#movieRow" ).clone().prop("id",item.id).appendTo( "#movieTable" );
-            //     $("#"+item.id).find("#id").text(item.id);
-            //     $("#"+item.id).find("#name").text(item.name);
-            //     $("#"+item.id).find("#genre").text(item.genre);
-            //     $("#"+item.id).find("#level").text(item.level);
-            //     $("#"+item.id).find("#contributorId").text(item.contributorId);
-            //     $("#"+item.id).prop("class","cloned");
-            //     // $("#"+item.id).show();
-            // });
+                // $("#"+item.id).show();
+            });
 
 
         })

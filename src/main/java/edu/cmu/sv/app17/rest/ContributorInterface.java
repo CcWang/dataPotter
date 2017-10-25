@@ -239,7 +239,8 @@ public class ContributorInterface {
     @GET
     @Path("{id}/movies")
     @Produces({MediaType.APPLICATION_JSON})
-    public APPResponse getMoviesForContributor(@PathParam("id") String id) {
+    public APPListResponse getMoviesForContributor(@Context HttpHeaders headers, @PathParam("id") String id, @DefaultValue("20") @QueryParam("count") int count,
+    @DefaultValue("0") @QueryParam("offset") int offset) {
 
         ArrayList<Movie> movielist = new ArrayList<>();
 
@@ -247,7 +248,9 @@ public class ContributorInterface {
             BasicDBObject query = new BasicDBObject();
             query.put("contributorId", id);
 
-            FindIterable<Document> results = movieCollection.find(query);
+            long resultCount = movieCollection.count(query);
+
+            FindIterable<Document> results = movieCollection.find(query).skip(offset).limit(count);
             for (Document item : results) {
                 Movie m = new Movie(
                         item.getString("name"),
@@ -258,7 +261,7 @@ public class ContributorInterface {
                 m.setId(item.getObjectId("_id").toString());
                 movielist.add(m);
             }
-            return new APPResponse(movielist);
+            return new APPListResponse(movielist,resultCount,offset, movielist.size());
 
         } catch(Exception e) {
             System.out.println("EXCEPTION!!!!");
