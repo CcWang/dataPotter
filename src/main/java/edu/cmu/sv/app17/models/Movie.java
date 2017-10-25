@@ -9,11 +9,11 @@ public class Movie {
      String id = null;
      String name;
      List<String> genre;
-//     Number level;
-     HashMap level;
+     List<String> level;
+//     HashMap level;
      String contributorId;
     public Movie(String name, List<String> genre,
-                 HashMap level, String contributorId) {
+                 List<String> level, String contributorId) {
         this.name = name;
         this.genre = genre;
         this.level = level;

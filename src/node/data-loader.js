@@ -150,22 +150,22 @@ function addMovie() {
     var m = [{
         "name": "Harry Potter and the Sorcer Stone",
         "genre": ["Adventure","Fantasy"],
-        "level": {"avg":7,"wordsLevel":8,"speed":6}
+        "level": ["avg","7","wordsLevel","9","speed","5"]
     },
         {
             "name": "Shrek",
             "genre": ["Adventure","Fantasy"],
-            "level": {"avg":8,"wordsLevel":6,"speed":7}
+            "level": ["avg","8","wordsLevel","6","speed","7"]
         },
         {
             "name": "X-Men (2000)",
             "genre": ["Action","Adventure"],
-            "level": {"avg":10,"wordsLevel":4,"speed":5}
+            "level": ["avg","10","wordsLevel","9","speed","5"]
         },
         {
             "name": "Black Swan",
             "genre": ["Drama","Thriller"],
-            "level": {"avg":6,"wordsLevel":9,"speed":9}
+            "level": ["avg","6","wordsLevel","9","speed","9"]
         }];
     var movies = dbConnection.collection('movie');
     for (var i = 0; i < m.length; i++){
