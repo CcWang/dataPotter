@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" >
+        <title>MTBA</title>
+        <script
+                src="https://code.jquery.com/jquery-3.2.1.min.js"
+                integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+                crossorigin="anonymous"></script>
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+              rel="stylesheet"
+              integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+              crossorigin="anonymous">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+                crossorigin="anonymous"></script>
+        <script src="app.js"></script>
+
+
+    </head>
+    <div class="container container-fluid">
+
+        <div  class="row col-md-7 col-md-offset-2">
+            <button id="contributor" class="btn btn-info center">log in</button>
+            <h3 id="cname"></h3>
+            <button id="getTvshows" class="btn btn-info center">see TVShows</button>
+            <div >
+                <nav aria-label="Page navigation" id="#p" class="hw7">
+                    <ul class="pagination">
+                        <li class="page-item"><a class="page-link" href="#"  id="previous">Previous</a></li>
+                        <li class="page-item"><a class="page-link" href="#" id="page">page</a></li>
+                        <li class="page-item"><a class="page-link" href="#" id="sortG">sort by genre</a></li>
+
+                        <li class="page-item"><a class="page-link" href="#" id="sortN">sort by name</a></li>
+                        <li class="page-item"><a class="page-link" href="#"  id="next">Next</a></li>
+                    </ul>
+                </nav>
+                <div class="row col-md-12">
+                    <table id="tvshowsTable" class="table hw7">
+                        <thead>
+                        <tr>
+                            <th>id</th>
+                            <th>name</th>
+                            <th>genre</th>
+                            <th>level</th>
+                            <th>contributorId</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr id="tvshowsRow">
+                            <td class="m" id="id"></td>
+                            <td class="m" id="name"></td>
+                            <td class="m" id="genre"></td>
+                            <td class="m" id="level"></td>
+                            <td class="m" id="contributorId"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+</html>
