@@ -9,16 +9,16 @@ package edu.cmu.sv.app17.models;
 * */
 
 
-public class Teacher {
+public class Contributor {
 
     String id = null;
-    String teacherName, email, password, nativeLanguage, phone,gender;
+    String name, email, password, nativeLanguage, phone,gender;
 
 
 
-    public Teacher(String teacherName, String email, String password, String nativeLanguage,
-                   String phone, String gender) {
-        this.teacherName = teacherName;
+    public Contributor(String name, String email, String password, String nativeLanguage,
+                       String phone, String gender) {
+        this.name = name;
         this.email = email;
         this.password = password;
         this.nativeLanguage = nativeLanguage;

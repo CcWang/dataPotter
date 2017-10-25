@@ -1,16 +1,13 @@
 package edu.cmu.sv.app17.models;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class Movie {
+public class Tvshow {
      String id = null;
      String name;
-     ArrayList genre;
+     String genre;
      Number level;
-    public Movie(String name, ArrayList genre,
-                 Number level) {
+    public Tvshow(String name, String genre,
+                  Number level) {
         this.name = name;
         this.genre = genre;
         this.level = level;

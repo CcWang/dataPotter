@@ -23,6 +23,7 @@ import org.json.JSONException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
@@ -50,9 +51,11 @@ public class MovieInterface {
         try {
             FindIterable<Document> results = collection.find();
             for (Document item : results) {
+//                String genre[] = String[] item.getString("genre");
+                List<Document> genres = (List<Document>) item.get("genre");
                 Movie movie = new Movie(
                         item.getString("name"),
-                        item.getString("genre"),
+                        ArrayList.getStrings("genre"),
                         item.getInteger("level")
                 );
                 movie.setId(item.getObjectId("_id").toString());
