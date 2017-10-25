@@ -5,6 +5,7 @@ var dbConnection = null;
 
 
 var userID = [];
+var contributorID=[];
 
 function getDbConnection(callback){
     MongoClient.connect("mongodb://localhost/dataPotter", function(err, db){
@@ -29,7 +30,7 @@ getDbConnection(function(){
             console.log("Could not drop database");
         else
             addUser();
-            addTeacher();
+            addContributor();
             addMovie();
             addBook();
     });
@@ -154,7 +155,7 @@ function addTeacher() {
     })
 }
 function addContributor() {
-    tt = [{
+    var cc = [{
         "name": "Alex",
         "email": "alex@malkovich.com",
         "password": "121212",
@@ -171,12 +172,22 @@ function addContributor() {
             "gender": "female"
         }];
     var contributors = dbConnection.collection('contributors');
+    for (var i=0; i<length(cc); i++){
+        contributors.insertOne(cc[i],function(err,doc){
+            if(err){
+                console.log("could not add contributor"+i);
+            }else{
+
+            }
+        })
+    }
     contributors.insertOne(tt[0], function (err, doc) {
         if (err) {
             console.log("Could not add contributor");
         }
         else {
-            contributorId = doc.ops[0]._id.toString();
+            contributorID[i] = doc.ops[0]._id.toString();
+
 
         }
     });
