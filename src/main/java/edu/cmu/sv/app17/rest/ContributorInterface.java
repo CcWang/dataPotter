@@ -194,7 +194,7 @@ public class ContributorInterface {
     @GET
     @Path("{id}/books")
     @Produces({MediaType.APPLICATION_JSON})
-    public APPResponse getBooksForTeacer(@PathParam("id") String id) {
+    public APPResponse getBooksForContributor(@PathParam("id") String id) {
 
         ArrayList<Book> bookList = new ArrayList<Book>();
 
@@ -208,7 +208,7 @@ public class ContributorInterface {
                         item.getString("name"),
                         item.getString("genre"),
                         item.getInteger("level"),
-                        item.getString("teacherId")
+                        item.getString("contributorId")
                 );
                 book.setId(item.getObjectId("_id").toString());
                 bookList.add(book);

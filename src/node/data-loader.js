@@ -136,7 +136,7 @@ function addContributor() {
             if(err){
                 console.log("could not add contributor"+i);
             }else{
-                addBookstoContributor(doc.ops[0]._id.toString(),45);
+                addBookstoContributor(doc.ops[0]._id.toString(),100);
 
             }
         })
