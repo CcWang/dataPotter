@@ -35,6 +35,17 @@ $( document ).ready(function() {
 
     });
 
+    $("#movies").click(function(e){
+       e.preventDefault();
+       console.log("movies button click")
+        $.ajax({
+            url:"https://api.themoviedb.org/3/movie/550?api_key=664f8054c78de425d08aba35e84e6a11",
+            type:"GET"
+        }).done(function (data) {
+            console.log(data)
+        })
+    });
+
 
 });
 
