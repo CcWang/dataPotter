@@ -2,7 +2,7 @@ var MongoClient = require('mongodb').MongoClient;
 
 var dbConnection = null;
 
-
+var request= require('request');
 
 var userID = [];
 var contributorID=[];
@@ -31,8 +31,10 @@ getDbConnection(function(){
         else
             addUser();
             addContributor();
+            console.log(contributorID)
             addMovie();
             addBook();
+
     });
 });
 
@@ -91,25 +93,6 @@ function addUser() {
 
         })
     }
-    // users.insertOne(u[0], function(err,doc){
-    //     if (err){
-    //         console.log("Could not add user 0");
-    //     }
-    //     else {
-    //         userID0 =doc.ops[0]._id.toString();
-    //         addlanguageLevelUser0(doc.ops[0]._id.toString());
-    //     }
-    // })
-    // users.insertOne(u[1], function(err,doc){
-    //     if (err){
-    //         console.log("Could not add driver 1");
-    //     }
-    //     else {
-    //         userID1 =doc.ops[0]._id.toString();
-    //         addlanguageLevelUser1(doc.ops[0]._id.toString());
-    //
-    //     }
-    // })
 }
 
 function addTeacher() {
@@ -170,6 +153,30 @@ function addContributor() {
             "nativeLanguage": "French",
             "phone": "1111111111",
             "gender": "female"
+        },
+        {
+            "name": "Jon",
+            "email": "jonn@malkovich.com",
+            "password": "0029343434",
+            "nativeLanguage": "English",
+            "phone": "10974134111",
+            "gender": "male"
+        },
+        {
+            "name": "Arya",
+            "email": "arya@malkovich.com",
+            "password": "34324jj434",
+            "nativeLanguage": "French",
+            "phone": "111098111",
+            "gender": "female"
+        },
+        {
+            "name": "Smith",
+            "email": "smith@malkovich.com",
+            "password": "34al324jj434",
+            "nativeLanguage": "English",
+            "phone": "988098111",
+            "gender": "male"
         }];
     var contributors = dbConnection.collection('contributors');
     for (var i=0; i<cc.length; i++){
@@ -177,6 +184,12 @@ function addContributor() {
             if(err){
                 console.log("could not add contributor"+i);
             }else{
+                contributorID[i] = doc.ops[0]._id.toString();
+                var page = i+1;
+                var url="https://api.themoviedb.org/3/discover/movie?api_key=664f8054c78de425d08aba35e84e6a11&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page="+page.toString();
+                console.log(url)
+                addMovie(url, contributorID[i]);
+
 
             }
         })
@@ -184,26 +197,30 @@ function addContributor() {
 }
 
 
-function addMovie() {
+function addMovie(cId) {
     var m = [{
         "name": "Harry Potter and the Sorcer Stone",
         "genre": ["Adventure","Fantasy"],
-        "level": ["avg","7","wordsLevel","9","speed","5"]
+        "level": ["avg","7","wordsLevel","9","speed","5"],
+        "contributorId":cId
     },
         {
             "name": "Shrek",
             "genre": ["Adventure","Fantasy"],
-            "level": ["avg","8","wordsLevel","6","speed","7"]
+            "level": ["avg","8","wordsLevel","6","speed","7"],
+            "contributorId":cId
         },
         {
             "name": "X-Men (2000)",
             "genre": ["Action","Adventure"],
-            "level": ["avg","10","wordsLevel","9","speed","5"]
+            "level": ["avg","10","wordsLevel","9","speed","5"],
+            "contributorId":cId
         },
         {
             "name": "Black Swan",
             "genre": ["Drama","Thriller"],
-            "level": ["avg","6","wordsLevel","9","speed","9"]
+            "level": ["avg","6","wordsLevel","9","speed","9"],
+            "contributorId":cId
         }];
     var movies = dbConnection.collection('movie');
     for (var i = 0; i < m.length; i++){
@@ -212,6 +229,7 @@ function addMovie() {
                 console.log("Could not add movie " + i);
             }else{
                 addWatchList(userID[i],doc.ops[0]._id.toString());
+
             }
 
         })
@@ -330,6 +348,111 @@ function addlanguageLevelUser(userID) {
         }
 
     })
+
+}
+
+
+function funcOne(url) {
+    request.get(url, function(err, res, body) {
+        if (!err && res.statusCode === 200) {
+            funcTwo(body, function(err, output) {
+                console.log(err, output);
+            });
+        }
+    });
+}
+function funcTwo(input, callback) {
+    // process input
+    console.log(input)
+}
+var getMovie = "https://api.themoviedb.org/3/movie/550?api_key=664f8054c78de425d08aba35e84e6a11"
+var gerneURL = "https://api.themoviedb.org/3/genre/movie/list?api_key=664f8054c78de425d08aba35e84e6a11&language=en-US"
+// getGerneMap(gerneURL);
+function getGerneMap(url){
+    request.get(url,function(err,res,body){
+        if(!err && res.statusCode === 200){
+           cb(body)
+        }
+    })
+}
+
+function cb (a) {
+
+   var g = JSON.parse(a);
+   g = g["genres"];
+   // var gerneMap={};
+    for(var i=0; i<g.length; i++){
+       gerneMap[g[i]["id"]]=g[i]["name"]
+    }
+    // console.log(gerneMap);
+    return gerneMap;
+    
+}
+
+function addMovie(url,id){
+    request.get(url,function(err,res,body){
+        if(!err && res.statusCode === 200){
+            movies(body,id);
+        }
+    })
+
+}
+var gerneMap = {}
+getGerneMap(gerneURL);
+function movies (a,id) {
+    var gmap={ '12': 'Adventure',
+        '14': 'Fantasy',
+        '16': 'Animation',
+        '18': 'Drama',
+        '27': 'Horror',
+        '28': 'Action',
+        '35': 'Comedy',
+        '36': 'History',
+        '37': 'Western',
+        '53': 'Thriller',
+        '80': 'Crime',
+        '99': 'Documentary',
+        '878': 'Science Fiction',
+        '9648': 'Mystery',
+        '10402': 'Music',
+        '10749': 'Romance',
+        '10751': 'Family',
+        '10752': 'War',
+        '10770': 'TV Movie' };
+    var g = JSON.parse(a);
+    g= g["results"]
+    var movieColletction = dbConnection.collection('movie');
+    for(var i=0; i<g.length;i++){
+        // console.log(g[i]['genre_ids'])
+        var name = g[i]['title'];
+        var genre = []
+        for (var j=0;j<g[i]['genre_ids'].length;j++){
+            genre.push(gmap[g[i]['genre_ids'][j]])
+        }
+        var avg = Math.floor(Math.random()*10)+1
+        var wordL = Math.floor(Math.random()*10)+1
+        var speed = Math.floor(Math.random()*10)+1
+        var level=["avg",avg,"wordsLevel",wordL,"speed",speed]
+        // console.log(id)
+        var m = {
+                "name": name,
+                "genre": genre,
+                "level": level,
+                "contributorId":id
+            };
+
+        movieColletction.insertOne(m,function (err,doc) {
+            if (err){
+                console.log("Could not add movie " + i);
+            }else{
+                // addWatchList(userID[i],doc.ops[0]._id.toString());
+
+            }
+
+        })
+    }
+
+
 
 }
 
