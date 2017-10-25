@@ -12,6 +12,7 @@ import com.mongodb.client.result.DeleteResult;
 import edu.cmu.sv.app17.exceptions.APPBadRequestException;
 import edu.cmu.sv.app17.exceptions.APPInternalServerException;
 import edu.cmu.sv.app17.exceptions.APPNotFoundException;
+import edu.cmu.sv.app17.helpers.APPListResponse;
 import edu.cmu.sv.app17.helpers.PATCH;
 import edu.cmu.sv.app17.helpers.APPResponse;
 import edu.cmu.sv.app17.models.FavoriteList;
@@ -33,7 +34,6 @@ import java.util.List;
 public class BooksInterface {
 
     private MongoCollection<Document> collection;
-    private MongoCollection<Document> favoriteListCollection;
     private ObjectWriter ow;
 
 
@@ -65,7 +65,7 @@ public class BooksInterface {
                         item.getString("name"),
                         item.getString("genre"),
                         item.getInteger("level"),
-                        item.getString("teacherId")
+                        item.getString("contributorId")
                 );
             book.setId(item.getObjectId("_id").toString());
             bookList.add(book);
@@ -96,7 +96,7 @@ public class BooksInterface {
                     item.getString("name"),
                     item.getString("genre"),
                     item.getInteger("level"),
-                    item.getString("teacherId")
+                    item.getString("contributorId")
             );
             book.setId(item.getObjectId("_id").toString());
             return new APPResponse(book);

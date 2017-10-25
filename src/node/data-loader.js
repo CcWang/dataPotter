@@ -2,10 +2,10 @@ var MongoClient = require('mongodb').MongoClient;
 
 var dbConnection = null;
 
+var lockCount = 0;
 
-
-var userID = [];
-var contributorID=[];
+var userID=[];
+var contributorId=[];
 
 function getDbConnection(callback){
     MongoClient.connect("mongodb://localhost/dataPotter", function(err, db){
@@ -32,7 +32,6 @@ getDbConnection(function(){
             addUser();
             addContributor();
             addMovie();
-            addBook();
     });
 });
 
@@ -131,20 +130,19 @@ function addContributor() {
             "gender": "female"
         }];
     var contributors = dbConnection.collection('contributors');
-    for (var i=0; i<cc.length; i++){
-        contributors.insertOne(cc[i],function(err,doc){
-            if(err){
-                console.log("could not add contributor"+i);
-            }else{
-                addBookstoContributor(doc.ops[0]._id.toString(),100);
+    for (var i = 0; i < cc.length; i++) {
+        contributors.insertOne(cc[i], function (err, doc) {
+            if (err) {
+                console.log("could not add contributor" + i);
+            }
+            else {
+                contributorId[i] = doc.ops[0]._id.toString();
+                addBookstoContributor(doc.ops[0]._id.toString(), 100);
 
             }
         })
-
-    };
-
-}
-
+    }
+};
 
 function addMovie() {
     var m = [{
@@ -194,44 +192,47 @@ function addWatchList(userID, movieID) {
     watchLists.insertOne(m[0]);
 }
 
-function addBook() {
-    var bb = [{
-        "name": "Great Expectations",
-        "genre": "Adventure",
-        "level": 9
-    }, {
-        "name": "Snoopy",
-        "genre": "Comedy",
-        "level": 2
-    },{
-
-        "name":"The Fault in Our Stars",
-        "genre":"Young adult fiction",
-        "level":4
-    },{
-        "name":"Gone Girl",
-        "genre":"Thriller",
-        "level":5
-    }];
-    var books = dbConnection.collection('books');
-    for (var i=0; i< bb.length; i++){
-        books.insertOne(bb[i],function (err,doc) {
-            if(err){
-                console.log("Could not add book"+i);
-            }else{
-                addFavoriteList(userID[i],doc.ops[0]._id.toString())
-            }
-
-        })
-    }
-
-}
+// function addBook() {
+//     var bb = [{
+//         "name": "Great Expectations",
+//         "genre": "Adventure",
+//         "level": 9,
+//         "contributorId":
+//
+//     }, {
+//         "name": "Snoopy",
+//         "genre": "Comedy",
+//         "level": 2
+//     },{
+//
+//         "name":"The Fault in Our Stars",
+//         "genre":"Young adult fiction",
+//         "level":4
+//     },{
+//         "name":"Gone Girl",
+//         "genre":"Thriller",
+//         "level":5
+//     }];
+//     var books = dbConnection.collection('books');
+//     for (var i=0; i< bb.length; i++){
+//         books.insertOne(bb[i],function (err,doc) {
+//             if(err){
+//                 console.log("Could not add book"+i);
+//             }else{
+//                 addFavoriteList(userID[i],doc.ops[0]._id.toString())
+//             }
+//
+//         })
+//     }
+//
+// }
 
 
 nameList = ['AA','BB','CC','DD','EE','FF','GG','HH','II','JJ','KK'];
 genreList = ['Science fiction','Drama','Action and Adventure','Romance','Mystery','Horror'];
 
 function addBookstoContributor(contributorId,count) {
+    console.log(contributorId);
     sequence = Array(count);
     console.log("sequence",sequence);
     var c = [];
@@ -327,7 +328,7 @@ function addlanguageLevelUser(userID) {
 
     })
 
-}
+};
 
 
 setTimeout(closeConnection,5000);

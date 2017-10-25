@@ -33,6 +33,13 @@
 
         <button id="getbooks" class="btn btn-lg btn-primary btn-block" type="submit">Get Books</button>
         <hr>
+        <p>
+            <button id="previous">Previous</button>&nbsp;&nbsp;
+            <button id="next">Next</button>
+            <button id="sort">Sort</button>
+            <span id="page"></span>
+        </p>
+
     </div>
     <div class="row col-md-12">
         <table id="bookTable" class="table">
@@ -42,6 +49,7 @@
                 <th>name</th>
                 <th>genre</th>
                 <th>level</th>
+                <th>contributorId</th>
             </tr>
             </thead>
             <tbody>
@@ -50,6 +58,7 @@
                 <td class="b" id="name"></td>
                 <td class="b" id="genre"></td>
                 <td class="b" id="level"></td>
+                <td class="b" id="contributorId"></td>
             </tr>
             </tbody>
         </table>

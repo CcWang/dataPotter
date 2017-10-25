@@ -22,6 +22,7 @@ import com.mongodb.client.MongoDatabase;
 import edu.cmu.sv.app17.exceptions.APPBadRequestException;
 import edu.cmu.sv.app17.exceptions.APPInternalServerException;
 import edu.cmu.sv.app17.exceptions.APPNotFoundException;
+import edu.cmu.sv.app17.helpers.APPListResponse;
 import edu.cmu.sv.app17.helpers.APPResponse;
 import edu.cmu.sv.app17.helpers.PATCH;
 import edu.cmu.sv.app17.models.Book;
@@ -31,6 +32,8 @@ import org.bson.types.ObjectId;
 import org.json.JSONObject;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
 
@@ -194,15 +197,18 @@ public class ContributorInterface {
     @GET
     @Path("{id}/books")
     @Produces({MediaType.APPLICATION_JSON})
-    public APPResponse getBooksForContributor(@PathParam("id") String id) {
-
+    public APPListResponse getCarsForDriver(@Context HttpHeaders headers, @PathParam("id") String id,
+                                            @DefaultValue("30") @QueryParam("count") int count,
+                                            @DefaultValue("20") @QueryParam("offset") int offset
+    ) {
         ArrayList<Book> bookList = new ArrayList<Book>();
 
         try {
             BasicDBObject query = new BasicDBObject();
             query.put("contributorId", id);
 
-            FindIterable<Document> results = booksCollection.find(query);
+            long resultCount = booksCollection.count(query);
+            FindIterable<Document> results = booksCollection.find(query).skip(offset).limit(count);
             for (Document item : results) {
                 Book book = new Book(
                         item.getString("name"),
@@ -213,7 +219,7 @@ public class ContributorInterface {
                 book.setId(item.getObjectId("_id").toString());
                 bookList.add(book);
             }
-            return new APPResponse(bookList);
+            return new APPListResponse(bookList,resultCount,offset,bookList.size());
 
         } catch(Exception e) {
             System.out.println("EXCEPTION!!!!");
@@ -245,12 +251,10 @@ public class ContributorInterface {
         if (!json.has("contributorId"))
             throw new APPBadRequestException(55,"contributorId");
 
-        Document doc = new Document("booksId", id)
-                .append("name", json.getString("name"))
+        Document doc = new Document("name", json.getString("name"))
                 .append("genre", json.getString("genre"))
-                .append("level", json.getString("level"))
-                .append("contributorId",json.getInt("contributorId"));
-
+                .append("level", json.getInt("level"))
+                .append("contributorId",id);
         booksCollection.insertOne(doc);
         return new APPResponse(request);
     }
