@@ -27,6 +27,9 @@ import edu.cmu.sv.app17.helpers.APPResponse;
 import edu.cmu.sv.app17.helpers.PATCH;
 import edu.cmu.sv.app17.models.Book;
 import edu.cmu.sv.app17.models.Contributor;
+import edu.cmu.sv.app17.models.Movie;
+import edu.cmu.sv.app17.models.Tvshow;
+
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.json.JSONObject;
@@ -42,6 +45,9 @@ public class ContributorInterface {
 
     private MongoCollection<Document> collection;
     private MongoCollection<Document> booksCollection;
+    private MongoCollection<Document> movieCollection;
+    private MongoCollection<Document> tvCollection;
+
     private ObjectWriter ow;
 
 
@@ -51,6 +57,8 @@ public class ContributorInterface {
 
         this.collection = database.getCollection("contributors");
         this.booksCollection = database.getCollection("books");
+        movieCollection = database.getCollection("movie");
+        tvCollection = database.getCollection("tvshow");
         ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 
     }
@@ -220,6 +228,68 @@ public class ContributorInterface {
                 bookList.add(book);
             }
             return new APPListResponse(bookList,resultCount,offset,bookList.size());
+
+        } catch(Exception e) {
+            System.out.println("EXCEPTION!!!!");
+            e.printStackTrace();
+            throw new APPInternalServerException(99,e.getMessage());
+        }
+
+    }
+    @GET
+    @Path("{id}/movies")
+    @Produces({MediaType.APPLICATION_JSON})
+    public APPResponse getMoviesForContributor(@PathParam("id") String id) {
+
+        ArrayList<Movie> movielist = new ArrayList<>();
+
+        try {
+            BasicDBObject query = new BasicDBObject();
+            query.put("contributorId", id);
+
+            FindIterable<Document> results = movieCollection.find(query);
+            for (Document item : results) {
+                Movie m = new Movie(
+                        item.getString("name"),
+                        item.getString("genre"),
+                        item.getString("level"),
+                        item.getString("contributorId")
+                );
+                m.setId(item.getObjectId("_id").toString());
+                movielist.add(m);
+            }
+            return new APPResponse(movielist);
+
+        } catch(Exception e) {
+            System.out.println("EXCEPTION!!!!");
+            e.printStackTrace();
+            throw new APPInternalServerException(99,e.getMessage());
+        }
+
+    }
+    @GET
+    @Path("{id}/tvshows")
+    @Produces({MediaType.APPLICATION_JSON})
+    public APPResponse getTvshowsForContributor(@PathParam("id") String id) {
+
+        ArrayList<Tvshow> tvList = new ArrayList<>();
+
+        try {
+            BasicDBObject query = new BasicDBObject();
+            query.put("contributorId", id);
+
+            FindIterable<Document> results = tvCollection.find(query);
+            for (Document item : results) {
+                Tvshow tv = new Tvshow(
+                        item.getString("name"),
+                        item.getString("genre"),
+                        item.getString("level"),
+                        item.getString("contributorId")
+                );
+                tv.setId(item.getObjectId("_id").toString());
+                tvList.add(tv);
+            }
+            return new APPResponse(tvList);
 
         } catch(Exception e) {
             System.out.println("EXCEPTION!!!!");

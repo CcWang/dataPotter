@@ -8,12 +8,12 @@ import java.util.List;
 public class Movie {
      String id = null;
      String name;
-     List<String> genre;
-     List<String> level;
-//     HashMap level;
+     String genre;
+     String level;
      String contributorId;
-    public Movie(String name, List<String> genre,
-                 List<String> level, String contributorId) {
+//    List<String> genre
+    public Movie(String name, String genre,
+                 String level, String contributorId) {
         this.name = name;
         this.genre = genre;
         this.level = level;

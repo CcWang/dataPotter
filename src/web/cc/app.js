@@ -39,8 +39,8 @@ $( document ).ready(function() {
        e.preventDefault();
        console.log("movies button click")
         $.ajax({
-            // url:"https://api.themoviedb.org/3/movie/550?api_key=664f8054c78de425d08aba35e84e6a11",
-            url:"/api/movies",
+            url:"https://api.themoviedb.org/3/movie/550?api_key=664f8054c78de425d08aba35e84e6a11",
+            // url:"/api/movies",
             type:"GET"
         }).done(function (data) {
             console.log(data)
