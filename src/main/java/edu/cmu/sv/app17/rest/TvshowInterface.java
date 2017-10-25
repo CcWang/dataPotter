@@ -117,7 +117,7 @@ public class TvshowInterface {
     public APPResponse create(JSONObject obj) {
         try {
             Document doc = new Document("contributorId",obj.getString("contributorId"))
-                    .append("name", obj.getInt("name"))
+                    .append("name", obj.getString("name"))
                     .append("genre", obj.getString("genre"))
                     .append("level", obj.getString("level"));
 
@@ -158,7 +158,7 @@ public class TvshowInterface {
             if (json.has("level"))
                 doc.append("level",json.getString("level"));
             if(json.has("contributorId"))
-                doc.append("contributorId", json.getInt("contributorId"));
+                doc.append("contributorId", json.getString("contributorId"));
             Document set = new Document("$set", doc);
             collection.updateOne(query,set);
 

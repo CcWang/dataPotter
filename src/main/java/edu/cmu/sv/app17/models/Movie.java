@@ -8,11 +8,8 @@ import java.util.List;
 public class Movie {
      String id = null;
      String name;
-//     List<String> genre;
-//     List<String> level;
-//     HashMap level;
-    String genre;
-    String level;
+     String genre;
+     String level;
      String contributorId;
 //    List<String> genre
     public Movie(String name, String genre,
