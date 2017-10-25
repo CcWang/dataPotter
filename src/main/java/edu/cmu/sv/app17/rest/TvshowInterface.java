@@ -1,47 +1,41 @@
 package edu.cmu.sv.app17.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.mongodb.MongoSocketOpenException;
-import edu.cmu.sv.app17.exceptions.APPBadRequestException;
-import edu.cmu.sv.app17.exceptions.APPInternalServerException;
-import edu.cmu.sv.app17.exceptions.APPNotFoundException;
-import edu.cmu.sv.app17.helpers.PATCH;
-import edu.cmu.sv.app17.helpers.APPResponse;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.result.DeleteResult;
+import edu.cmu.sv.app17.exceptions.APPBadRequestException;
+import edu.cmu.sv.app17.exceptions.APPInternalServerException;
+import edu.cmu.sv.app17.exceptions.APPNotFoundException;
+import edu.cmu.sv.app17.helpers.APPResponse;
+import edu.cmu.sv.app17.helpers.PATCH;
 import edu.cmu.sv.app17.models.Movie;
-import edu.cmu.sv.app17.models.Contributor;
+import edu.cmu.sv.app17.models.Tvshow;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.json.JSONException;
-
+import org.json.JSONObject;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.json.JSONObject;
-import com.mongodb.util.JSON;
-
-@Path("movies")
-public class MovieInterface {
+@Path("tvshows")
+public class TvshowInterface {
 
     private MongoCollection<Document> collection = null;
     private MongoCollection<Document> contributorCollection;
     private ObjectWriter ow;
 
-    public MovieInterface() {
+    public TvshowInterface() {
         MongoClient mongoClient = new MongoClient();
         MongoDatabase database = mongoClient.getDatabase("dataPotter");
-        collection = database.getCollection("movie");
+        collection = database.getCollection("tvshow");
         contributorCollection = database.getCollection("contributor");
         ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
     }
@@ -51,36 +45,34 @@ public class MovieInterface {
     @Produces({ MediaType.APPLICATION_JSON})
     public APPResponse getAll() {
 
-        ArrayList<Movie> movieList = new ArrayList<>();
+        ArrayList<Tvshow> tvlist = new ArrayList<Tvshow>();
 
         try {
             FindIterable<Document> results = collection.find();
             for (Document item : results) {
-//                String genre[] = String[] item.getString("genre");
-//                List<Document> genres = (List<Document>) item.get("genre");
+                System.out.println(item);
 
 //                List<String> genres = item.get("genre", List.class);
-//                HashMap levels = item.get("level", HashMap.class);
 //                List<String> levels = item.get("level", List.class);
-                Movie movie = new Movie(
+                Tvshow tv = new Tvshow(
                         item.getString("name"),
                         item.getString("genre"),
                         item.getString("level"),
                         item.getString("contributorId")
                 );
-                movie.setId(item.getObjectId("_id").toString());
-                System.out.print(movie);
-                movieList.add(movie);
+                System.out.println(tv);
+                tv.setId(item.getObjectId("_id").toString());
+                tvlist.add(tv);
             }
-            return new APPResponse(movieList);
-
+            return new APPResponse(tvlist);
+//            return new APPResponse("hello!");
         } catch(Exception e) {
             System.out.println("EXCEPTION!!!!");
             e.printStackTrace();
             throw new APPInternalServerException(99,e.getMessage());
         }
 
-    }
+    };
 
     @GET
     @Path("{id}")
@@ -94,19 +86,19 @@ public class MovieInterface {
             query.put("_id", new ObjectId(id));
             Document item = collection.find(query).first();
             if (item == null) {
-                throw new APPNotFoundException(0, "No such movie, my friend");
+                throw new APPNotFoundException(0, "No such tv, my friend");
             }
 //            List<String> genres = item.get("genre", List.class);
 //            HashMap levels = item.get("level", HashMap.class);
 //            List<String> levels = item.get("level", List.class);
-            Movie movie = new Movie(
+            Tvshow tv = new Tvshow(
                     item.getString("name"),
                     item.getString("genre"),
                     item.getString("level"),
                     item.getString("contributorId")
             );
-            movie.setId(item.getObjectId("_id").toString());
-            return new APPResponse(movie);
+            tv.setId(item.getObjectId("_id").toString());
+            return new APPResponse(tv);
 
         } catch(IllegalArgumentException e) {
             throw new APPBadRequestException(45,"Doesn't look like MongoDB ID");

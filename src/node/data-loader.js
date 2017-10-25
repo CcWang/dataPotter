@@ -146,9 +146,11 @@ function addContributor() {
                 contributorID[i] = doc.ops[0]._id.toString();
                 var page = i+1;
                 var url="https://api.themoviedb.org/3/discover/movie?api_key=664f8054c78de425d08aba35e84e6a11&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page="+page.toString();
+                var urltv="https://api.themoviedb.org/3/discover/tv?api_key=664f8054c78de425d08aba35e84e6a11&language=en-US&sort_by=popularity.desc&page="+page.toString();
                 console.log(url)
                 addMovie(url, contributorID[i]);
                 addBookstoContributor(doc.ops[0]._id.toString(),100);
+                addTvshows(urltv,contributorID[i])
 
             }
         })
@@ -420,14 +422,14 @@ function movies (a,id) {
     for(var i=0; i<g.length;i++){
         // console.log(g[i]['genre_ids'])
         var name = g[i]['title'];
-        var genre = []
+        var genre=""
         for (var j=0;j<g[i]['genre_ids'].length;j++){
-            genre.push(gmap[g[i]['genre_ids'][j]])
+            genre +=(gmap[g[i]['genre_ids'][j]])+" "
         }
         var avg = Math.floor(Math.random()*10)+1
         var wordL = Math.floor(Math.random()*10)+1
         var speed = Math.floor(Math.random()*10)+1
-        var level=["avg",avg,"wordsLevel",wordL,"speed",speed]
+        var level="avg: "+avg+", wordsLevel: "+ wordL+", speed: "+speed
         // console.log(id)
         var m = {
                 "name": name,
@@ -447,9 +449,72 @@ function movies (a,id) {
         })
     }
 
+}
 
+
+//add tvshows
+function addTvshows(url,id){
+    request.get(url,function(err,res,body){
+        if(!err && res.statusCode === 200){
+            tvs(body,id);
+        }
+    })
 
 }
 
+function tvs (a,id) {
+    var gmap={ '12': 'Adventure',
+        '14': 'Fantasy',
+        '16': 'Animation',
+        '18': 'Drama',
+        '27': 'Horror',
+        '28': 'Action',
+        '35': 'Comedy',
+        '36': 'History',
+        '37': 'Western',
+        '53': 'Thriller',
+        '80': 'Crime',
+        '99': 'Documentary',
+        '878': 'Science Fiction',
+        '9648': 'Mystery',
+        '10402': 'Music',
+        '10749': 'Romance',
+        '10751': 'Family',
+        '10752': 'War',
+        '10770': 'TV Movie' };
+    var g = JSON.parse(a);
+    g= g["results"]
+    var tvColletction = dbConnection.collection('tvshow');
+    for(var i=0; i<g.length;i++){
+        // console.log(g[i]['genre_ids'])
+        var name = g[i]['name'];
+        var genre = ""
+        for (var j=0;j<g[i]['genre_ids'].length;j++){
+            genre+= gmap[g[i]['genre_ids'][j]]+" "
+        }
+        var avg = Math.floor(Math.random()*10)+1
+        var wordL = Math.floor(Math.random()*10)+1
+        var speed = Math.floor(Math.random()*10)+1
+        var level="avg: "+avg+", wordsLevel: "+ wordL+", speed: "+speed
+        // console.log(id)
+        var tv = {
+            "name": name,
+            "genre": genre,
+            "level": level,
+            "contributorId":id
+        };
+
+        tvColletction.insertOne(tv,function (err,doc) {
+            if (err){
+                console.log("Could not add tv " + i);
+            }else{
+                // addWatchList(userID[i],doc.ops[0]._id.toString());
+
+            }
+
+        })
+    }
+
+}
 
 setTimeout(closeConnection,5000);
