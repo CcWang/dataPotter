@@ -150,13 +150,20 @@ function addContributor() {
                 contributorID[i] = doc.ops[0]._id.toString();
                 contributorId[i] = doc.ops[0]._id.toString();
                 addBookstoContributor(doc.ops[0]._id.toString(), 100);
-                var page = i+1;
-                var url="https://api.themoviedb.org/3/discover/movie?api_key=664f8054c78de425d08aba35e84e6a11&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page="+page.toString();
-                var urltv="https://api.themoviedb.org/3/discover/tv?api_key=664f8054c78de425d08aba35e84e6a11&language=en-US&sort_by=popularity.desc&page="+page.toString();
+
+                // var url="https://api.themoviedb.org/3/discover/movie?api_key=664f8054c78de425d08aba35e84e6a11&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page="+page.toString();
+
                 console.log(url)
-                addMovie(url, contributorID[i]);
+                for(var j=0;j<6;j++){
+                    var page = j+1;
+                    var url="https://api.themoviedb.org/3/discover/movie?api_key=664f8054c78de425d08aba35e84e6a11&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page="+page.toString();
+                    var urltv="https://api.themoviedb.org/3/discover/tv?api_key=664f8054c78de425d08aba35e84e6a11&language=en-US&sort_by=popularity.desc&page="+page.toString();
+                    addMovie(url, contributorID[i]);
+                    addTvshows(urltv,contributorID[i])
+                }
+
                 addBookstoContributor(doc.ops[0]._id.toString(),100);
-                addTvshows(urltv,contributorID[i])
+
 
 
             }
@@ -217,40 +224,6 @@ function addWatchList(userID, movieID) {
     watchLists.insertOne(m[0]);
 }
 
-// function addBook() {
-//     var bb = [{
-//         "name": "Great Expectations",
-//         "genre": "Adventure",
-//         "level": 9,
-//         "contributorId":
-//
-//     }, {
-//         "name": "Snoopy",
-//         "genre": "Comedy",
-//         "level": 2
-//     },{
-//
-//         "name":"The Fault in Our Stars",
-//         "genre":"Young adult fiction",
-//         "level":4
-//     },{
-//         "name":"Gone Girl",
-//         "genre":"Thriller",
-//         "level":5
-//     }];
-//     var books = dbConnection.collection('books');
-//     for (var i=0; i< bb.length; i++){
-//         books.insertOne(bb[i],function (err,doc) {
-//             if(err){
-//                 console.log("Could not add book"+i);
-//             }else{
-//                 addFavoriteList(userID[i],doc.ops[0]._id.toString())
-//             }
-//
-//         })
-//     }
-//
-// }
 
 
 nameList = ['AA','BB','CC','DD','EE','FF','GG','HH','II','JJ','KK'];

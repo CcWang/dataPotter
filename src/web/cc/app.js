@@ -1,9 +1,15 @@
 $( document ).ready(function() {
     console.log( "go!" );
+    var contributorId;
+    var contributor;
+    var offset = 0;
+    var count = 20;
+    var total = -1;
     $("#load_button").click(function(e){
         e.preventDefault();
         $("#loading").show();
         $("#load_button").hide();
+        // $("#p").hide();
         $.ajax({
             url:"/api/users",
             type:"GET"
@@ -35,17 +41,87 @@ $( document ).ready(function() {
 
     });
 
-    $("#movies").click(function(e){
+    $("#contributor").click(function(e){
        e.preventDefault();
-       console.log("movies button click")
+
         $.ajax({
-            url:"https://api.themoviedb.org/3/movie/550?api_key=664f8054c78de425d08aba35e84e6a11",
-            // url:"/api/movies",
+            url:"/api/contributors",
             type:"GET"
         }).done(function (data) {
-            console.log(data)
+            var i=Math.floor(Math.random()*data.content.length);
+            console.log(i)
+            contributor=data.content[i].name;
+            contributorId = data.content[i].id;
+            $("#cname").text("Hello "+contributor+"! Here are all the movies you have added.");
+
+
         })
     });
+
+    $("#getMovies").click(function(e){
+        e.preventDefault();
+        // console.log( contributorId, contributor);
+        getMovies();
+
+    })
+    $("#next").click(function(e){
+        e.preventDefault();
+        if (offset+count < total) {
+            offset = offset+count;
+            getMovies();
+        }
+    })
+
+    $("#previous").click(function(e){
+        e.preventDefault();
+        console.log("Cliked")
+        if (offset-count >= 0) {
+            offset = offset-count;
+            getMovies();
+
+        }
+    })
+
+
+    var getMovies = function () {
+        $.ajax({
+            url:"/api/contributors/"+ contributorId+"/movies",
+            type:"GET"
+        }).done(function (data) {
+            console.log(data.content);
+
+            total = data.content.length;
+            $("#page").text("Page " + Math.floor(offset/count+1) + " of " + (Math.ceil(total/count)));
+            $("#movieTable").find(".cloned").remove();
+            console.log(offset, count)
+            for (var i=offset; i<offset+count; i++){
+                var item = data.content[i];
+                $( "#movieRow" ).clone().prop("id",item.id).appendTo( "#movieTable" );
+                $("#"+item.id).find("#id").text(item.id);
+                $("#"+item.id).find("#name").text(item.name);
+                $("#"+item.id).find("#genre").text(item.genre);
+                $("#"+item.id).find("#level").text(item.level);
+                $("#"+item.id).find("#contributorId").text(item.contributorId);
+                $("#"+item.id).prop("class","cloned");
+            }
+            // data.content.forEach(function(item){
+            //     $( "#movieRow" ).clone().prop("id",item.id).appendTo( "#movieTable" );
+            //     $("#"+item.id).find("#id").text(item.id);
+            //     $("#"+item.id).find("#name").text(item.name);
+            //     $("#"+item.id).find("#genre").text(item.genre);
+            //     $("#"+item.id).find("#level").text(item.level);
+            //     $("#"+item.id).find("#contributorId").text(item.contributorId);
+            //     $("#"+item.id).prop("class","cloned");
+            //     // $("#"+item.id).show();
+            // });
+
+
+        })
+
+    }
+
+
+
 
 
 });
