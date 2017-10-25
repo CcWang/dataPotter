@@ -15,6 +15,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.result.DeleteResult;
 import edu.cmu.sv.app17.models.Movie;
+import edu.cmu.sv.app17.models.Contributor;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.json.JSONException;
@@ -28,17 +29,20 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
+import com.mongodb.util.JSON;
 
 @Path("movies")
 public class MovieInterface {
 
     private MongoCollection<Document> collection = null;
+    private MongoCollection<Document> contributorCollection;
     private ObjectWriter ow;
 
     public MovieInterface() {
         MongoClient mongoClient = new MongoClient();
         MongoDatabase database = mongoClient.getDatabase("dataPotter");
         collection = database.getCollection("movie");
+        contributorCollection = database.getCollection("contributor");
         ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
     }
 
@@ -56,7 +60,8 @@ public class MovieInterface {
 //                List<Document> genres = (List<Document>) item.get("genre");
 
                 List<String> genres = item.get("genre", List.class);
-                HashMap levels = item.get("level", HashMap.class);
+//                HashMap levels = item.get("level", HashMap.class);
+                List<String> levels = item.get("level", List.class);
                 Movie movie = new Movie(
                         item.getString("name"),
                         genres,
@@ -91,7 +96,8 @@ public class MovieInterface {
                 throw new APPNotFoundException(0, "No such movie, my friend");
             }
             List<String> genres = item.get("genre", List.class);
-            HashMap levels = item.get("level", HashMap.class);
+//            HashMap levels = item.get("level", HashMap.class);
+            List<String> levels = item.get("level", List.class);
             Movie movie = new Movie(
                     item.getString("name"),
                     genres,
@@ -108,6 +114,28 @@ public class MovieInterface {
         }
 
 
+    }
+
+//    need to write a post function
+
+    @POST
+    @Consumes({ MediaType.APPLICATION_JSON})
+    @Produces({ MediaType.APPLICATION_JSON})
+    public APPResponse create(JSONObject obj) {
+        try {
+            Document doc = new Document("contributorId",obj.getString("contributorId"))
+                    .append("name", obj.getInt("name"))
+                    .append("genre", obj.getJSONArray("genre"))
+                    .append("level", obj.getJSONArray("level"));
+
+            collection.insertOne(doc);
+
+
+        } catch(JSONException e) {
+            System.out.println("Failed to create a document");
+        }
+//
+        return new APPResponse(obj);
     }
 
 
@@ -133,9 +161,9 @@ public class MovieInterface {
             if (json.has("name"))
                 doc.append("name",json.getString("name"));
             if (json.has("genre"))
-                doc.append("genre",json.getString("genre"));
+                doc.append("genre",json.getJSONArray("genre"));
             if (json.has("level"))
-//                doc.append("level",json.getItem("level"));
+                doc.append("level",json.getJSONArray("level"));
             if(json.has("contributorId"))
                 doc.append("contributorId", json.getInt("contributorId"));
             Document set = new Document("$set", doc);
