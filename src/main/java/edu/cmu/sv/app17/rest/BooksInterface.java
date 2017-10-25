@@ -26,6 +26,8 @@ import org.json.JSONObject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Path("books")
 public class BooksInterface {
@@ -46,12 +48,18 @@ public class BooksInterface {
 
     @GET
     @Produces({MediaType.APPLICATION_JSON})
-    public APPResponse getAll() {
+    public APPResponse getAll(@DefaultValue("_id") @QueryParam("sort") String sortArg) {
 
         ArrayList<Book> bookList = new ArrayList<Book>();
 
+        BasicDBObject sortParams = new BasicDBObject();
+        List<String> sortList = Arrays.asList(sortArg.split(","));
+        sortList.forEach(sortItem -> {
+            sortParams.put(sortItem,1);
+        });
+
         try {
-            FindIterable<Document> results = collection.find();
+            FindIterable<Document> results = collection.find().sort(sortParams);
             for (Document item : results) {
                 Book book = new Book(
                         item.getString("name"),

@@ -240,7 +240,7 @@ function addFavoriteList(userID, bookID) {
 // }
 
 // need to finish
-function addlanguageLevelUser0(userID) {
+function addbookTeacher0(userID) {
     ll = [{
         "movies_level" : 8,
         "tvshows_level" : 10,
