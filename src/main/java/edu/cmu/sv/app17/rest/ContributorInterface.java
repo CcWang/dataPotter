@@ -40,6 +40,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 @Path("contributors")
@@ -261,8 +262,9 @@ public class ContributorInterface {
             for (Document item : results) {
                 Movie m = new Movie(
                         item.getString("name"),
-                        item.getString("genre"),
-                        item.getString("level"),
+                        (ArrayList<String>) item.get("genre"),
+//                        (HashMap<String, String>) item.get("level"),
+                        (org.bson.Document) item.get("level"),
                         item.getString("contributorId")
                 );
                 m.setId(item.getObjectId("_id").toString());

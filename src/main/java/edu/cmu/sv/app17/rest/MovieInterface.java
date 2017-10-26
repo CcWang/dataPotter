@@ -64,8 +64,9 @@ public class MovieInterface {
 //                List<String> levels = item.get("level", List.class);
                 Movie movie = new Movie(
                         item.getString("name"),
-                        item.getString("genre"),
-                        item.getString("level"),
+                        (ArrayList<String>) item.get("genre"),
+                        (org.bson.Document) item.get("level"),
+//                        (HashMap<String, String>) item.get("level"),
                         item.getString("contributorId")
                 );
                 movie.setId(item.getObjectId("_id").toString());
@@ -101,8 +102,9 @@ public class MovieInterface {
 //            List<String> levels = item.get("level", List.class);
             Movie movie = new Movie(
                     item.getString("name"),
-                    item.getString("genre"),
-                    item.getString("level"),
+                    (ArrayList<String>) item.get("genre"),
+//                    (HashMap<String, String>) item.get("level"),
+                    (org.bson.Document) item.get("level"),
                     item.getString("contributorId")
             );
             movie.setId(item.getObjectId("_id").toString());
@@ -126,8 +128,8 @@ public class MovieInterface {
         try {
             Document doc = new Document("contributorId",obj.getString("contributorId"))
                     .append("name", obj.getString("name"))
-                    .append("genre", obj.getString("genre"))
-                    .append("level", obj.getString("level"));
+                    .append("genre", obj.get("genre"))
+                    .append("level", obj.get("level"));
 
             collection.insertOne(doc);
 
@@ -162,9 +164,9 @@ public class MovieInterface {
             if (json.has("name"))
                 doc.append("name",json.getString("name"));
             if (json.has("genre"))
-                doc.append("genre",json.getString("genre"));
+                doc.append("genre",json.get("genre"));
             if (json.has("level"))
-                doc.append("level",json.getString("level"));
+                doc.append("level",json.get("level"));
             if(json.has("contributorId"))
                 doc.append("contributorId", json.getString("contributorId"));
             Document set = new Document("$set", doc);

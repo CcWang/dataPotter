@@ -115,7 +115,9 @@ $( document ).ready(function() {
                 $("#"+item.id).find("#id").text(item.id);
                 $("#"+item.id).find("#name").text(item.name);
                 $("#"+item.id).find("#genre").text(item.genre);
-                $("#"+item.id).find("#level").text(item.level);
+                $("#"+item.id).find("#avglevel").text(item.level["avg"]);
+                $("#"+item.id).find("#speed").text(item.level["speed"]);
+                $("#"+item.id).find("#wordsLevel").text(item.level["wordsLevel"]);
                 $("#"+item.id).find("#contributorId").text(item.contributorId);
                 $("#"+item.id).prop("class","cloned");
                 // $("#"+item.id).show();

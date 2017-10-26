@@ -402,14 +402,14 @@ function movies (a,id) {
     for(var i=0; i<g.length;i++){
         // console.log(g[i]['genre_ids'])
         var name = g[i]['title'];
-        var genre=""
+        var genre=[];
         for (var j=0;j<g[i]['genre_ids'].length;j++){
-            genre +=(gmap[g[i]['genre_ids'][j]])+" "
+            genre.push(gmap[g[i]['genre_ids'][j]])
         }
-        var avg = Math.floor(Math.random()*10)+1
-        var wordL = Math.floor(Math.random()*10)+1
-        var speed = Math.floor(Math.random()*10)+1
-        var level="avg: "+avg+", wordsLevel: "+ wordL+", speed: "+speed
+        var avg = Math.floor(Math.random()*10)+1;
+        var wordL = Math.floor(Math.random()*10)+1;
+        var speed = Math.floor(Math.random()*10)+1;
+        var level={"avg":avg, "wordsLevel": wordL, "speed":speed};
         // console.log(id)
         var m = {
                 "name": name,
