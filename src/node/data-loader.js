@@ -51,7 +51,7 @@ function addUser() {
         "englishLevel":7,
         "phone":"0000000000",
         "gender":"male",
-        "birthday":new Date(1990, 10, 9)
+        "birthday":"1990-10-09"
     },
         {
         "username": "Tyrion",
@@ -61,7 +61,7 @@ function addUser() {
             "englishLevel": 4,
             "phone": "0010000000",
             "gender": "female",
-            "birthday": new Date(1989, 5, 21)
+            "birthday": "1985-5-21"
         },
 
         {
@@ -72,7 +72,7 @@ function addUser() {
             "englishLevel": 4,
             "phone": "0010000000",
             "gender": "female",
-            "birthday": new Date(1990, 12, 19)
+            "birthday": "1989-11-08"
         },
         {
             "username": "Arya",
@@ -82,7 +82,7 @@ function addUser() {
             "englishLevel": 7,
             "phone": "0010000000",
             "gender": "female",
-            "birthday": new Date(1995, 8, 19)
+            "birthday":"1995-8-19"
         }];
     var users = dbConnection.collection('users');
     for (var i = 0; i<u.length;i++ ){

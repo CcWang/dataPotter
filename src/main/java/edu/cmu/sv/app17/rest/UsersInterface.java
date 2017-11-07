@@ -8,7 +8,7 @@ package edu.cmu.sv.app17.rest;
 * englishLevel  string
 * phone     string
 * gender    string
-* birthday Date
+* birthday  string
 * */
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -80,7 +80,7 @@ public class UsersInterface {
                     item.getInteger("englishLevel"),
                     item.getString("phone"),
                     item.getString("gender"),
-                    item.getDate("birthday")
+                    item.getString("birthday")
             );
             user.setId(item.getObjectId("_id").toString());
             userList.add(user);
@@ -110,14 +110,14 @@ public class UsersInterface {
                     item.getInteger("englishLevel"),
                     item.getString("phone"),
                     item.getString("gender"),
-                    item.getDate("birthday")
+                    item.getString("birthday")
             );
             user.setId(item.getObjectId("_id").toString());
             return new APPResponse(user);
 //            return user;
 
         } catch(APPNotFoundException e) {
-            throw new APPNotFoundException(0,"No such car");
+            throw new APPNotFoundException(0,"No such User");
         } catch(IllegalArgumentException e) {
             throw new APPBadRequestException(45,"Doesn't look like MongoDB ID");
         }  catch(Exception e) {

@@ -13,13 +13,13 @@ import java.util.Date;
 public class User {
 
     String id = null;
-    String username, email, password, nativeLanguage, phone,gender;
+    String username, email, password, nativeLanguage, phone,gender,birthday;
     Number englishLevel;
-    Date birthday;
+
 
 
     public User(String username, String email, String password, String nativeLanguage,
-                Number englishLevel, String phone, String gender, Date birthday) {
+                Number englishLevel, String phone, String gender, String birthday) {
         this.username = username;
         this.email = email;
         this.password = password;

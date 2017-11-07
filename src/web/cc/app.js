@@ -17,10 +17,10 @@ $( document ).ready(function() {
             console.log(data.content);
             data.content.forEach(function (user) {
                 var gender = user.gender.charAt(0).toUpperCase() + user.gender.slice(1);
-                var dob = new Intl.DateTimeFormat().format(user.birthday);
+                // var dob = new Intl.DateTimeFormat().format(user.birthday);
                 var userID = user.id;
                 var html = "<tr><td>"+user.username+"</td><td>"+user.email+"</td><td>"+user.nativeLanguage+"</td><td>"
-                +user.englishLevel+"</td><td>"+user.phone+"</td><td>"+gender+"</td><td>"+dob+"</td><td><button type='button' id="+userID+" class='btn btn-primary btn-sm'>see</button></td></td>";
+                +user.englishLevel+"</td><td>"+user.phone+"</td><td>"+gender+"</td><td>"+user.birthday+"</td><td><button type='button' id="+userID+" class='btn btn-primary btn-sm'>see</button></td></td>";
                 // console.log(html);
                 $('#user_list tr:last').after(html);
                 // $("tbody").appendTo(html);
