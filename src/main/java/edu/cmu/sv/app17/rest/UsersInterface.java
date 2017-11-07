@@ -22,6 +22,8 @@ import com.mongodb.client.MongoDatabase;
 import edu.cmu.sv.app17.exceptions.APPBadRequestException;
 import edu.cmu.sv.app17.exceptions.APPInternalServerException;
 import edu.cmu.sv.app17.exceptions.APPNotFoundException;
+import edu.cmu.sv.app17.exceptions.APPUnauthorizedException;
+import edu.cmu.sv.app17.helpers.APPCrypt;
 import edu.cmu.sv.app17.helpers.APPResponse;
 import edu.cmu.sv.app17.helpers.PATCH;
 import edu.cmu.sv.app17.models.*;
@@ -36,8 +38,11 @@ import org.bson.types.ObjectId;
 import org.json.JSONObject;
 import java.util.Date;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
+import java.util.List;
 
 @Path("users")
 public class UsersInterface {
@@ -92,11 +97,11 @@ public class UsersInterface {
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_JSON})
-    public APPResponse getOne(@PathParam("id") String id) {
-//        need to change
-//  need to check if name and pwd are match
-        BasicDBObject query = new BasicDBObject();
+    public APPResponse getOne(@Context HttpHeaders headers, @PathParam("id") String id) {
+
         try {
+            checkAuthentication(headers,id);
+            BasicDBObject query = new BasicDBObject();
             query.put("_id", new ObjectId(id));
             Document item = collection.find(query).first();
             if (item == null) {
@@ -176,9 +181,9 @@ public class UsersInterface {
     @Path("{id}")
     @Consumes({ MediaType.APPLICATION_JSON})
     @Produces({ MediaType.APPLICATION_JSON})
-    public APPResponse update(@PathParam("id") String id, JSONObject obj) {
+    public APPResponse update(@Context HttpHeaders headers, @PathParam("id") String id, JSONObject obj) {
         try {
-
+            checkAuthentication(headers,id);
             BasicDBObject query = new BasicDBObject();
             query.put("_id", new ObjectId(id));
 
@@ -217,11 +222,12 @@ public class UsersInterface {
     @GET
     @Path("{id}/langs")
     @Produces({MediaType.APPLICATION_JSON})
-    public APPResponse getLangLevelForUser(@PathParam("id") String id) {
+    public APPResponse getLangLevelForUser(@Context HttpHeaders headers, @PathParam("id") String id) {
 
         ArrayList<LanguageLevel> lanList = new ArrayList<LanguageLevel>();
 
         try {
+            checkAuthentication(headers,id);
             BasicDBObject query = new BasicDBObject();
             query.put("usersId", id);
 
@@ -252,13 +258,17 @@ public class UsersInterface {
     @Path("{id}/langs")
     @Consumes({ MediaType.APPLICATION_JSON})
     @Produces({ MediaType.APPLICATION_JSON})
-    public APPResponse create(@PathParam("id") String id, Object request) {
+    public APPResponse create(@Context HttpHeaders headers, @PathParam("id") String id, Object request) {
         JSONObject json = null;
         try {
+            checkAuthentication(headers,id);
+
             json = new JSONObject(ow.writeValueAsString(request));
         }
         catch (JsonProcessingException e) {
             throw new APPBadRequestException(33, e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         if (!json.has("movies_level"))
@@ -280,7 +290,16 @@ public class UsersInterface {
         return new APPResponse(request);
     }
 
-
+    void checkAuthentication(HttpHeaders headers,String id) throws Exception{
+        List<String> authHeaders = headers.getRequestHeader(HttpHeaders.AUTHORIZATION);
+        if (authHeaders == null)
+            throw new APPUnauthorizedException(70,"No Authorization Headers");
+        String token = authHeaders.get(0);
+        String clearToken = APPCrypt.decrypt(token);
+        if (id.compareTo(clearToken) != 0) {
+            throw new APPUnauthorizedException(71,"Invalid token. Please try getting a new token");
+        }
+    }
 
 
 
