@@ -215,41 +215,78 @@ public class ContributorInterface {
         return new APPResponse(obj);
     }
 
+//    @GET
+//    @Path("{id}/books")
+//    @Produces({MediaType.APPLICATION_JSON})
+//    public APPListResponse getCarsForDriver(@Context HttpHeaders headers, @PathParam("id") String id,
+//                                            @DefaultValue("1000") @QueryParam("count") int count,
+//                                            @DefaultValue("20") @QueryParam("offset") int offset
+//    ) {
+//        ArrayList<Book> bookList = new ArrayList<Book>();
+//
+//
+//
+//        try {
+//            BasicDBObject query = new BasicDBObject();
+//            query.put("contributorId", id);
+//            Document item1 = collection.find(query).first();
+//            if (item1 == null) {
+//                throw new APPNotFoundException(0, "Sorry, we cannot find you. Sign up? ");
+//            }
+//
+//            long resultCount = booksCollection.count(query);
+//            FindIterable<Document> results = booksCollection.find(query).skip(offset).limit(count);
+//            for (Document item : results) {
+//                Book book = new Book(
+//                        item.getString("name"),
+//                        item.getString("genre"),
+//                        item.getInteger("level"),
+//                        item.getString("contributorId")
+//                );
+//                book.setId(item.getObjectId("_id").toString());
+//                bookList.add(book);
+//            }
+//            return new APPListResponse(bookList,resultCount,offset,bookList.size());
+//
+//        } catch(Exception e) {
+//            System.out.println("EXCEPTION!!!!");
+//            e.printStackTrace();
+//            throw new APPInternalServerException(99,e.getMessage());
+//        }
+//
+//    }
     @GET
     @Path("{id}/books")
     @Produces({MediaType.APPLICATION_JSON})
-    public APPListResponse getCarsForDriver(@Context HttpHeaders headers, @PathParam("id") String id,
-                                            @DefaultValue("20") @QueryParam("count") int count,
-                                            @DefaultValue("0") @QueryParam("offset") int offset
-    ) {
-        ArrayList<Book> bookList = new ArrayList<Book>();
+    public APPListResponse getBooksForContributor(@Context HttpHeaders headers, @PathParam("id") String id, @DefaultValue("20") @QueryParam("count") int count,
+                                                  @DefaultValue("0") @QueryParam("offset") int offset, @DefaultValue("_id") @QueryParam("sort") String sortArg) {
+
+        ArrayList<Book> bookList = new ArrayList<>();
+        BasicDBObject sortParams = new BasicDBObject();
+        List<String> sortList = Arrays.asList(sortArg.split(","));
+        sortList.forEach(sortItem -> {
+            sortParams.put(sortItem,1);
+        });
+
 
         try {
             BasicDBObject query = new BasicDBObject();
             query.put("contributorId", id);
 
-
-        try { 
-            BasicDBObject query = new BasicDBObject();
-            query.put("contributorId", id);
-            Document item1 = collection.find(query).first();
-            if (item1 == null) {
-                throw new APPNotFoundException(0, "Sorry, we cannot find you. Sign up? ");
-            }
-
             long resultCount = booksCollection.count(query);
-            FindIterable<Document> results = booksCollection.find(query).skip(offset).limit(count);
+
+            FindIterable<Document> results = booksCollection.find(query).skip(offset).limit(count).sort(sortParams);
             for (Document item : results) {
-                Book book = new Book(
+                Book b = new Book(
                         item.getString("name"),
                         item.getString("genre"),
                         item.getInteger("level"),
                         item.getString("contributorId")
                 );
-                book.setId(item.getObjectId("_id").toString());
-                bookList.add(book);
+                b.setId(item.getObjectId("_id").toString());
+                bookList.add(b);
             }
-            return new APPListResponse(bookList,resultCount,offset,bookList.size());
+            return new APPListResponse(bookList,resultCount,offset, bookList.size());
 
         } catch(Exception e) {
             System.out.println("EXCEPTION!!!!");
@@ -302,15 +339,21 @@ public class ContributorInterface {
     @GET
     @Path("{id}/tvshows")
     @Produces({MediaType.APPLICATION_JSON})
-    public APPResponse getTvshowsForContributor(@PathParam("id") String id) {
+    public APPListResponse getTvshowsForContributor(@Context HttpHeaders headers, @PathParam("id") String id, @DefaultValue("20") @QueryParam("count") int count,
+                                                    @DefaultValue("0") @QueryParam("offset") int offset, @DefaultValue("_id") @QueryParam("sort") String sortArg) {
 
         ArrayList<Tvshow> tvList = new ArrayList<>();
+        BasicDBObject sortParams = new BasicDBObject();
+        List<String> sortList = Arrays.asList(sortArg.split(","));
+        sortList.forEach(sortItem -> {
+            sortParams.put(sortItem,1);
+        });
 
         try {
             BasicDBObject query = new BasicDBObject();
             query.put("contributorId", id);
-
-            FindIterable<Document> results = tvCollection.find(query);
+            long resultCount = tvCollection.count(query);
+            FindIterable<Document> results = tvCollection.find(query).skip(offset).limit(count).sort(sortParams);;
             for (Document item : results) {
                 Tvshow tv = new Tvshow(
                         item.getString("name"),
@@ -321,7 +364,7 @@ public class ContributorInterface {
                 tv.setId(item.getObjectId("_id").toString());
                 tvList.add(tv);
             }
-            return new APPResponse(tvList);
+            return new APPListResponse(tvList,resultCount,offset, tvList.size());
 
         } catch(Exception e) {
             System.out.println("EXCEPTION!!!!");
@@ -330,6 +373,7 @@ public class ContributorInterface {
         }
 
     }
+
 
     @POST
     @Path("{id}/books")
