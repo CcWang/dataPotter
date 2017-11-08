@@ -23,6 +23,8 @@ import com.mongodb.client.result.DeleteResult;
 import edu.cmu.sv.app17.exceptions.APPBadRequestException;
 import edu.cmu.sv.app17.exceptions.APPInternalServerException;
 import edu.cmu.sv.app17.exceptions.APPNotFoundException;
+import edu.cmu.sv.app17.exceptions.APPUnauthorizedException;
+import edu.cmu.sv.app17.helpers.APPCrypt;
 import edu.cmu.sv.app17.helpers.APPListResponse;
 import edu.cmu.sv.app17.helpers.APPResponse;
 import edu.cmu.sv.app17.helpers.PATCH;
@@ -43,6 +45,7 @@ import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 
 @Path("contributors")
 public class ContributorInterface {
@@ -103,11 +106,14 @@ public class ContributorInterface {
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_JSON})
-    public APPResponse getOne(@PathParam("id") String id) {
-//        need to change
-//  need to check if name and pwd are match
-        BasicDBObject query = new BasicDBObject();
+    public APPResponse getOne(@Context HttpHeaders headers,
+                              @PathParam("id") String id) {
+
         try {
+            checkAuthentication(headers,id);
+
+        BasicDBObject query = new BasicDBObject();
+
             query.put("_id", new ObjectId(id));
             Document item = collection.find(query).first();
             if (item == null) {
@@ -125,7 +131,8 @@ public class ContributorInterface {
             c.setId(item.getObjectId("_id").toString());
             return new APPResponse(c);
 //            return teacher;
-
+        } catch(APPUnauthorizedException e) {
+            throw e;
         } catch(APPNotFoundException e) {
             throw new APPNotFoundException(0,"No such contributor");
         } catch(IllegalArgumentException e) {
@@ -215,51 +222,15 @@ public class ContributorInterface {
         return new APPResponse(obj);
     }
 
-//    @GET
-//    @Path("{id}/books")
-//    @Produces({MediaType.APPLICATION_JSON})
-//    public APPListResponse getCarsForDriver(@Context HttpHeaders headers, @PathParam("id") String id,
-//                                            @DefaultValue("1000") @QueryParam("count") int count,
-//                                            @DefaultValue("20") @QueryParam("offset") int offset
-//    ) {
-//        ArrayList<Book> bookList = new ArrayList<Book>();
-//
-//
-//
-//        try {
-//            BasicDBObject query = new BasicDBObject();
-//            query.put("contributorId", id);
-//            Document item1 = collection.find(query).first();
-//            if (item1 == null) {
-//                throw new APPNotFoundException(0, "Sorry, we cannot find you. Sign up? ");
-//            }
-//
-//            long resultCount = booksCollection.count(query);
-//            FindIterable<Document> results = booksCollection.find(query).skip(offset).limit(count);
-//            for (Document item : results) {
-//                Book book = new Book(
-//                        item.getString("name"),
-//                        item.getString("genre"),
-//                        item.getInteger("level"),
-//                        item.getString("contributorId")
-//                );
-//                book.setId(item.getObjectId("_id").toString());
-//                bookList.add(book);
-//            }
-//            return new APPListResponse(bookList,resultCount,offset,bookList.size());
-//
-//        } catch(Exception e) {
-//            System.out.println("EXCEPTION!!!!");
-//            e.printStackTrace();
-//            throw new APPInternalServerException(99,e.getMessage());
-//        }
-//
-//    }
+
     @GET
     @Path("{id}/books")
     @Produces({MediaType.APPLICATION_JSON})
     public APPListResponse getBooksForContributor(@Context HttpHeaders headers, @PathParam("id") String id, @DefaultValue("20") @QueryParam("count") int count,
                                                   @DefaultValue("0") @QueryParam("offset") int offset, @DefaultValue("_id") @QueryParam("sort") String sortArg) {
+
+        try {
+            checkAuthentication(headers, id);
 
         ArrayList<Book> bookList = new ArrayList<>();
         BasicDBObject sortParams = new BasicDBObject();
@@ -269,7 +240,7 @@ public class ContributorInterface {
         });
 
 
-        try {
+
             BasicDBObject query = new BasicDBObject();
             query.put("contributorId", id);
 
@@ -287,6 +258,9 @@ public class ContributorInterface {
                 bookList.add(b);
             }
             return new APPListResponse(bookList,resultCount,offset, bookList.size());
+
+        } catch(APPUnauthorizedException e) {
+            throw e;
 
         } catch(Exception e) {
             System.out.println("EXCEPTION!!!!");
@@ -379,14 +353,15 @@ public class ContributorInterface {
     @Path("{id}/books")
     @Consumes({ MediaType.APPLICATION_JSON})
     @Produces({ MediaType.APPLICATION_JSON})
-    public APPResponse create(@PathParam("id") String id, Object request) {
+    public APPResponse create(@Context HttpHeaders headers,
+                              @PathParam("id") String id, Object request) {
+
         JSONObject json = null;
         try {
+            checkAuthentication(headers,id);
+
             json = new JSONObject(ow.writeValueAsString(request));
-        }
-        catch (JsonProcessingException e) {
-            throw new APPBadRequestException(33, e.getMessage());
-        }
+
 
         if (!json.has("name"))
             throw new APPBadRequestException(55,"name");
@@ -397,13 +372,15 @@ public class ContributorInterface {
 //        if (!json.has("contributorId"))
 //            throw new APPBadRequestException(55,"contributorId");
 
-        try {
             Document doc = new Document("name", json.getString("name"))
                     .append("genre", json.getString("genre"))
                     .append("level", json.getInt("level"))
                     .append("contributorId", id);
             booksCollection.insertOne(doc);
             return new APPResponse(request);
+
+        } catch(APPUnauthorizedException e) {
+            throw e;
         } catch(Exception e) {
             throw new APPInternalServerException(99,"Something happened, pinch me!");
         }
@@ -475,6 +452,18 @@ public class ContributorInterface {
             return new JSONObject();
 
         }
+
+        private void checkAuthentication(HttpHeaders headers, String id) throws Exception{
+            List<String> authHeaders = headers.getRequestHeader(HttpHeaders.AUTHORIZATION);
+            if (authHeaders == null)
+                throw new APPUnauthorizedException(70, "No Auhthorization Headers");
+            String token = authHeaders.get(0);
+            String clearToken = APPCrypt.decrypt(token);
+            if (id.compareTo(clearToken) != 0) {
+                throw new APPUnauthorizedException(71, "Invalid token. Please try getting a new token");
+            }
+        }
+
 
 
 }

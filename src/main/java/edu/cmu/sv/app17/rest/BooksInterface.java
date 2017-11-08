@@ -217,7 +217,7 @@ public class BooksInterface {
         }
     }
 
-    
+
         @POST
         @Path("{id}/books")
         @Consumes({ MediaType.APPLICATION_JSON})
