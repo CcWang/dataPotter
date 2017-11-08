@@ -181,29 +181,32 @@ public class UsersInterface {
     @Path("{id}")
     @Consumes({ MediaType.APPLICATION_JSON})
     @Produces({ MediaType.APPLICATION_JSON})
-    public APPResponse update(@Context HttpHeaders headers, @PathParam("id") String id, JSONObject obj) {
+    public APPResponse update(@Context HttpHeaders headers, @PathParam("id") String id, Object obj) {
         try {
+            JSONObject json = null;
+
+            json = new JSONObject(ow.writeValueAsString(obj));
             checkAuthentication(headers,id);
             BasicDBObject query = new BasicDBObject();
             query.put("_id", new ObjectId(id));
 
             Document doc = new Document();
-            if (obj.has("username"))
-                doc.append("username",obj.getString("username"));
-            if (obj.has("email"))
-                doc.append("email",obj.getString("email"));
-            if (obj.has("password"))
-                doc.append("password",obj.getString("password"));
-            if (obj.has("nativeLanguage"))
-                doc.append("nativeLanguage",obj.getString("nativeLanguage"));
-            if (obj.has("englishLevel"))
-                doc.append("englishLevel",obj.getInt("englishLevel"));
-            if (obj.has("phone"))
-                doc.append("phone",obj.getString("phone"));
-            if (obj.has("gender"))
-                doc.append("gender",obj.getString("gender"));
-            if (obj.has("birthday"))
-                doc.append("birthday",obj.getString("birthday"));
+            if (json.has("username"))
+                doc.append("username",json.getString("username"));
+            if (json.has("email"))
+                json.append("email",json.getString("email"));
+            if (json.has("password"))
+                doc.append("password",json.getString("password"));
+            if (json.has("nativeLanguage"))
+                doc.append("nativeLanguage",json.getString("nativeLanguage"));
+            if (json.has("englishLevel"))
+                doc.append("englishLevel",json.getInt("englishLevel"));
+            if (json.has("phone"))
+                doc.append("phone",json.getString("phone"));
+            if (json.has("gender"))
+                doc.append("gender",json.getString("gender"));
+            if (json.has("birthday"))
+                doc.append("birthday",json.getString("birthday"));
 
 
             Document set = new Document("$set", doc);
