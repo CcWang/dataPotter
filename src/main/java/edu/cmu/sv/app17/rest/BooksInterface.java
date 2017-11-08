@@ -17,7 +17,7 @@ import edu.cmu.sv.app17.helpers.PATCH;
 import edu.cmu.sv.app17.helpers.APPResponse;
 import edu.cmu.sv.app17.models.FavoriteList;
 import edu.cmu.sv.app17.models.Book;
-import edu.cmu.sv.app17.models.Movie;
+import edu.cmu.sv.app17.models.Book;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.json.JSONException;
@@ -29,6 +29,9 @@ import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.regex;
 
 @Path("books")
 public class BooksInterface {
@@ -111,6 +114,109 @@ public class BooksInterface {
             throw new APPInternalServerException(99, "Something happened, pinch me!");
         }
     }
+
+    //    search
+    @GET
+    @Path("name/{search}")
+    @Consumes({ MediaType.APPLICATION_JSON})
+    @Produces({ MediaType.APPLICATION_JSON})
+    public APPResponse searchByName(@PathParam("search") String search) {
+
+
+        BasicDBObject query = new BasicDBObject();
+        ArrayList<Book> bookRet = new ArrayList<>();
+
+        try {
+//        query = {"name":{search}};
+            FindIterable<Document> results = collection.find(regex("name",".*"+search+".*"));
+            for (Document item : results) {
+                Book book = new Book(
+                        item.getString("name"),
+                        item.getString("genre"),
+                        item.getInteger("level"),
+                        item.getString("contributorId")
+                );
+                book.setId(item.getObjectId("_id").toString());
+                System.out.print(book);
+                bookRet.add(book);
+            }
+            return new APPResponse(bookRet);
+
+        } catch(APPNotFoundException e) {
+            throw new APPNotFoundException(0, "No books contain key word like: " + search);
+        } catch(Exception e) {
+            System.out.println("EXCEPTION!!!!");
+            e.printStackTrace();
+            throw new APPInternalServerException(99,e.getMessage());
+        }
+    }
+
+    @GET
+    @Path("genre/{genre}")
+    @Consumes({ MediaType.APPLICATION_JSON})
+    @Produces({ MediaType.APPLICATION_JSON})
+    public APPResponse searchByGenre(@PathParam("genre") String genre) {
+
+
+        ArrayList<Book> bookRet = new ArrayList<>();
+
+        try {
+            FindIterable<Document> results = collection.find(regex("genre",".*"+genre+".*"));
+            for (Document item : results) {
+                Book book = new Book(
+                        item.getString("name"),
+                        item.getString("genre"),
+                        item.getInteger("level"),
+                        item.getString("contributorId")
+                );
+                book.setId(item.getObjectId("_id").toString());
+                System.out.print(book);
+                bookRet.add(book);
+            }
+            return new APPResponse(bookRet);
+
+        } catch(APPNotFoundException e) {
+            throw new APPNotFoundException(0, "No books contain genre like: " + genre);
+        } catch(Exception e) {
+            System.out.println("EXCEPTION!!!!");
+            e.printStackTrace();
+            throw new APPInternalServerException(99,e.getMessage());
+        }
+    }
+    @GET
+    @Path("level/{level}")
+    @Consumes({ MediaType.APPLICATION_JSON})
+    @Produces({ MediaType.APPLICATION_JSON})
+    public APPResponse searchByLevel(@PathParam("level") Integer level) {
+
+
+        ArrayList<Book> bookRet = new ArrayList<>();
+
+        try {
+            FindIterable<Document> results = collection.find(eq("level",level));
+            for (Document item : results) {
+                Book book = new Book(
+                        item.getString("name"),
+                        item.getString("genre"),
+                        item.getInteger("level"),
+                        item.getString("contributorId")
+                );
+                book.setId(item.getObjectId("_id").toString());
+                System.out.print(book);
+                bookRet.add(book);
+            }
+            return new APPResponse(bookRet);
+
+        } catch(APPNotFoundException e) {
+            throw new APPNotFoundException(0, "No books contain genre like: " + level.toString());
+        } catch(Exception e) {
+            System.out.println("EXCEPTION!!!!");
+            e.printStackTrace();
+            throw new APPInternalServerException(99,e.getMessage());
+        }
+    }
+
+
 
         @POST
         @Path("{id}/books")
