@@ -14,6 +14,8 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import static com.mongodb.client.model.Filters.*;
+import static java.lang.Math.toIntExact;
+
 import com.mongodb.client.result.DeleteResult;
 import edu.cmu.sv.app17.models.Movie;
 import edu.cmu.sv.app17.models.Contributor;
@@ -86,6 +88,7 @@ public class MovieInterface {
 
 
         BasicDBObject query = new BasicDBObject();
+        int avrage = avgLevel(id);
 
         try {
             query.put("_id", new ObjectId(id));
@@ -116,7 +119,36 @@ public class MovieInterface {
 
 
     }
+// get all level for same movie
+//@GET
+//@Path("{id}")
+//@Consumes({ MediaType.APPLICATION_JSON})
+//@Produces({ MediaType.APPLICATION_JSON})
+public Integer avgLevel( String id) {
 
+
+    BasicDBObject query = new BasicDBObject();
+    ArrayList<Movie> movieRet = new ArrayList<>();
+    Integer totalLevel = 0;
+
+    try {
+      query.put("_id", new ObjectId(id));
+        FindIterable<Document> results = collection.find(query);
+        long size = collection.count(query);
+        for (Document item : results) {
+           totalLevel = totalLevel+ item.getInteger("level");
+        }
+
+        return totalLevel/toIntExact(size);
+
+    } catch(APPNotFoundException e) {
+        throw new APPNotFoundException(0, "No Movies");
+    } catch(Exception e) {
+        System.out.println("EXCEPTION!!!!");
+        e.printStackTrace();
+        throw new APPInternalServerException(99,e.getMessage());
+    }
+}
 //    search
 @GET
 @Path("{search}")
