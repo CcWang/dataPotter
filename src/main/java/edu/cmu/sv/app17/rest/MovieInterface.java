@@ -93,6 +93,7 @@ public APPResponse getOne(@PathParam("id") String id) { ;
         if (item == null) {
             throw new APPNotFoundException(0, "No such movie, my friend");
         }
+
         Movie movie = new Movie(
                 item.getString("name"),
                 item.getString("genre"),
