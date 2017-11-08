@@ -324,12 +324,23 @@ public APPResponse searchByName(@PathParam("search") String search) {
         query.put("_id", new ObjectId(movieId));
         query.put("contributorId", croId);
 
-        DeleteResult deleteResult = collection.deleteOne(query);
-        if (deleteResult.getDeletedCount() < 1)
-            throw new APPNotFoundException(66,"Could not delete");
-
+        try{
+            DeleteResult deleteResult = collection.deleteOne(query);
+            if (deleteResult.getDeletedCount() < 1)
+                throw new APPNotFoundException(66,"Could not delete");
+        }
+        catch(APPNotFoundException e) {
+            throw new APPNotFoundException(0, "That Movie was not found");
+        } catch(IllegalArgumentException e) {
+            throw new APPBadRequestException(45,"Doesn't look like MongoDB ID");
+        }  catch(Exception e) {
+            throw new APPInternalServerException(99,"Something happened, pinch me!");
+        }
         return new JSONObject();
+
     }
+
+
 
 
 }

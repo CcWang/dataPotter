@@ -72,7 +72,7 @@ public class TvshowInterface {
             return new APPResponse(tvlist);
 //            return new APPResponse("hello!");
         } catch(APPNotFoundException e) {
-            throw new APPNotFoundException(0, "No TV Shows");
+            throw new APPNotFoundException(0, "No TV Shows in our data set yet");
         } catch(Exception e) {
             System.out.println("EXCEPTION!!!!");
             e.printStackTrace();
@@ -95,9 +95,6 @@ public class TvshowInterface {
             if (item == null) {
                 throw new APPNotFoundException(0, "No such tv, my friend");
             }
-//            List<String> genres = item.get("genre", List.class);
-//            HashMap levels = item.get("level", HashMap.class);
-//            List<String> levels = item.get("level", List.class);
             String name = item.getString("name");
             int avgLevel = getAvg(name);
             Tvshow tv = new Tvshow(
@@ -270,8 +267,7 @@ public class TvshowInterface {
             throw new APPBadRequestException(55,"genre");
         if (!json.has("level"))
             throw new APPBadRequestException(55,"level");
-//        if (!json.has("contributorId"))
-//            throw new APPBadRequestException(55,"contributorId");
+
 
         try {
             Document doc = new Document("name", json.getString("name"))
@@ -328,10 +324,21 @@ public class TvshowInterface {
 
         query.put("_id", new ObjectId(tvshowId));
         query.put("contributorId", croId);
+        try{
+            DeleteResult deleteResult = collection.deleteOne(query);
+            if (deleteResult.getDeletedCount() < 1)
+                throw new APPNotFoundException(66,"Could not delete");
+        }
+        catch(APPNotFoundException e) {
+            throw new APPNotFoundException(0, "That TV show was not found");
+        } catch(IllegalArgumentException e) {
+            throw new APPBadRequestException(45,"Doesn't look like MongoDB ID");
+        }  catch(Exception e) {
+            throw new APPInternalServerException(99,"Something happened, pinch me!");
+        }
 
-        DeleteResult deleteResult = collection.deleteOne(query);
-        if (deleteResult.getDeletedCount() < 1)
-            throw new APPNotFoundException(66,"Could not delete");
+
+
 
         return new JSONObject();
     }
