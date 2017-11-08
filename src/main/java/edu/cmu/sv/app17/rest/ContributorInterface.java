@@ -297,15 +297,21 @@ public class ContributorInterface {
     @GET
     @Path("{id}/tvshows")
     @Produces({MediaType.APPLICATION_JSON})
-    public APPResponse getTvshowsForContributor(@PathParam("id") String id) {
+    public APPListResponse getTvshowsForContributor(@Context HttpHeaders headers, @PathParam("id") String id, @DefaultValue("20") @QueryParam("count") int count,
+                                                    @DefaultValue("0") @QueryParam("offset") int offset, @DefaultValue("_id") @QueryParam("sort") String sortArg) {
 
         ArrayList<Tvshow> tvList = new ArrayList<>();
+        BasicDBObject sortParams = new BasicDBObject();
+        List<String> sortList = Arrays.asList(sortArg.split(","));
+        sortList.forEach(sortItem -> {
+            sortParams.put(sortItem,1);
+        });
 
         try {
             BasicDBObject query = new BasicDBObject();
             query.put("contributorId", id);
-
-            FindIterable<Document> results = tvCollection.find(query);
+            long resultCount = tvCollection.count(query);
+            FindIterable<Document> results = tvCollection.find(query).skip(offset).limit(count).sort(sortParams);;
             for (Document item : results) {
                 Tvshow tv = new Tvshow(
                         item.getString("name"),
@@ -316,7 +322,7 @@ public class ContributorInterface {
                 tv.setId(item.getObjectId("_id").toString());
                 tvList.add(tv);
             }
-            return new APPResponse(tvList);
+            return new APPListResponse(tvList,resultCount,offset, tvList.size());
 
         } catch(Exception e) {
             System.out.println("EXCEPTION!!!!");
@@ -325,6 +331,7 @@ public class ContributorInterface {
         }
 
     }
+
 
     @POST
     @Path("{id}/books")
