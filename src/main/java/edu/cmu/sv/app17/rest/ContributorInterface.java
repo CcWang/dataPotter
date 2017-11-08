@@ -19,6 +19,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.result.DeleteResult;
 import edu.cmu.sv.app17.exceptions.APPBadRequestException;
 import edu.cmu.sv.app17.exceptions.APPInternalServerException;
 import edu.cmu.sv.app17.exceptions.APPNotFoundException;
@@ -32,6 +33,7 @@ import edu.cmu.sv.app17.models.Tvshow;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.ws.rs.*;
@@ -64,6 +66,7 @@ public class ContributorInterface {
         ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 
     }
+
 
     @GET
     @Produces({ MediaType.APPLICATION_JSON})
@@ -208,7 +211,7 @@ public class ContributorInterface {
     @Path("{id}/books")
     @Produces({MediaType.APPLICATION_JSON})
     public APPListResponse getCarsForDriver(@Context HttpHeaders headers, @PathParam("id") String id,
-                                            @DefaultValue("30") @QueryParam("count") int count,
+                                            @DefaultValue("1000") @QueryParam("count") int count,
                                             @DefaultValue("20") @QueryParam("offset") int offset
     ) {
         ArrayList<Book> bookList = new ArrayList<Book>();
@@ -328,8 +331,8 @@ public class ContributorInterface {
             throw new APPBadRequestException(55,"genre");
         if (!json.has("level"))
             throw new APPBadRequestException(55,"level");
-        if (!json.has("contributorId"))
-            throw new APPBadRequestException(55,"contributorId");
+//        if (!json.has("contributorId"))
+//            throw new APPBadRequestException(55,"contributorId");
 
         Document doc = new Document("name", json.getString("name"))
                 .append("genre", json.getString("genre"))
@@ -338,5 +341,64 @@ public class ContributorInterface {
         booksCollection.insertOne(doc);
         return new APPResponse(request);
     }
+
+
+    @PATCH
+    @Path("{id}/books/{bookid}")
+    @Consumes({ MediaType.APPLICATION_JSON})
+    @Produces({ MediaType.APPLICATION_JSON})
+    public APPResponse update(@PathParam("id") String id,
+                              @PathParam("bookid") String bookid, Object request)
+    {
+        JSONObject json = null;
+        try {
+            json = new JSONObject(ow.writeValueAsString(request));
+        }
+        catch (JsonProcessingException e) {
+            throw new APPBadRequestException(33, e.getMessage());
+        }
+
+        try {
+
+            BasicDBObject query = new BasicDBObject();
+            query.put("_id", new ObjectId(bookid));
+            query.put("contributorId", id);
+
+            Document doc = new Document();
+            if (json.has("name"))
+                doc.append("name",json.getString("name"));
+            if (json.has("genre"))
+                doc.append("genre",json.getString("genre"));
+            if (json.has("level"))
+                doc.append("level",json.getInt("level"));
+
+            Document set = new Document("$set", doc);
+            collection.updateOne(query,set);
+
+        } catch(JSONException e) {
+            System.out.println("Failed to create a document");
+
+        }
+        return new APPResponse();
+    }
+
+
+
+    @DELETE
+    @Path("{id}/books/{bookid}")
+    @Produces({ MediaType.APPLICATION_JSON})
+    public Object delete(@PathParam("id") String id,
+                         @PathParam("bookid") String bookid) {
+        BasicDBObject query = new BasicDBObject();
+        query.put("_id", new ObjectId(bookid));
+//        query.put("contributorId", id);
+
+        DeleteResult deleteResult = booksCollection.deleteOne(query);
+        if (deleteResult.getDeletedCount() < 1)
+            throw new APPNotFoundException(66,"Could not delete");
+
+        return new JSONObject();
+    }
+
 
 }

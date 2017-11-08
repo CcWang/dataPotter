@@ -111,7 +111,7 @@ public class BooksInterface {
     }
 
         @POST
-//        @Path("{id}/books")
+        @Path("{id}/books")
         @Consumes({ MediaType.APPLICATION_JSON})
         @Produces({ MediaType.APPLICATION_JSON})
         public APPResponse create( Object request) {
