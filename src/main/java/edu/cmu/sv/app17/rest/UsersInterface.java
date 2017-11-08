@@ -69,29 +69,33 @@ public class UsersInterface {
     @GET
     @Produces({ MediaType.APPLICATION_JSON})
     public APPResponse getAll() {
+        try {
+            ArrayList<User> userList = new ArrayList<User>();
 
-        ArrayList<User> userList = new ArrayList<User>();
-
-        FindIterable<Document> results = collection.find();
-        if (results == null) {
-            return  new APPResponse(userList);
+            FindIterable<Document> results = collection.find();
+            if (results == null) {
+                return new APPResponse(userList);
+            }
+            for (Document item : results) {
+                User user = new User(
+                        item.getString("username"),
+                        item.getString("email"),
+                        item.getString("password"),
+                        item.getString("nativeLanguage"),
+                        item.getInteger("englishLevel"),
+                        item.getString("phone"),
+                        item.getString("gender"),
+                        item.getString("birthday")
+                );
+                user.setId(item.getObjectId("_id").toString());
+                userList.add(user);
+            }
+            return new APPResponse(userList);
+        } catch(APPNotFoundException e) {
+            throw new APPNotFoundException(0,"No Users");
+        } catch(Exception e) {
+            throw new APPInternalServerException(99,"Something happened, pinch me!");
         }
-        for (Document item : results) {
-            User user = new User(
-                    item.getString("username"),
-                    item.getString("email"),
-                    item.getString("password"),
-                    item.getString("nativeLanguage"),
-                    item.getInteger("englishLevel"),
-                    item.getString("phone"),
-                    item.getString("gender"),
-                    item.getString("birthday")
-            );
-            user.setId(item.getObjectId("_id").toString());
-            userList.add(user);
-        }
-        return new APPResponse(userList);
-
     }
 
     @GET
@@ -249,11 +253,13 @@ public class UsersInterface {
             }
             return new APPResponse(lanList);
 
-        } catch(Exception e) {
-            System.out.println("EXCEPTION!!!!");
-            e.printStackTrace();
-            throw new APPInternalServerException(99,e.getMessage());
-        }
+        } catch(APPNotFoundException e) {
+                throw new APPNotFoundException(0,"No such User");
+            } catch(IllegalArgumentException e) {
+                throw new APPBadRequestException(45,"Doesn't look like MongoDB ID");
+            }  catch(Exception e) {
+                throw new APPInternalServerException(99,"Something happened, pinch me!");
+            }
 
     }
 
@@ -272,6 +278,13 @@ public class UsersInterface {
             throw new APPBadRequestException(33, e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
+        }
+
+        BasicDBObject query = new BasicDBObject();
+        query.put("_id", new ObjectId(id));
+        Document item = collection.find(query).first();
+        if (item == null) {
+            throw new APPNotFoundException(0, "Sorry, we cannot find you. Sign up? ");
         }
 
         if (!json.has("movies_level"))

@@ -74,6 +74,8 @@ public class MovieInterface {
             }
             return new APPResponse(movieList);
 
+        } catch(APPNotFoundException e) {
+            throw new APPNotFoundException(0, "No Movies");
         } catch(Exception e) {
             System.out.println("EXCEPTION!!!!");
             e.printStackTrace();
@@ -108,6 +110,8 @@ public class MovieInterface {
             movie.setId(item.getObjectId("_id").toString());
             return new APPResponse(movie);
 
+        } catch(APPNotFoundException e) {
+            throw new APPNotFoundException(0, "That Movie was not found");
         } catch(IllegalArgumentException e) {
             throw new APPBadRequestException(45,"Doesn't look like MongoDB ID");
         }  catch(Exception e) {

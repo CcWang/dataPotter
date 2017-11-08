@@ -73,21 +73,27 @@ public class ContributorInterface {
 
         FindIterable<Document> results = collection.find();
         if (results == null) {
-            return  new APPResponse(contributorList);
+            throw new APPBadRequestException(33, "No contributers were found");
         }
-        for (Document item : results) {
-            Contributor c = new Contributor(
-                    item.getString("name"),
-                    item.getString("email"),
-                    item.getString("password"),
-                    item.getString("nativeLanguage"),
-                    item.getString("phone"),
-                    item.getString("gender")
-            );
-            c.setId(item.getObjectId("_id").toString());
-            contributorList.add(c);
+        try {
+            for (Document item : results) {
+                Contributor c = new Contributor(
+                        item.getString("name"),
+                        item.getString("email"),
+                        item.getString("password"),
+                        item.getString("nativeLanguage"),
+                        item.getString("phone"),
+                        item.getString("gender")
+                );
+                c.setId(item.getObjectId("_id").toString());
+                contributorList.add(c);
+            }
+            return new APPResponse(contributorList);
+        } catch(APPNotFoundException e) {
+            throw new APPNotFoundException(0,"No Contributers");
+        } catch(Exception e) {
+            throw new APPInternalServerException(99,"Something happened, pinch me!");
         }
-        return new APPResponse(contributorList);
 
     }
 
@@ -155,15 +161,19 @@ public class ContributorInterface {
 //        if (json.getInt("odometer") < 0) {
 //            throw new APPBadRequestException(56, "Invalid odometer - cannot be less than 0");
 //        }
-        Document doc = new Document("name", json.getString("name"))
-                .append("email", json.getString("email"))
-                .append("password", json.getString("password"))
-                .append("nativeLanguage", json.getString("nativeLanguage"))
-                .append("phone", json.getString("phone"))
-                .append("gender", json.getString("gender"));
+        try {
+            Document doc = new Document("name", json.getString("name"))
+                    .append("email", json.getString("email"))
+                    .append("password", json.getString("password"))
+                    .append("nativeLanguage", json.getString("nativeLanguage"))
+                    .append("phone", json.getString("phone"))
+                    .append("gender", json.getString("gender"));
 
-        collection.insertOne(doc);
-        return new APPResponse(request);
+            collection.insertOne(doc);
+            return new APPResponse(request);
+        } catch(Exception e) {
+            throw new APPInternalServerException(99,"Something happened, pinch me!");
+        }
 
     }
 
@@ -189,8 +199,6 @@ public class ContributorInterface {
             if (obj.has("phone"))
                 doc.append("phone",obj.getString("phone"));
 
-
-
             Document set = new Document("$set", doc);
             collection.updateOne(query,set);
 
@@ -213,9 +221,15 @@ public class ContributorInterface {
     ) {
         ArrayList<Book> bookList = new ArrayList<Book>();
 
+
+
         try {
             BasicDBObject query = new BasicDBObject();
             query.put("contributorId", id);
+            Document item1 = collection.find(query).first();
+            if (item1 == null) {
+                throw new APPNotFoundException(0, "Sorry, we cannot find you. Sign up? ");
+            }
 
             long resultCount = booksCollection.count(query);
             FindIterable<Document> results = booksCollection.find(query).skip(offset).limit(count);
@@ -331,12 +345,16 @@ public class ContributorInterface {
         if (!json.has("contributorId"))
             throw new APPBadRequestException(55,"contributorId");
 
-        Document doc = new Document("name", json.getString("name"))
-                .append("genre", json.getString("genre"))
-                .append("level", json.getInt("level"))
-                .append("contributorId",id);
-        booksCollection.insertOne(doc);
-        return new APPResponse(request);
+        try {
+            Document doc = new Document("name", json.getString("name"))
+                    .append("genre", json.getString("genre"))
+                    .append("level", json.getInt("level"))
+                    .append("contributorId", id);
+            booksCollection.insertOne(doc);
+            return new APPResponse(request);
+        } catch(Exception e) {
+            throw new APPInternalServerException(99,"Something happened, pinch me!");
+        }
     }
 
 }
