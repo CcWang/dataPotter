@@ -185,7 +185,38 @@ public APPResponse searchByName(@PathParam("search") String search) {
             throw new APPInternalServerException(99,e.getMessage());
         }
     }
+    @GET
+    @Path("level/{level}")
+    @Consumes({ MediaType.APPLICATION_JSON})
+    @Produces({ MediaType.APPLICATION_JSON})
+    public APPResponse searchByLevel(@PathParam("level") Integer level) {
 
+
+        ArrayList<Movie> movieRet = new ArrayList<>();
+
+        try {
+            FindIterable<Document> results = collection.find(eq("level",level));
+            for (Document item : results) {
+                Movie movie = new Movie(
+                        item.getString("name"),
+                        item.getString("genre"),
+                        item.getInteger("level"),
+                        item.getString("contributorId")
+                );
+                movie.setId(item.getObjectId("_id").toString());
+                System.out.print(movie);
+                movieRet.add(movie);
+            }
+            return new APPResponse(movieRet);
+
+        } catch(APPNotFoundException e) {
+            throw new APPNotFoundException(0, "No Movies contain genre like: " + level.toString());
+        } catch(Exception e) {
+            System.out.println("EXCEPTION!!!!");
+            e.printStackTrace();
+            throw new APPInternalServerException(99,e.getMessage());
+        }
+    }
 //    need to write a post function
 
     @POST

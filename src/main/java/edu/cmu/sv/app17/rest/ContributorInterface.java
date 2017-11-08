@@ -276,7 +276,7 @@ public class ContributorInterface {
                 Movie m = new Movie(
                         item.getString("name"),
                         item.getString("genre"),
-                        item.getString("level"),
+                        item.getInteger("level"),
                         item.getString("contributorId")
                 );
                 m.setId(item.getObjectId("_id").toString());
@@ -307,7 +307,7 @@ public class ContributorInterface {
                 Tvshow tv = new Tvshow(
                         item.getString("name"),
                         item.getString("genre"),
-                        item.getString("level"),
+                        item.getInteger("level"),
                         item.getString("contributorId")
                 );
                 tv.setId(item.getObjectId("_id").toString());

@@ -25,6 +25,7 @@ import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.regex;
 
 @Path("tvshows")
@@ -177,6 +178,41 @@ public class TvshowInterface {
 
         } catch(APPNotFoundException e) {
             throw new APPNotFoundException(0, "No Movies contain genre like: " + genre);
+        } catch(Exception e) {
+            System.out.println("EXCEPTION!!!!");
+            e.printStackTrace();
+            throw new APPInternalServerException(99,e.getMessage());
+        }
+    }
+
+    //search by level
+
+    @GET
+    @Path("level/{level}")
+    @Consumes({ MediaType.APPLICATION_JSON})
+    @Produces({ MediaType.APPLICATION_JSON})
+    public APPResponse searchByGenre(@PathParam("level") Integer level) {
+
+
+        ArrayList<Tvshow> tvshowRet = new ArrayList<>();
+
+        try {
+            FindIterable<Document> results = collection.find(eq("level",level));
+            for (Document item : results) {
+                Tvshow tvshow = new Tvshow(
+                        item.getString("name"),
+                        item.getString("genre"),
+                        item.getInteger("level"),
+                        item.getString("contributorId")
+                );
+                tvshow.setId(item.getObjectId("_id").toString());
+                System.out.print(tvshow);
+                tvshowRet.add(tvshow);
+            }
+            return new APPResponse(tvshowRet);
+
+        } catch(APPNotFoundException e) {
+            throw new APPNotFoundException(0, "No Movies contain genre like: " + level.toString());
         } catch(Exception e) {
             System.out.println("EXCEPTION!!!!");
             e.printStackTrace();
