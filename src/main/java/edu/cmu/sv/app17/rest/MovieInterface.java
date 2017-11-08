@@ -13,6 +13,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import static com.mongodb.client.model.Filters.*;
 import com.mongodb.client.result.DeleteResult;
 import edu.cmu.sv.app17.models.Movie;
 import edu.cmu.sv.app17.models.Contributor;
@@ -56,12 +57,6 @@ public class MovieInterface {
         try {
             FindIterable<Document> results = collection.find();
             for (Document item : results) {
-//                String genre[] = String[] item.getString("genre");
-//                List<Document> genres = (List<Document>) item.get("genre");
-
-//                List<String> genres = item.get("genre", List.class);
-//                HashMap levels = item.get("level", HashMap.class);
-//                List<String> levels = item.get("level", List.class);
                 Movie movie = new Movie(
                         item.getString("name"),
                         item.getString("genre"),
@@ -94,6 +89,7 @@ public class MovieInterface {
 
         try {
             query.put("_id", new ObjectId(id));
+            System.out.print(query);
             Document item = collection.find(query).first();
             if (item == null) {
                 throw new APPNotFoundException(0, "No such movie, my friend");
@@ -119,6 +115,75 @@ public class MovieInterface {
         }
 
 
+    }
+
+//    search
+@GET
+@Path("{search}")
+@Consumes({ MediaType.APPLICATION_JSON})
+@Produces({ MediaType.APPLICATION_JSON})
+public APPResponse searchByName(@PathParam("search") String search) {
+
+
+    BasicDBObject query = new BasicDBObject();
+    ArrayList<Movie> movieRet = new ArrayList<>();
+
+    try {
+//        query = {"name":{search}};
+        FindIterable<Document> results = collection.find(regex("name",".*"+search+".*"));
+        for (Document item : results) {
+            Movie movie = new Movie(
+                    item.getString("name"),
+                    item.getString("genre"),
+                    item.getString("level"),
+                    item.getString("contributorId")
+            );
+            movie.setId(item.getObjectId("_id").toString());
+            System.out.print(movie);
+            movieRet.add(movie);
+        }
+        return new APPResponse(movieRet);
+
+    } catch(APPNotFoundException e) {
+        throw new APPNotFoundException(0, "No Movies contain key word like: " + search);
+    } catch(Exception e) {
+        System.out.println("EXCEPTION!!!!");
+        e.printStackTrace();
+        throw new APPInternalServerException(99,e.getMessage());
+    }
+}
+
+    @GET
+    @Path("genre/{genre}")
+    @Consumes({ MediaType.APPLICATION_JSON})
+    @Produces({ MediaType.APPLICATION_JSON})
+    public APPResponse searchByGenre(@PathParam("genre") String genre) {
+
+
+        ArrayList<Movie> movieRet = new ArrayList<>();
+
+        try {
+            FindIterable<Document> results = collection.find(regex("genre",".*"+genre+".*"));
+            for (Document item : results) {
+                Movie movie = new Movie(
+                        item.getString("name"),
+                        item.getString("genre"),
+                        item.getString("level"),
+                        item.getString("contributorId")
+                );
+                movie.setId(item.getObjectId("_id").toString());
+                System.out.print(movie);
+                movieRet.add(movie);
+            }
+            return new APPResponse(movieRet);
+
+        } catch(APPNotFoundException e) {
+            throw new APPNotFoundException(0, "No Movies contain genre like: " + genre);
+        } catch(Exception e) {
+            System.out.println("EXCEPTION!!!!");
+            e.printStackTrace();
+            throw new APPInternalServerException(99,e.getMessage());
+        }
     }
 
 //    need to write a post function
