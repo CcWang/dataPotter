@@ -118,7 +118,7 @@ public class TvshowInterface {
 
     //    search
     @GET
-    @Path("{search}")
+    @Path("name/{search}")
     @Consumes({ MediaType.APPLICATION_JSON})
     @Produces({ MediaType.APPLICATION_JSON})
     public APPResponse searchByName(@PathParam("search") String search) {

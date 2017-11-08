@@ -33,6 +33,7 @@ import java.util.List;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
 import com.mongodb.util.JSON;
+import sun.rmi.runtime.Log;
 
 @Path("movies")
 public class MovieInterface {
@@ -66,7 +67,7 @@ public class MovieInterface {
                         item.getString("contributorId")
                 );
                 movie.setId(item.getObjectId("_id").toString());
-                System.out.print(movie);
+//                System.out.print(movie);
                 movieList.add(movie);
             }
             return new APPResponse(movieList);
@@ -80,50 +81,40 @@ public class MovieInterface {
         }
 
     }
-
-    @GET
-    @Path("{id}")
-    @Produces({ MediaType.APPLICATION_JSON})
-    public APPResponse getOne(@PathParam("id") String id) {
-
-
+//
+@GET
+@Path("{id}")
+@Produces({MediaType.APPLICATION_JSON})
+public APPResponse getOne(@PathParam("id") String id) { ;
         BasicDBObject query = new BasicDBObject();
-        int avrage = avgLevel(id);
-
-        try {
-            query.put("_id", new ObjectId(id));
-            System.out.print(query);
-            Document item = collection.find(query).first();
-            if (item == null) {
-                throw new APPNotFoundException(0, "No such movie, my friend");
-            }
-//            List<String> genres = item.get("genre", List.class);
-//            HashMap levels = item.get("level", HashMap.class);
-//            List<String> levels = item.get("level", List.class);
-            Movie movie = new Movie(
-                    item.getString("name"),
-                    item.getString("genre"),
-                    item.getInteger("level"),
-                    item.getString("contributorId")
-            );
-            movie.setId(item.getObjectId("_id").toString());
-            return new APPResponse(movie);
-
-        } catch(APPNotFoundException e) {
-            throw new APPNotFoundException(0, "That Movie was not found");
-        } catch(IllegalArgumentException e) {
-            throw new APPBadRequestException(45,"Doesn't look like MongoDB ID");
-        }  catch(Exception e) {
-            throw new APPInternalServerException(99,"Something happened, pinch me!");
+    try {
+        query.put("_id", new ObjectId(id));
+        Document item = collection.find(query).first();
+        if (item == null) {
+            throw new APPNotFoundException(0, "No such movie, my friend");
         }
+        Movie movie = new Movie(
+                item.getString("name"),
+                item.getString("genre"),
+                item.getInteger("level"),
+                item.getString("contributorId")
+        );
+        movie.setId(item.getObjectId("_id").toString());
+        return new APPResponse(movie);
 
-
+    } catch (APPNotFoundException e) {
+        throw new APPNotFoundException(0, "No such book");
+    } catch (IllegalArgumentException e) {
+        throw new APPBadRequestException(45, "Doesn't look like MongoDB ID");
+    } catch (Exception e) {
+        throw new APPInternalServerException(99, "Something happened, pinch me!");
     }
+}
+//
+
+
 // get all level for same movie
-//@GET
-//@Path("{id}")
-//@Consumes({ MediaType.APPLICATION_JSON})
-//@Produces({ MediaType.APPLICATION_JSON})
+
 public Integer avgLevel( String id) {
 
 
@@ -149,9 +140,10 @@ public Integer avgLevel( String id) {
         throw new APPInternalServerException(99,e.getMessage());
     }
 }
+
 //    search
 @GET
-@Path("{search}")
+@Path("name/{search}")
 @Consumes({ MediaType.APPLICATION_JSON})
 @Produces({ MediaType.APPLICATION_JSON})
 public APPResponse searchByName(@PathParam("search") String search) {
