@@ -175,25 +175,25 @@ function addMovie(cId) {
     var m = [{
         "name": "Harry Potter and the Sorcer Stone",
         "genre": ["Adventure","Fantasy"],
-        "level": ["avg","7","wordsLevel","9","speed","5"],
+        "level": 7,
         "contributorId":cId
     },
         {
             "name": "Shrek",
             "genre": ["Adventure","Fantasy"],
-            "level": ["avg","8","wordsLevel","6","speed","7"],
+            "level": 8,
             "contributorId":cId
         },
         {
             "name": "X-Men (2000)",
             "genre": ["Action","Adventure"],
-            "level": ["avg","10","wordsLevel","9","speed","5"],
+            "level": 10,
             "contributorId":cId
         },
         {
             "name": "Black Swan",
             "genre": ["Drama","Thriller"],
-            "level": ["avg","6","wordsLevel","9","speed","9"],
+            "level": 6,
             "contributorId":cId
         }];
     var movies = dbConnection.collection('movie');
@@ -218,7 +218,6 @@ function addWatchList(userID, movieID) {
         "movieID": movieID,
         "tvShowID": null,
         "bookID": null,
-        "audiobookID": null
     }];
     var watchLists = dbConnection.collection('watchList');
     watchLists.insertOne(m[0]);
@@ -267,7 +266,6 @@ function addFavoriteList(userID, bookID) {
         "movieID": null,
         "tvShowID": null,
         "bookID": bookID,
-        "audiobookID": null
     }];
     ff.forEach(function(WatchList){
         var favoriteLists = dbConnection.collection('favoriteLists');
@@ -406,10 +404,10 @@ function movies (a,id) {
         for (var j=0;j<g[i]['genre_ids'].length;j++){
             genre +=(gmap[g[i]['genre_ids'][j]])+" "
         }
-        var avg = Math.floor(Math.random()*10)+1
-        var wordL = Math.floor(Math.random()*10)+1
-        var speed = Math.floor(Math.random()*10)+1
-        var level="avg: "+avg+", wordsLevel: "+ wordL+", speed: "+speed
+        var level = Math.floor(Math.random()*10)+1
+        // var wordL = Math.floor(Math.random()*10)+1
+        // var speed = Math.floor(Math.random()*10)+1
+        // var level="avg: "+avg+", wordsLevel: "+ wordL+", speed: "+speed
         // console.log(id)
         var m = {
                 "name": name,
@@ -472,10 +470,10 @@ function tvs (a,id) {
         for (var j=0;j<g[i]['genre_ids'].length;j++){
             genre+= gmap[g[i]['genre_ids'][j]]+" "
         }
-        var avg = Math.floor(Math.random()*10)+1
-        var wordL = Math.floor(Math.random()*10)+1
-        var speed = Math.floor(Math.random()*10)+1
-        var level="avg: "+avg+", wordsLevel: "+ wordL+", speed: "+speed
+        var level = Math.floor(Math.random()*10)+1
+        // var wordL = Math.floor(Math.random()*10)+1
+        // var speed = Math.floor(Math.random()*10)+1
+        // var level="avg: "+avg+", wordsLevel: "+ wordL+", speed: "+speed
         // console.log(id)
         var tv = {
             "name": name,

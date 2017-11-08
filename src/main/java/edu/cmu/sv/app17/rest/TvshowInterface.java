@@ -59,7 +59,7 @@ public class TvshowInterface {
                 Tvshow tv = new Tvshow(
                         item.getString("name"),
                         item.getString("genre"),
-                        item.getString("level"),
+                        item.getInteger("level"),
                         item.getString("contributorId")
                 );
                 System.out.println(tv);
@@ -98,7 +98,7 @@ public class TvshowInterface {
             Tvshow tv = new Tvshow(
                     item.getString("name"),
                     item.getString("genre"),
-                    item.getString("level"),
+                    item.getInteger("level"),
                     item.getString("contributorId")
             );
             tv.setId(item.getObjectId("_id").toString());
@@ -132,7 +132,7 @@ public class TvshowInterface {
                 Tvshow tvshow = new Tvshow(
                         item.getString("name"),
                         item.getString("genre"),
-                        item.getString("level"),
+                        item.getInteger("level"),
                         item.getString("contributorId")
                 );
                 tvshow.setId(item.getObjectId("_id").toString());
@@ -166,7 +166,7 @@ public class TvshowInterface {
                 Tvshow tvshow = new Tvshow(
                         item.getString("name"),
                         item.getString("genre"),
-                        item.getString("level"),
+                        item.getInteger("level"),
                         item.getString("contributorId")
                 );
                 tvshow.setId(item.getObjectId("_id").toString());
@@ -194,7 +194,7 @@ public class TvshowInterface {
             Document doc = new Document("contributorId",obj.getString("contributorId"))
                     .append("name", obj.getString("name"))
                     .append("genre", obj.getString("genre"))
-                    .append("level", obj.getString("level"));
+                    .append("level", obj.getInt("level"));
 
             collection.insertOne(doc);
 
@@ -231,7 +231,7 @@ public class TvshowInterface {
             if (json.has("genre"))
                 doc.append("genre",json.getString("genre"));
             if (json.has("level"))
-                doc.append("level",json.getString("level"));
+                doc.append("level",json.getInt("level"));
             if(json.has("contributorId"))
                 doc.append("contributorId", json.getString("contributorId"));
             Document set = new Document("$set", doc);

@@ -60,7 +60,7 @@ public class MovieInterface {
                 Movie movie = new Movie(
                         item.getString("name"),
                         item.getString("genre"),
-                        item.getString("level"),
+                        item.getInteger("level"),
                         item.getString("contributorId")
                 );
                 movie.setId(item.getObjectId("_id").toString());
@@ -100,7 +100,7 @@ public class MovieInterface {
             Movie movie = new Movie(
                     item.getString("name"),
                     item.getString("genre"),
-                    item.getString("level"),
+                    item.getInteger("level"),
                     item.getString("contributorId")
             );
             movie.setId(item.getObjectId("_id").toString());
@@ -135,7 +135,7 @@ public APPResponse searchByName(@PathParam("search") String search) {
             Movie movie = new Movie(
                     item.getString("name"),
                     item.getString("genre"),
-                    item.getString("level"),
+                    item.getInteger("level"),
                     item.getString("contributorId")
             );
             movie.setId(item.getObjectId("_id").toString());
@@ -168,7 +168,7 @@ public APPResponse searchByName(@PathParam("search") String search) {
                 Movie movie = new Movie(
                         item.getString("name"),
                         item.getString("genre"),
-                        item.getString("level"),
+                        item.getInteger("level"),
                         item.getString("contributorId")
                 );
                 movie.setId(item.getObjectId("_id").toString());
@@ -196,7 +196,7 @@ public APPResponse searchByName(@PathParam("search") String search) {
             Document doc = new Document("contributorId",obj.getString("contributorId"))
                     .append("name", obj.getString("name"))
                     .append("genre", obj.getString("genre"))
-                    .append("level", obj.getString("level"));
+                    .append("level", obj.getInt("level"));
 
             collection.insertOne(doc);
 
@@ -233,7 +233,7 @@ public APPResponse searchByName(@PathParam("search") String search) {
             if (json.has("genre"))
                 doc.append("genre",json.getString("genre"));
             if (json.has("level"))
-                doc.append("level",json.getString("level"));
+                doc.append("level",json.getInt("level"));
             if(json.has("contributorId"))
                 doc.append("contributorId", json.getString("contributorId"));
             Document set = new Document("$set", doc);
