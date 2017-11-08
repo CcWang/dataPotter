@@ -141,13 +141,13 @@ public class LanguageLevelInterface {
 
             Document doc = new Document();
             if (json.has("movies_level"))
-                doc.append("movies_level",json.getString("movies_level"));
+                doc.append("movies_level",json.getInt("movies_level"));
             if (json.has("tvshows_level"))
-                doc.append("tvshows_level",json.getString("tvshows_level"));
+                doc.append("tvshows_level",json.getInt("tvshows_level"));
             if (json.has("books_level"))
-                doc.append("books_level",json.getString("books_level"));
-            if (json.has("audioBooks_level"))
-                doc.append("audioBooks_level",json.getString("audioBooks_level"));
+                doc.append("books_level",json.getInt("books_level"));
+//            if (json.has("audioBooks_level"))
+//                doc.append("audioBooks_level",json.getString("audioBooks_level"));
 
             Document set = new Document("$set", doc);
             collection.updateOne(query,set);
