@@ -24,6 +24,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
 import java.util.List;
+import edu.cmu.sv.app17.rest.MovieInterface;
 
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.regex;
@@ -96,10 +97,13 @@ public class TvshowInterface {
 //            List<String> genres = item.get("genre", List.class);
 //            HashMap levels = item.get("level", HashMap.class);
 //            List<String> levels = item.get("level", List.class);
+            String name = item.getString("name");
+            int avgLevel = getAvg(name);
             Tvshow tv = new Tvshow(
                     item.getString("name"),
                     item.getString("genre"),
-                    item.getInteger("level"),
+//                    item.getInteger("level"),
+                    avgLevel,
                     item.getString("contributorId")
             );
             tv.setId(item.getObjectId("_id").toString());
@@ -115,6 +119,31 @@ public class TvshowInterface {
 
 
     }
+
+    public Integer getAvg( String name) {
+
+        Integer totalLevel = 0;
+
+        try {
+
+            FindIterable<Document> results = collection.find(eq("name",name));
+            int size = 0;
+            for (Document item : results) {
+                totalLevel = totalLevel+ item.getInteger("level");
+                size = size +1;
+            }
+
+            return totalLevel/size;
+
+        } catch(APPNotFoundException e) {
+            throw new APPNotFoundException(0, "No TVshows");
+        } catch(Exception e) {
+            System.out.println("EXCEPTION!!!!");
+            e.printStackTrace();
+            throw new APPInternalServerException(99,e.getMessage());
+        }
+    }
+
 
     //    search
     @GET
