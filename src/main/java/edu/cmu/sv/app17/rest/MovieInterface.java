@@ -242,26 +242,38 @@ public APPResponse searchByName(@PathParam("search") String search) {
             throw new APPInternalServerException(99,e.getMessage());
         }
     }
-//    need to write a post function
-
     @POST
+    @Path("create/{id}")
     @Consumes({ MediaType.APPLICATION_JSON})
     @Produces({ MediaType.APPLICATION_JSON})
-    public APPResponse create(JSONObject obj) {
+    public APPResponse create(@PathParam("id") String id, Object request) {
+        JSONObject json = null;
         try {
-            Document doc = new Document("contributorId",obj.getString("contributorId"))
-                    .append("name", obj.getString("name"))
-                    .append("genre", obj.getString("genre"))
-                    .append("level", obj.getInt("level"));
-
-            collection.insertOne(doc);
-
-
-        } catch(JSONException e) {
-            System.out.println("Failed to create a document");
+            json = new JSONObject(ow.writeValueAsString(request));
         }
-//
-        return new APPResponse(obj);
+        catch (JsonProcessingException e) {
+            throw new APPBadRequestException(33, e.getMessage());
+        }
+
+        if (!json.has("name"))
+            throw new APPBadRequestException(55,"name");
+        if (!json.has("genre"))
+            throw new APPBadRequestException(55,"genre");
+        if (!json.has("level"))
+            throw new APPBadRequestException(55,"level");
+//        if (!json.has("contributorId"))
+//            throw new APPBadRequestException(55,"contributorId");
+
+        try {
+            Document doc = new Document("name", json.getString("name"))
+                    .append("genre", json.getString("genre"))
+                    .append("level", json.getInt("level"))
+                    .append("contributorId", id);
+            collection.insertOne(doc);
+            return new APPResponse(request);
+        } catch(Exception e) {
+            throw new APPInternalServerException(99,"Something happened, pinch me!");
+        }
     }
 
 
@@ -302,6 +314,22 @@ public APPResponse searchByName(@PathParam("search") String search) {
         return new APPResponse(request);
     }
 
+
+    @DELETE
+    @Path("{croId}/{movieId}")
+    @Produces({ MediaType.APPLICATION_JSON})
+    public Object delete(@PathParam("croId") String croId, @PathParam("movieId") String movieId) {
+        BasicDBObject query = new BasicDBObject();
+
+        query.put("_id", new ObjectId(movieId));
+        query.put("contributorId", croId);
+
+        DeleteResult deleteResult = collection.deleteOne(query);
+        if (deleteResult.getDeletedCount() < 1)
+            throw new APPNotFoundException(66,"Could not delete");
+
+        return new JSONObject();
+    }
 
 
 }

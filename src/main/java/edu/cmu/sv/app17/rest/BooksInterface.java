@@ -111,7 +111,8 @@ public class BooksInterface {
             throw new APPInternalServerException(99, "Something happened, pinch me!");
         }
     }
-
+//the post method is in contributorInterface
+//    do not use this one
         @POST
         @Path("{id}/books")
         @Consumes({ MediaType.APPLICATION_JSON})
