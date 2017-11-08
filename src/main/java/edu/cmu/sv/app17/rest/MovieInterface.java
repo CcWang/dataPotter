@@ -93,11 +93,13 @@ public APPResponse getOne(@PathParam("id") String id) { ;
         if (item == null) {
             throw new APPNotFoundException(0, "No such movie, my friend");
         }
-
+        String name = item.getString("name");
+        int avg = avgLevel(name);
         Movie movie = new Movie(
                 item.getString("name"),
                 item.getString("genre"),
-                item.getInteger("level"),
+//                item.getInteger("level"),
+                avg,
                 item.getString("contributorId")
         );
         movie.setId(item.getObjectId("_id").toString());
@@ -116,22 +118,20 @@ public APPResponse getOne(@PathParam("id") String id) { ;
 
 // get all level for same movie
 
-public Integer avgLevel( String id) {
-
-
-    BasicDBObject query = new BasicDBObject();
-    ArrayList<Movie> movieRet = new ArrayList<>();
+public Integer avgLevel( String name) {
+    
     Integer totalLevel = 0;
 
     try {
-      query.put("_id", new ObjectId(id));
-        FindIterable<Document> results = collection.find(query);
-        long size = collection.count(query);
+
+        FindIterable<Document> results = collection.find(eq("name",name));
+        int size = 0;
         for (Document item : results) {
            totalLevel = totalLevel+ item.getInteger("level");
+           size = size +1;
         }
 
-        return totalLevel/toIntExact(size);
+        return totalLevel/size;
 
     } catch(APPNotFoundException e) {
         throw new APPNotFoundException(0, "No Movies");
