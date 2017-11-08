@@ -119,7 +119,7 @@ public APPResponse getOne(@PathParam("id") String id) { ;
 // get all level for same movie
 
 public Integer avgLevel( String name) {
-    
+
     Integer totalLevel = 0;
 
     try {
