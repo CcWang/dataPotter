@@ -66,6 +66,8 @@ public class TvshowInterface {
             }
             return new APPResponse(tvlist);
 //            return new APPResponse("hello!");
+        } catch(APPNotFoundException e) {
+            throw new APPNotFoundException(0, "No TV Shows");
         } catch(Exception e) {
             System.out.println("EXCEPTION!!!!");
             e.printStackTrace();
@@ -100,6 +102,8 @@ public class TvshowInterface {
             tv.setId(item.getObjectId("_id").toString());
             return new APPResponse(tv);
 
+        } catch(APPNotFoundException e) {
+            throw new APPNotFoundException(0, "That TV show was not found");
         } catch(IllegalArgumentException e) {
             throw new APPBadRequestException(45,"Doesn't look like MongoDB ID");
         }  catch(Exception e) {
@@ -115,6 +119,7 @@ public class TvshowInterface {
     @Consumes({ MediaType.APPLICATION_JSON})
     @Produces({ MediaType.APPLICATION_JSON})
     public APPResponse create(JSONObject obj) {
+
         try {
             Document doc = new Document("contributorId",obj.getString("contributorId"))
                     .append("name", obj.getString("name"))

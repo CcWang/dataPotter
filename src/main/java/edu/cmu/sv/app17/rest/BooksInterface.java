@@ -72,6 +72,8 @@ public class BooksInterface {
             }
             return new APPResponse(bookList);
 
+        } catch(APPNotFoundException e) {
+            throw new APPNotFoundException(0, "No TV Shows");
         } catch(Exception e) {
             System.out.println("EXCEPTION!!!!");
             e.printStackTrace();
@@ -114,7 +116,7 @@ public class BooksInterface {
         @Path("{id}/books")
         @Consumes({ MediaType.APPLICATION_JSON})
         @Produces({ MediaType.APPLICATION_JSON})
-        public APPResponse create( Object request) {
+        public APPResponse create( Object request, @PathParam("id") String id) {
             JSONObject json = null;
             try {
                 json = new JSONObject(ow.writeValueAsString(request));
@@ -123,6 +125,14 @@ public class BooksInterface {
                 throw new APPBadRequestException(33, e.getMessage());
             }
 
+            BasicDBObject query = new BasicDBObject();
+            query.put("_id", new ObjectId(id));
+            Document item = collection.find(query).first();
+            if (item == null) {
+                throw new APPNotFoundException(0, "Sorry, we could not find that user. ");
+            }
+
+
             if (!json.has("name"))
                 throw new APPBadRequestException(55,"missing name");
             if (!json.has("level"))
@@ -130,11 +140,15 @@ public class BooksInterface {
             if (!json.has("genre"))
                 throw new APPBadRequestException(55,"missing genre");
 
-            Document doc = new Document("name", json.getString("name"))
-                    .append("genre", json.getString("genre"))
-                    .append("level", json.getInt("level"));
-            collection.insertOne(doc);
-            return new APPResponse(request);
+            try {
+                Document doc = new Document("name", json.getString("name"))
+                        .append("genre", json.getString("genre"))
+                        .append("level", json.getInt("level"));
+                collection.insertOne(doc);
+                return new APPResponse(request);
+            } catch (Exception e) {
+                throw new APPInternalServerException(99, "Something happened, pinch me!");
+            }
         }
 
 

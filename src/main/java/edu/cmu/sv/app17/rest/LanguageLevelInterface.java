@@ -60,6 +60,8 @@ public class LanguageLevelInterface {
             }
             return new APPResponse(lanLevelList);
 
+        } catch(APPNotFoundException e) {
+            throw new APPNotFoundException(0, "No Langs Found");
         } catch(Exception e) {
             System.out.println("EXCEPTION!!!!");
             e.printStackTrace();
@@ -91,6 +93,8 @@ public class LanguageLevelInterface {
             lanlevel.setId(item.getObjectId("_id").toString());
             return new APPResponse(lanlevel);
 
+        } catch(APPNotFoundException e) {
+            throw new APPNotFoundException(0, "That Language was not found");
         } catch(IllegalArgumentException e) {
             throw new APPBadRequestException(45,"Doesn't look like MongoDB ID");
         }  catch(Exception e) {
