@@ -189,17 +189,29 @@ public class BooksInterface {
     }
 
     @DELETE
-    @Path("{id}")
+    @Path("{croId}/{bookId}")
     @Produces({ MediaType.APPLICATION_JSON})
-    public Object delete(@PathParam("id") String id) {
+    public Object delete(@PathParam("croId") String croId, @PathParam("bookId") String bookId) {
         BasicDBObject query = new BasicDBObject();
-        query.put("_id", new ObjectId(id));
 
-        DeleteResult deleteResult = collection.deleteOne(query);
-        if (deleteResult.getDeletedCount() < 1)
-            throw new APPNotFoundException(66,"Could not delete");
+        query.put("_id", new ObjectId(bookId));
+        query.put("contributorId", croId);
 
+        try{
+            DeleteResult deleteResult = collection.deleteOne(query);
+            if (deleteResult.getDeletedCount() < 1)
+                throw new APPNotFoundException(66,"Could not delete");
+        }
+        catch(APPNotFoundException e) {
+            throw new APPNotFoundException(0, "That Book was not found");
+        } catch(IllegalArgumentException e) {
+            throw new APPBadRequestException(45,"Doesn't look like MongoDB ID");
+        }  catch(Exception e) {
+            throw new APPInternalServerException(99,"Something happened, pinch me!");
+        }
         return new JSONObject();
+
     }
+
 
 }
