@@ -1,7 +1,7 @@
 $(function() {
-    var contributorId = '59f02fc6767d4e46cbbe6455';
-    var offset = 0;
-    var count = 20;
+    var contributorId = "59f0527403bd32510df994f5";
+    var offset = 20;
+    var count = 30;
     var total = -1;
 
 $(function() {
@@ -65,6 +65,7 @@ $(function() {
             type: "GET",
         })
             .done(function(data){
+                console.log(data);
                 total = data.metadata.total;
                 $("#page").text("Page " + Math.floor(offset/count+1) + " of " + (Math.ceil(total/count)));
                 $("#bookTable").find(".cloned").remove();
