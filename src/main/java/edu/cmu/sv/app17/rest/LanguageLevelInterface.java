@@ -51,8 +51,8 @@ public class LanguageLevelInterface {
                         item.getString("usersId"),
                         item.getInteger("movies_level",0),
                         item.getInteger("tvshows_level",0),
-                        item.getInteger("books_level", 0),
-                        item.getInteger("audioBooks_level",0)
+                        item.getInteger("books_level", 0)
+//                        item.getInteger("audioBooks_level",0)
 
                 );
                 lanLevel.setId(item.getObjectId("_id").toString());
@@ -85,8 +85,8 @@ public class LanguageLevelInterface {
                     item.getString("usersId"),
                     item.getInteger("movies_level",0),
                     item.getInteger("tvshows_level",0),
-                    item.getInteger("books_level", 0),
-                    item.getInteger("audioBooks_level",0)
+                    item.getInteger("books_level", 0)
+//                    item.getInteger("audioBooks_level",0)
             );
             lanlevel.setId(item.getObjectId("_id").toString());
             return new APPResponse(lanlevel);

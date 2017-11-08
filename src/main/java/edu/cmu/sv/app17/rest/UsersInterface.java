@@ -132,6 +132,8 @@ public class UsersInterface {
 
     }
 
+    
+
     @POST
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
@@ -240,8 +242,8 @@ public class UsersInterface {
                         item.getString("usersId"),
                         item.getInteger("movies_level"),
                         item.getInteger("tvshows_level"),
-                        item.getInteger("books_level"),
-                        item.getInteger("audioBooks_level")
+                        item.getInteger("books_level")
+//                        item.getInteger("audioBooks_level")
 
                 );
                 lang.setId(item.getObjectId("_id").toString());
