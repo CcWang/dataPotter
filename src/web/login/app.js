@@ -1,4 +1,5 @@
 $(function(){
+
     $("#logIn").click(function (e) {
         e.preventDefault();
         var url = ""
@@ -23,16 +24,23 @@ $(function(){
             contentType: "application/json; charset=utf-8"
         }).done(function(data){
             console.log(data)
+            var d = new Date();
+            d.setTime(d.getTime() + (1*24*60*60*1000));
+            var expires = "expires="+ d.toUTCString();
+
+            token = data.content.token;
+
             if (userType == "User"){
                 $("#greeting").text("User: "+data.content.username);
+                document.cookie =  "name = "+data.content.username+"; token=" + token + ";"+ expires + ";path=/";
+                window.location.replace("http://localhost:8080/users/");
             }
             if (userType == "Contributor"){
                 $("#greeting").text(data.content.name);
+                localStorage.setItem('contributor', JSON.stringify(data.content));
+                window.location.replace("http://localhost:8080/contributors/");
             }
-            // $("#getcars").show();
-            // $("#carTable").find(".cloned").remove();
-            token = data.content.token;
-            userId = data.content.userId;
+
         }).fail(function(data){
             $("#greeting").text("You might want to try it again");
 
