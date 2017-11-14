@@ -284,6 +284,7 @@ public APPResponse searchByName(@PathParam("search") String search) {
     public APPResponse update(@PathParam("id") String id, Object request) {
         JSONObject json = null;
         try {
+
             json = new JSONObject(ow.writeValueAsString(request));
         }
         catch (JsonProcessingException e) {

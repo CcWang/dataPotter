@@ -129,19 +129,20 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr id="movieRow">
+                    <tr id="movieRow" style="display: none">
                         <th scope="row">*</th>
                         <td id="mName"></td>
                         <td id="genre"></td>
                         <td id="level"></td>
                         <td id="action"></td>
+                        <input id="movieId" type="hidden" >
                     </tr>
                     </tbody>
                 </table>
 
                 <h2 id="tvshows" class="tvs">TV Shows</h2>
                 <h3 id="tvList" class="tvs"></h3>
-                <table class="table table-striped tvs" id="tvTable">
+                <table class="table table-striped tvshows tvs" id="tvTable">
                     <li class="tvs" style="display: inline-block; " id="ptv">Previous Page</li>
                     <span class="tvs"> | </span><li class=" tvs" style="display: inline-block; " id="pagetv">Page</li>
                     <span class="tvs"> | </span><li class="next tvs " style="display: inline-block; " id="ntv">Next Page</li>
@@ -156,12 +157,12 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr id="tvRow">
+                    <tr id="tvRow" style="display: none">
                         <th scope="row">*</th>
                         <td id="tvName"></td>
                         <td id="tvgenre"></td>
                         <td id="tvlevel"></td>
-                        <td id="tvimg"></td>
+                        <td id="tvaction"></td>
                     </tr>
                     </tbody>
                 </table>

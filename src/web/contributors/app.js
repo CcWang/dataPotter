@@ -248,12 +248,15 @@ $(document).ready(function () {
                 $("#mpage").text("Page " + Math.floor(offset/count+1) + " of " + (Math.ceil(total/count)));
                 $("#movieTable").find(".cloned").remove();
                 data.content.forEach(function(item){
+
                     $( "#movieRow" ).clone().prop("id",item.id).appendTo( "#movieTable" );
                     $("#"+item.id).find("#mName").text(item.name);
                     $("#"+item.id).find("#genre").text(item.genre);
                     $("#"+item.id).find("#level").text(item.level);
+                    $("#"+item.id).find("#action").append("<button class='btn btn-info add'>⬆</button>   <button class='btn btn-info minus'>⬇</button>     <button class='btn btn-info delete'>❌</button>");
                     $("#"+item.id).prop("class","cloned");
                     $("#"+item.id).show();
+
                 });
             })
             .fail(function(data){
@@ -289,6 +292,8 @@ $(document).ready(function () {
                     $("#"+item.id).find("#tvName").text(item.name);
                     $("#"+item.id).find("#tvgenre").text(item.genre);
                     $("#"+item.id).find("#tvlevel").text(item.level);
+                    $("#"+item.id).find("#tvaction").append("<button class='btn btn-info tvadd'>⬆</button>   <button class='btn btn-info tvminus'>⬇</button>     <button class='btn btn-info tvdelete'>❌</button>");
+
                     $("#"+item.id).prop("class","cloned");
                     $("#"+item.id).show();
                 });
@@ -333,6 +338,99 @@ $(document).ready(function () {
                 $("#bookList").text("Sorry no tvs");
             })
 
+    }
+    $(document).on('click', '.add', function() {
+        var id = $(this).closest("tr")[0].id;
+        // console.log(id);
+        var type = $(this).closest("table")[0].classList[2];
+        var cLevel = $(this).parent().parent().find('#level').text();
+        console.log(cLevel)
+        if(cLevel <10) {
+            update(id, type,cLevel,'add');
+        }else{
+            alert("10 is the highest level");
+        }
+
+
+    });
+    $(document).on('click', '.minus', function() {
+        var id = $(this).closest("tr")[0].id;
+        var cLevel = $(this).parent().parent().find('#level').text();
+        console.log(cLevel)
+        if(cLevel >0) {
+            update(id, type,cLevel,'minus');
+        }else{
+            alert("0 is the lowest level.");
+        }
+
+
+    });
+    $(document).on('click', '.delete', function() {
+        var id = $(this).closest("tr")[0].id;
+        var name = $(this).parent().parent().find('#mName').text();
+        var type = $(this).closest("table")[0].classList[2];
+
+        if (confirm('Are you sure you want to delete '+name+"?")) {
+            // Save it!
+            deleteMedia(id,type);
+        }
+
+
+    });
+
+    function update(id, type,level,cal) {
+        var l;
+        if (cal == 'add'){
+            l = parseInt(level)+1;
+        }
+        if(cal == 'minus'){
+            l = parseInt(level)-1;
+        }
+        console.log(type, level, cal)
+        jQuery.ajax ({
+            url: "../api/"+type+"/"+id,
+            type: "PATCH",
+            data: JSON.stringify({level:l}),
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            beforeSend:function (xhr) {
+                xhr.setRequestHeader ("Authorization", token);
+            }
+        }).done(function(data){
+            alert("Your information has been updated");
+            if (type == "movies"){
+                getMovies();
+            }
+            if (type == "tvshows"){
+                getTV();
+            }
+        }).fail(function(data){
+            $("#greeting").text("You might want to try it again");
+        })
+
+    }
+
+    function deleteMedia(id,type){
+        jQuery.ajax ({
+            url: "../api/"+type+"/" +finalvalue.contributorId+"/"+id,
+            type: "DELETE",
+            data: JSON.stringify({}),
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            beforeSend:function (xhr) {
+                xhr.setRequestHeader ("Authorization", token);
+            }
+        }).done(function(data){
+            alert("deleted!");
+            if (type == "movies"){
+                getMovies();
+            }
+            if (type == "tvshows"){
+                getTV();
+            }
+        }).fail(function(data){
+            $("#greeting").text("You might want to try it again");
+        })
     }
 
 });
