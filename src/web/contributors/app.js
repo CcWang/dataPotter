@@ -9,7 +9,7 @@ $(document).ready(function () {
     $("#editForm").hide();
     // console.log(document.cookie)
     var listvalues = localStorage.getItem('contributor');
-    if (listvalues == ""){
+    if (listvalues == " "){
         alert("please log in");
         window.location.replace("http://localhost:8080/login/");
     }
