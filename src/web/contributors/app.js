@@ -79,6 +79,7 @@ $(document).ready(function () {
         getBooks();
 
     });
+    //movies next, previous, sort
 
     $("#mn").click(function(e){
         e.preventDefault();
@@ -114,7 +115,79 @@ $(document).ready(function () {
 
 
     })
+    //tv next, previous, sort
 
+    $("#ntv").click(function(e){
+        e.preventDefault();
+        console.log("click mn")
+        if (offset+count < total) {
+            offset = offset+count;
+            getTV();
+        }
+
+    })
+
+    $("#ptv").click(function(e){
+        e.preventDefault();
+        console.log("Cliked")
+        if (offset-count >= 0) {
+            offset = offset-count;
+
+            getTV();
+
+        }
+    })
+    $("#sortGTv").click(function(e){
+        e.preventDefault();
+
+        getTV("genre");
+
+
+    })
+
+    $("#sortNTv").click(function(e){
+        e.preventDefault();
+        getTV("name");
+
+
+    })
+
+    //books next, previous, sort
+
+    $("#nBook").click(function(e){
+        e.preventDefault();
+        console.log("click mn")
+        if (offset+count < total) {
+            offset = offset+count;
+            getBooks();
+        }
+
+    })
+
+    $("#pBook").click(function(e){
+        e.preventDefault();
+        console.log("Cliked")
+        if (offset-count >= 0) {
+            offset = offset-count;
+
+            getBooks();
+
+        }
+    })
+    $("#sortGBook").click(function(e){
+        e.preventDefault();
+
+        getBooks("genre");
+
+
+    })
+
+    $("#sortNBook").click(function(e){
+        e.preventDefault();
+        getBooks("name");
+
+
+    })
     function getUser(token) {
         jQuery.ajax ({
             url:  url,
@@ -209,7 +282,7 @@ $(document).ready(function () {
         })
             .done(function(data){
                 total = data.metadata.total;
-                $("#page").text("Page " + Math.floor(offset/count+1) + " of " + (Math.ceil(total/count)));
+                $("#pagetv").text("Page " + Math.floor(offset/count+1) + " of " + (Math.ceil(total/count)));
                 $("#tvTable").find(".cloned").remove();
                 data.content.forEach(function(item){
                     $( "#tvRow" ).clone().prop("id",item.id).appendTo( "#tvTable" );
@@ -245,7 +318,7 @@ $(document).ready(function () {
         })
             .done(function(data){
                 total = data.metadata.total;
-                $("#page").text("Page " + Math.floor(offset/count+1) + " of " + (Math.ceil(total/count)));
+                $("#pageBook").text("Page " + Math.floor(offset/count+1) + " of " + (Math.ceil(total/count)));
                 $("#bookTable").find(".cloned").remove();
                 data.content.forEach(function(item){
                     $( "#bookRow" ).clone().prop("id",item.id).appendTo( "#bookTable" );

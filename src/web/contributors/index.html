@@ -142,15 +142,15 @@
                 <h2 id="tvshows" class="tvs">TV Shows</h2>
                 <h3 id="tvList" class="tvs"></h3>
                 <table class="table table-striped tvs" id="tvTable">
-                    <li class="previous tvs" style="display: inline-block; ">Previous Page</li>
-                    <span class="tvs"> | </span><li class="page tvs" style="display: inline-block; ">Page</li>
-                    <span class="tvs"> | </span><li class="next tvs " style="display: inline-block; ">Next Page</li>
+                    <li class="tvs" style="display: inline-block; " id="ptv">Previous Page</li>
+                    <span class="tvs"> | </span><li class=" tvs" style="display: inline-block; " id="pagetv">Page</li>
+                    <span class="tvs"> | </span><li class="next tvs " style="display: inline-block; " id="ntv">Next Page</li>
                     <div class="line tvs"></div>
                     <thead >
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">TV Show Name <span> | </span><span><li class="sortN" style="display: inline-block; ">Sort by Name</li></span></th>
-                        <th scope="col">TV Show Genre <span> | </span><span><li class="sortG" style="display: inline-block">Sort by Genre</li></span></th>
+                        <th scope="col">TV Show Name <span> | </span><span><li id="sortNTv" style="display: inline-block; ">Sort by Name</li></span></th>
+                        <th scope="col">TV Show Genre <span> | </span><span><li id="sortGTv" style="display: inline-block">Sort by Genre</li></span></th>
                         <th scope="col">TV Show Level</th>
                         <th scope="col">Action</th>
                     </tr>
@@ -169,11 +169,15 @@
                 <h3 id="books" class="books">books</h3>
                 <h3 id="bookList" class="books"></h3>
                 <table class="table table-striped books" id="bookTable">
+                    <li class="books" style="display: inline-block; " id="pBook">Previous Page</li>
+                    <span class="books"> | </span><li class=" books" style="display: inline-block; " id="pageBook">Page</li>
+                    <span class="books"> | </span><li class=" books " style="display: inline-block; " id="nBook">Next Page</li>
+                    <div class="line books"></div>
                     <thead >
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Book Name</th>
-                        <th scope="col">Book Genre</th>
+                        <th scope="col">Book Name <span> | </span><span><li id="sortNBook" style="display: inline-block; ">Sort by Name</li></span></th>
+                        <th scope="col">Book Genre <span> | </span><span><li id="sortGBook" style="display: inline-block">Sort by Genre</li></span></th>
                         <th scope="col">Book Level</th>
                         <th scope="col">Book Image</th>
                     </tr>
