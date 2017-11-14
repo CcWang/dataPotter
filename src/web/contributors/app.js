@@ -330,6 +330,8 @@ $(document).ready(function () {
                     $("#"+item.id).find("#bName").text(item.name);
                     $("#"+item.id).find("#bgenre").text(item.genre);
                     $("#"+item.id).find("#blevel").text(item.level);
+                    $("#"+item.id).find("#baction").append("<button class='btn btn-info add'>⬆</button>   <button class='btn btn-info minus'>⬇</button>     <button class='btn btn-info delete'>❌</button>");
+
                     $("#"+item.id).prop("class","cloned");
                     $("#"+item.id).show();
                 });
@@ -349,6 +351,8 @@ $(document).ready(function () {
         }else if(type == "tvshows"){
             var cLevel = $(this).parent().parent().find('#tvlevel').text();
 
+        }else if(type == 'books'){
+            var cLevel = $(this).parent().parent().find('#blevel').text();
         }
         console.log(cLevel)
         if(cLevel <10) {
@@ -368,6 +372,8 @@ $(document).ready(function () {
         }else if(type == "tvshows"){
             var cLevel = $(this).parent().parent().find('#tvlevel').text();
 
+        }else if(type == 'books'){
+            var cLevel = $(this).parent().parent().find('#blevel').text();
         }
         console.log(cLevel)
         if(cLevel >0) {
@@ -388,7 +394,11 @@ $(document).ready(function () {
         }else if(type == "tvshows"){
             var name = $(this).parent().parent().find('#tvName').text();
 
+        }else if(type == 'books'){
+            var name = $(this).parent().parent().find('#bName').text();
+
         }
+
 
 
         if (confirm('Are you sure you want to delete '+name+"?")) {
@@ -425,6 +435,9 @@ $(document).ready(function () {
             if (type == "tvshows"){
                 getTV();
             }
+            if (type = 'books'){
+                getBooks();
+            }
         }).fail(function(data){
             $("#greeting").text("You might want to try it again");
         })
@@ -448,6 +461,9 @@ $(document).ready(function () {
             }
             if (type == "tvshows"){
                 getTV();
+            }
+            if (type = 'books'){
+                getBooks();
             }
         }).fail(function(data){
             $("#greeting").text("You might want to try it again");
