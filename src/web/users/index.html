@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" >
+    <title>MTBA</title>
+    <link rel="stylesheet" type="text/css"  href="main.css">
+    <script
+            src="https://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+            crossorigin="anonymous"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="app.js"></script>
+
+
+</head>
+<body>
+
+
+
+<div class="wrapper">
+    <!-- Sidebar Holder -->
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <h3 class = "name">Name</h3>
+        </div>
+
+        <ul class="list-unstyled components">
+            <p>Personal Information</p>
+
+            <li>
+                <p class="name">Name</p>
+            </li>
+            <li>
+                <p id = 'email'>Email address</p>
+            </li>
+
+            <li>
+                <p id="lan">Native Language</p>
+            </li>
+
+                <p id="cell">Phone Number</p>
+            </li>
+
+            <li id = "gender">
+
+            </li>
+
+            <li id="Watlist">Watch List</p>
+            </li>
+            <li id="favlist">Favorite List</p>
+            </li>
+                </ul>
+            </li>
+            <li>
+                <a href="#" id="edit">EDIT</a>
+            </li>
+
+        </ul>
+        <form class="form-edit" id = 'editForm'>
+            <label for="changeEmail" class="sr-only">Email address</label>
+            <input type="email" id="changeEmail" class="form-control"  value="" required autofocus>
+            <label for="changePwd" class="sr-only">Email address</label>
+            <input type="password" id="changePwd" class="form-control"  value="" required autofocus>
+            <label for="changeLan" class="sr-only">Native Lanuage</label>
+            <input type="text" id="changeLan" class="form-control"  value="" required>
+            <label for="changeCell" class="sr-only">Phone Number</label>
+            <input type="text" id="changeCell" class="form-control"  value="" required>
+            <hr>
+            <button id="save" class="btn btn-warning btn-block" type="submit">SAVE</button>
+        </form>
+
+    </nav>
+
+    <!-- Page Content Holder -->
+    <div id="content" class="container-fluid" >
+
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+
+                <div class="navbar-header">
+                    <button type="button" id="sidebarCollapse" class="btn btn-info navbar-btn">
+                        <i class="glyphicon glyphicon-align-left"></i>
+                        <span>My account</span>
+                    </button>
+                </div>
+
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a class="showMovies">Watch List</a></li>
+                        <li><a class="showTvs">Favorite List</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="line"></div>
+
+        <!--<h2 id="movies" class="movies">Movies</h2>-->
+        <!--<h3 id="movieList" class="movies"></h3>-->
+        <!--<table class="table table-striped movies" id="movieTable">-->
+            <!--<thead >-->
+            <!--<tr>-->
+                <!--<th scope="col">#</th>-->
+                <!--<th scope="col">Movie Name</th>-->
+                <!--<th scope="col">Movie Genre</th>-->
+                <!--<th scope="col">Movie Level</th>-->
+                <!--<th scope="col">Movie Image</th>-->
+            <!--</tr>-->
+            <!--</thead>-->
+            <!--<tbody>-->
+            <!--<tr id="movieRow">-->
+                <!--<th scope="row">*</th>-->
+                <!--<td id="mName"></td>-->
+                <!--<td id="genre"></td>-->
+                <!--<td id="level"></td>-->
+                <!--<td id="img"></td>-->
+            <!--</tr>-->
+            <!--</tbody>-->
+        <!--</table>-->
+
+        <!--<h2 id="tvshows" class="tvs">TV Shows</h2>-->
+        <!--<h3 id="tvList" class="tvs"></h3>-->
+        <!--<table class="table table-striped tvs" id="tvTable">-->
+            <!--<thead >-->
+            <!--<tr>-->
+                <!--<th scope="col">#</th>-->
+                <!--<th scope="col">TV Show Name</th>-->
+                <!--<th scope="col">TV Show Genre</th>-->
+                <!--<th scope="col">TV Show Level</th>-->
+                <!--<th scope="col">TV Show Image</th>-->
+            <!--</tr>-->
+            <!--</thead>-->
+            <!--<tbody>-->
+            <!--<tr id="tvRow">-->
+                <!--<th scope="row">*</th>-->
+                <!--<td id="tvName"></td>-->
+                <!--<td id="tvgenre"></td>-->
+                <!--<td id="tvlevel"></td>-->
+                <!--<td id="tvimg"></td>-->
+            <!--</tr>-->
+            <!--</tbody>-->
+        <!--</table>-->
+
+        <!--<h3 id="books" class="books">books</h3>-->
+        <!--<h3 id="bookList" class="books"></h3>-->
+        <!--<table class="table table-striped books" id="bookTable">-->
+            <!--<thead >-->
+            <!--<tr>-->
+                <!--<th scope="col">#</th>-->
+                <!--<th scope="col">Book Name</th>-->
+                <!--<th scope="col">Book Genre</th>-->
+                <!--<th scope="col">Book Level</th>-->
+                <!--<th scope="col">Book Image</th>-->
+            <!--</tr>-->
+            <!--</thead>-->
+            <!--<tbody>-->
+            <!--<tr id="bookRow">-->
+                <!--<th scope="row">*</th>-->
+                <!--<td id="bName"></td>-->
+                <!--<td id="bgenre"></td>-->
+                <!--<td id="blevel"></td>-->
+                <!--<td id="bimg"></td>-->
+            <!--</tr>-->
+            <!--</tbody>-->
+        <!--</table>-->
+        <div class="line"></div>
+
+    </div>
+</div>
+</body>
+
+
+
+
+
+</html>
