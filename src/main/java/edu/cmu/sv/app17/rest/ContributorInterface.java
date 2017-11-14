@@ -289,6 +289,7 @@ public class ContributorInterface {
         });
 
         try {
+            checkAuthentication(headers, id);
             BasicDBObject query = new BasicDBObject();
             query.put("contributorId", id);
 
@@ -328,6 +329,7 @@ public class ContributorInterface {
         });
 
         try {
+            checkAuthentication(headers, id);
             BasicDBObject query = new BasicDBObject();
             query.put("contributorId", id);
             long resultCount = tvCollection.count(query);

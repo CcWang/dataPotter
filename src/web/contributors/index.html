@@ -115,15 +115,15 @@
                 <h3 id="movieList" class="movies"></h3>
 
                 <table class="table table-striped movies" id="movieTable">
-                    <li class="previous movies" style="display: inline-block; ">Previous Page</li>
-                    <span class="movies"> | </span><li class="page movies" style="display: inline-block; ">Page</li>
-                    <span class="movies"> | </span><li class="next movies" style="display: inline-block; ">Next Page</li>
+                    <li class="movies" id='mp' style="display: inline-block; ">Previous Page</li>
+                    <span class="movies"> | </span><li class="movies" id="mpage"  style="display: inline-block; ">Page</li>
+                    <span class="movies"> | </span><li class="movies" id="mn" style="display: inline-block; ">Next Page</li>
                     <div class="line"></div>
                     <thead >
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Movie Name <span> | </span><span><li class="sortN" style="display: inline-block; ">Sort by Name</li></span></th>
-                        <th scope="col">Movie Genre <span> | </span><span><li class="sortG" style="display: inline-block">Sort by Genre</li></span></th>
+                        <th scope="col">Movie Name <span> | </span><span><li id="sortNMovie" style="display: inline-block; ">Sort by Name</li></span></th>
+                        <th scope="col">Movie Genre <span> | </span><span><li id="sortGMovie" style="display: inline-block">Sort by Genre</li></span></th>
                         <th scope="col">Movie Level</th>
                         <th scope="col">Action </th>
                     </tr>

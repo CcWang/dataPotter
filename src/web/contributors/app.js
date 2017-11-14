@@ -12,18 +12,20 @@ $(document).ready(function () {
     //check if user has loged in
     if (listvalues == null){
         alert("please log in");
-        window.location.replace("http://localhost:8080/login/");
+        // window.location.replace("http://localhost:8080/login/");
+        location.href=('/login');
     }
     var finalvalue = JSON.parse(listvalues);
     var token = finalvalue.token;
     //check if user has loged in
     if(token == null){
         alert("please log in");
-        window.location.replace("http://localhost:8080/login/");
+        // window.location.replace("http://localhost:8080/login/");
+        location.href=('/login');
     }
 
     var url = "/api/contributors/"+finalvalue.contributorId;
-    // getUser(token);
+    getUser(token);
 
     $("#edit").click(function (e) {
         e.preventDefault();
@@ -78,67 +80,38 @@ $(document).ready(function () {
 
     });
 
-    $(".next").click(function(e){
+    $("#mn").click(function(e){
         e.preventDefault();
-        console.log(offset,count)
+       console.log("click mn")
         if (offset+count < total) {
             offset = offset+count;
-            if ($('.movies').is (":visible")){
                 getMovies();
-            }
-            if ($('.tvs').is (":visible")){
-                getTV();
-            }
-            if ($('.books').is (":visible")){
-                getBooks();
-            }
-
         }
+
     })
 
-    $(".previous").click(function(e){
+    $("#mp").click(function(e){
         e.preventDefault();
         console.log("Cliked")
         if (offset-count >= 0) {
             offset = offset-count;
-            if ($('.movies').is (":visible")){
+
                 getMovies();
-            }
-            if ($('.tvs').is (":visible")){
-                getTV();
-            }
-            if ($('.books').is (":visible")){
-                getBooks();
-            }
-
 
         }
     })
-    $(".sortG").click(function(e){
+    $("#sortGMovie").click(function(e){
         e.preventDefault();
-        if ($('.movies').is (":visible")){
-            getMovies("genre");
-        }
-        if ($('.tvs').is (":visible")){
-            getTV("genre");
-        }
-        if ($('.books').is (":visible")){
-            getBooks("genre");
-        }
+
+        getMovies("genre");
+
 
     })
 
-    $(".sortN").click(function(e){
+    $("#sortNMovie").click(function(e){
         e.preventDefault();
-        if ($('.movies').is (":visible")){
-            getMovies("name");
-        }
-        if ($('.tvs').is (":visible")){
-            getTV("name");
-        }
-        if ($('.books').is (":visible")){
-            getBooks("name");
-        }
+        getMovies("name");
+
 
     })
 
@@ -199,7 +172,7 @@ $(document).ready(function () {
             .done(function(data){
                 total = data.metadata.total;
                 console.log(total);
-                $("#page").text("Page " + Math.floor(offset/count+1) + " of " + (Math.ceil(total/count)));
+                $("#mpage").text("Page " + Math.floor(offset/count+1) + " of " + (Math.ceil(total/count)));
                 $("#movieTable").find(".cloned").remove();
                 data.content.forEach(function(item){
                     $( "#movieRow" ).clone().prop("id",item.id).appendTo( "#movieTable" );
