@@ -55,9 +55,9 @@
                     <li id="medias">
                         <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" style="color:black;">Media</a>
                         <ul class="collapse list-unstyled" id="pageSubmenu">
-                            <li><a class="showMovies">Movies</a></li>
-                            <li><a class="showTvs">TV Shows</a></li>
-                            <li><a class="showBooks">Books</a></li>
+                            <li><a class="showMovies">My Movies</a></li>
+                            <li><a class="showTvs">My TV Shows</a></li>
+                            <li><a class="showBooks">My Books</a></li>
                         </ul>
                     </li>
                     <li>
@@ -81,7 +81,7 @@
             </nav>
 
             <!-- Page Content Holder -->
-            <div id="content" class="container-fluid" >
+            <div id="content" class="container" >
 
                 <nav class="navbar navbar-default">
                     <div class="container-fluid">
@@ -95,12 +95,17 @@
 
                         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                             <ul class="nav navbar-nav navbar-right">
-                                <li><a class="showMovies">Movies</a></li>
-                                <li><a class="showTvs">TV Shows</a></li>
-                                <li><a class="showBooks">Books</a></li>
+                                <li><a class="showMovies">My Movies</a></li>
+                                <li><a class="showTvs">My TV Shows</a></li>
+                                <li><a class="showBooks">My Books</a></li>
+                                <li><a href="/movies">All Movies</a></li>
+                                <li><a href="/TVs">All TV Shows</a></li>
+                                <li><a href="/books">All Books</a></li>
 
                             </ul>
                         </div>
+
+
                     </div>
                 </nav>
 
@@ -108,14 +113,19 @@
 
                 <h2 id="movies" class="movies">Movies</h2>
                 <h3 id="movieList" class="movies"></h3>
+
                 <table class="table table-striped movies" id="movieTable">
+                    <li class="previous movies" style="display: inline-block; ">Previous Page</li>
+                    <span class="movies"> | </span><li class="page movies" style="display: inline-block; ">Page</li>
+                    <span class="movies"> | </span><li class="next movies" style="display: inline-block; ">Next Page</li>
+                    <div class="line"></div>
                     <thead >
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Movie Name</th>
-                        <th scope="col">Movie Genre</th>
+                        <th scope="col">Movie Name <span> | </span><span><li class="sortN" style="display: inline-block; ">Sort by Name</li></span></th>
+                        <th scope="col">Movie Genre <span> | </span><span><li class="sortG" style="display: inline-block">Sort by Genre</li></span></th>
                         <th scope="col">Movie Level</th>
-                        <th scope="col">Movie Image</th>
+                        <th scope="col">Action </th>
                     </tr>
                     </thead>
                     <tbody>
@@ -132,13 +142,17 @@
                 <h2 id="tvshows" class="tvs">TV Shows</h2>
                 <h3 id="tvList" class="tvs"></h3>
                 <table class="table table-striped tvs" id="tvTable">
+                    <li class="previous tvs" style="display: inline-block; ">Previous Page</li>
+                    <span class="tvs"> | </span><li class="page tvs" style="display: inline-block; ">Page</li>
+                    <span class="tvs"> | </span><li class="next tvs " style="display: inline-block; ">Next Page</li>
+                    <div class="line tvs"></div>
                     <thead >
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">TV Show Name</th>
-                        <th scope="col">TV Show Genre</th>
+                        <th scope="col">TV Show Name <span> | </span><span><li class="sortN" style="display: inline-block; ">Sort by Name</li></span></th>
+                        <th scope="col">TV Show Genre <span> | </span><span><li class="sortG" style="display: inline-block">Sort by Genre</li></span></th>
                         <th scope="col">TV Show Level</th>
-                        <th scope="col">TV Show Image</th>
+                        <th scope="col">Action</th>
                     </tr>
                     </thead>
                     <tbody>

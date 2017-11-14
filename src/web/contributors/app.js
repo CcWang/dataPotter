@@ -23,43 +23,8 @@ $(document).ready(function () {
     }
 
     var url = "/api/contributors/"+finalvalue.contributorId;
+    // getUser(token);
 
-    jQuery.ajax ({
-        url:  url,
-        type: "GET",
-        beforeSend:function (xhr) {
-            xhr.setRequestHeader ("Authorization", token);
-        }
-    }).done(function(data){
-        $(".name").text(data.content.name);
-        $("#email").text(data.content.email);
-        $("#changeEmail").val(data.content.email);
-        $("#changePwd").val(data.content.password);
-        $("#lan").text(data.content.nativeLanguage);
-        $("#changeLan").val(data.content.nativeLanguage);
-        $("#changeCell").val(data.content.phone);
-        $("#cell").text(data.content.phone);
-        if (data.content.gender == "female"){
-            var img = document.createElement("IMG");
-            img.src = "images/female.png";
-            $('#gender').html(img);
-            // $('<img>',{id:'gender',src:'/images/female.jpeg'})
-        }
-        if (data.content.gender == "male"){
-            // console.log(content.gender)
-            var img = document.createElement("IMG");
-            img.src = "images/male.png";
-            $('#gender').html(img);
-        }
-        $('.tvs').hide();
-        $('.books').hide();
-        $('.movies').show();
-        getMoview();
-
-    }).fail(function(data){
-        $("#greeting").text("You might want to try it again");
-
-    })
     $("#edit").click(function (e) {
         e.preventDefault();
         $("#editForm").toggle();
@@ -90,7 +55,7 @@ $(document).ready(function () {
         $('.tvs').hide();
         $('.books').hide();
         $('.movies').show();
-        getMoview();
+        getMovies();
 
     });
 
@@ -111,14 +76,121 @@ $(document).ready(function () {
         $('.movies').hide();
         getBooks();
 
+    });
+
+    $(".next").click(function(e){
+        e.preventDefault();
+        console.log(offset,count)
+        if (offset+count < total) {
+            offset = offset+count;
+            if ($('.movies').is (":visible")){
+                getMovies();
+            }
+            if ($('.tvs').is (":visible")){
+                getTV();
+            }
+            if ($('.books').is (":visible")){
+                getBooks();
+            }
+
+        }
     })
 
-    function getMoview() {
-        console.log("hit get movie",finalvalue)
+    $(".previous").click(function(e){
+        e.preventDefault();
+        console.log("Cliked")
+        if (offset-count >= 0) {
+            offset = offset-count;
+            if ($('.movies').is (":visible")){
+                getMovies();
+            }
+            if ($('.tvs').is (":visible")){
+                getTV();
+            }
+            if ($('.books').is (":visible")){
+                getBooks();
+            }
+
+
+        }
+    })
+    $(".sortG").click(function(e){
+        e.preventDefault();
+        if ($('.movies').is (":visible")){
+            getMovies("genre");
+        }
+        if ($('.tvs').is (":visible")){
+            getTV("genre");
+        }
+        if ($('.books').is (":visible")){
+            getBooks("genre");
+        }
+
+    })
+
+    $(".sortN").click(function(e){
+        e.preventDefault();
+        if ($('.movies').is (":visible")){
+            getMovies("name");
+        }
+        if ($('.tvs').is (":visible")){
+            getTV("name");
+        }
+        if ($('.books').is (":visible")){
+            getBooks("name");
+        }
+
+    })
+
+    function getUser(token) {
+        jQuery.ajax ({
+            url:  url,
+            type: "GET",
+            beforeSend:function (xhr) {
+                xhr.setRequestHeader ("Authorization", token);
+            }
+        }).done(function(data){
+            $(".name").text(data.content.name);
+            $("#email").text(data.content.email);
+            $("#changeEmail").val(data.content.email);
+            $("#changePwd").val(data.content.password);
+            $("#lan").text(data.content.nativeLanguage);
+            $("#changeLan").val(data.content.nativeLanguage);
+            $("#changeCell").val(data.content.phone);
+            $("#cell").text(data.content.phone);
+            if (data.content.gender == "female"){
+                var img = document.createElement("IMG");
+                img.src = "images/female.png";
+                $('#gender').html(img);
+            }
+            if (data.content.gender == "male"){
+                // console.log(content.gender)
+                var img = document.createElement("IMG");
+                img.src = "images/male.png";
+                $('#gender').html(img);
+            }
+            $('.tvs').hide();
+            $('.books').hide();
+            $('.movies').show();
+            getMovies();
+
+        }).fail(function(data){
+            $("#greeting").text("You might want to try it again");
+
+        })
+    }
+    function getMovies(sort_term) {
+        var getUrl;
+        if (sort_term){
+            getUrl = "/api/contributors/"+ finalvalue.contributorId+"/movies?sort="+sort_term+"&offset="+offset + "&count=" +count;
+        }else{
+            getUrl = "/api/contributors/"+ finalvalue.contributorId+"/movies?offset="+offset+"&count=" +count;
+        }
 
         jQuery.ajax ({
             // url:  "/api/contributors/" + finalvalue.contributorId + "/movies?offset=" + offset + "&count="  + count,
-            url:"/api/contributors/" + finalvalue.contributorId + "/movies",
+            // url:"/api/contributors/" + finalvalue.contributorId + "/movies",
+            url:getUrl,
             type: "GET",
             beforeSend: function (xhr) {
                 xhr.setRequestHeader ("Authorization", token);
@@ -144,12 +216,19 @@ $(document).ready(function () {
 
     }
 
-    function getTV() {
+    function getTV(sort_term) {
+        var getUrl;
+        if (sort_term){
+            getUrl = "/api/contributors/"+ finalvalue.contributorId+"/tvshows?sort="+sort_term+"&offset="+offset + "&count=" +count;
+        }else{
+            getUrl = "/api/contributors/"+ finalvalue.contributorId+"/tvshows?offset="+offset+"&count=" +count;
+        }
 
 
         jQuery.ajax ({
             // url:  "/api/contributors/" + finalvalue.contributorId + "/tvshows?offset=" + offset + "&count="  + count,
-            url:"/api/contributors/" + finalvalue.contributorId + "/tvshows",
+            // url:"/api/contributors/" + finalvalue.contributorId + "/tvshows",
+            url:getUrl,
             type: "GET",
             beforeSend: function (xhr) {
                 xhr.setRequestHeader ("Authorization", token);
@@ -174,12 +253,18 @@ $(document).ready(function () {
 
     }
 
-    function getBooks() {
+    function getBooks(sort_term) {
 
-
+        var getUrl;
+        if (sort_term){
+            getUrl = "/api/contributors/"+ finalvalue.contributorId+"/books?sort="+sort_term+"&offset="+offset + "&count=" +count;
+        }else{
+            getUrl = "/api/contributors/"+ finalvalue.contributorId+"/books?offset="+offset+"&count=" +count;
+        }
         jQuery.ajax ({
             // url:  "/api/contributors/" + finalvalue.contributorId + "/books?offset=" + offset + "&count="  + count,
-            url:"/api/contributors/" + finalvalue.contributorId + "/books",
+            // url:"/api/contributors/" + finalvalue.contributorId + "/books",
+            url:getUrl,
             type: "GET",
             beforeSend: function (xhr) {
                 xhr.setRequestHeader ("Authorization", token);
