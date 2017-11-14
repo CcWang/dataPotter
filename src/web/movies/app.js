@@ -1,23 +1,51 @@
 var offset = 0;
 var count = 20;
-var total = -1;
+var total = 300;
 $(document).ready(function () {
     console.log( "go!" );
 
     getMoview();
 
-    function getMoview() {
+    $("#next").click(function(e){
+        e.preventDefault();
+        console.log(offset,count)
+        if (offset+count < total) {
+            offset = offset+count;
+            console.log(offset,count)
+            getMoview();
+        }
+    })
+
+    $("#previous").click(function(e){
+        e.preventDefault();
+        console.log("Cliked")
+        if (offset-count >= 0) {
+            offset = offset-count;
+            getMoview();
+
+        }
+    });
+    $("#sortG").click(function(e){
+        e.preventDefault();
+        getMoview("genre");
+    })
+
+    $("#sortN").click(function(e){
+        e.preventDefault();
+        getMoview("name");
+    })
+
+    function getMoview(sort_term) {
         //console.log("hit get movie",finalvalue)
 
         jQuery.ajax ({
             // url:  "/api/contributors/" + finalvalue.contributorId + "/movies?offset=" + offset + "&count="  + count,
-            url: "/api/movies/",
+            url: "/api/movies?sort="+sort_term+"&offset="+offset + "&count=" +count,
             type: "GET"
         })
             .done(function(data){
-                //total = data.metadata.total;
-                //console.log(total);
-                //$("#page").text("Page " + Math.floor(offset/count+1) + " of " + (Math.ceil(total/count)));
+
+                $("#page").text("Page " + Math.floor(offset/count+1) + " of " + (Math.ceil(total/count)));
                 $("#movieTable").find(".cloned").remove();
                 data.content.forEach(function(item){
                     $( "#movieRow" ).clone().prop("id",item.id).appendTo( "#movieTable" );

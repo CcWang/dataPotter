@@ -24,6 +24,7 @@ import org.json.JSONObject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import edu.cmu.sv.app17.rest.MovieInterface;
 
@@ -48,12 +49,18 @@ public class TvshowInterface {
 
     @GET
     @Produces({ MediaType.APPLICATION_JSON})
-    public APPResponse getAll() {
+    public APPResponse getAll(@DefaultValue("_id") @QueryParam("sort") String sortArg ,@DefaultValue("100") @QueryParam("count") int count,
+                              @DefaultValue("0") @QueryParam("offset") int offset) {
 
         ArrayList<Tvshow> tvlist = new ArrayList<Tvshow>();
+        BasicDBObject sortParams = new BasicDBObject();
+        List<String> sortList = Arrays.asList(sortArg.split(","));
+        sortList.forEach(sortItem -> {
+            sortParams.put(sortItem,1);
+        });
 
         try {
-            FindIterable<Document> results = collection.find();
+            FindIterable<Document> results = collection.find().skip(offset).limit(count).sort(sortParams);
             for (Document item : results) {
                 System.out.println(item);
 

@@ -17,6 +17,7 @@ import static com.mongodb.client.model.Filters.*;
 import static java.lang.Math.toIntExact;
 
 import com.mongodb.client.result.DeleteResult;
+import edu.cmu.sv.app17.models.Book;
 import edu.cmu.sv.app17.models.Movie;
 import edu.cmu.sv.app17.models.Contributor;
 import org.bson.Document;
@@ -27,6 +28,7 @@ import org.json.JSONException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -53,12 +55,19 @@ public class MovieInterface {
 
     @GET
     @Produces({ MediaType.APPLICATION_JSON})
-    public APPResponse getAll() {
+    public APPResponse getAll(@DefaultValue("_id") @QueryParam("sort") String sortArg ,@DefaultValue("100") @QueryParam("count") int count,
+                              @DefaultValue("0") @QueryParam("offset") int offset) {
 
         ArrayList<Movie> movieList = new ArrayList<>();
 
+        BasicDBObject sortParams = new BasicDBObject();
+        List<String> sortList = Arrays.asList(sortArg.split(","));
+        sortList.forEach(sortItem -> {
+            sortParams.put(sortItem,1);
+        });
+
         try {
-            FindIterable<Document> results = collection.find();
+            FindIterable<Document> results = collection.find().skip(offset).limit(count).sort(sortParams);
             for (Document item : results) {
                 Movie movie = new Movie(
                         item.getString("name"),
