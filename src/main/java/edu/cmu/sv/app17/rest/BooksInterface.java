@@ -51,7 +51,8 @@ public class BooksInterface {
 
     @GET
     @Produces({MediaType.APPLICATION_JSON})
-    public APPResponse getAll(@DefaultValue("_id") @QueryParam("sort") String sortArg) {
+    public APPResponse getAll(@DefaultValue("_id") @QueryParam("sort") String sortArg ,@DefaultValue("100") @QueryParam("count") int count,
+    @DefaultValue("0") @QueryParam("offset") int offset) {
 
         ArrayList<Book> bookList = new ArrayList<Book>();
 
@@ -62,7 +63,7 @@ public class BooksInterface {
         });
 
         try {
-            FindIterable<Document> results = collection.find().sort(sortParams);
+            FindIterable<Document> results = collection.find().skip(offset).limit(count).sort(sortParams);
             for (Document item : results) {
                 Book book = new Book(
                         item.getString("name"),
