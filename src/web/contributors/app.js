@@ -9,13 +9,15 @@ $(document).ready(function () {
     $("#editForm").hide();
     // console.log(document.cookie)
     var listvalues = localStorage.getItem('contributor');
-    if (listvalues == " "){
+    //check if user has loged in
+    if (listvalues == null){
         alert("please log in");
         window.location.replace("http://localhost:8080/login/");
     }
     var finalvalue = JSON.parse(listvalues);
     var token = finalvalue.token;
-    if(!token){
+    //check if user has loged in
+    if(token == null){
         alert("please log in");
         window.location.replace("http://localhost:8080/login/");
     }
