@@ -292,7 +292,7 @@ $(document).ready(function () {
                     $("#"+item.id).find("#tvName").text(item.name);
                     $("#"+item.id).find("#tvgenre").text(item.genre);
                     $("#"+item.id).find("#tvlevel").text(item.level);
-                    $("#"+item.id).find("#tvaction").append("<button class='btn btn-info tvadd'>⬆</button>   <button class='btn btn-info tvminus'>⬇</button>     <button class='btn btn-info tvdelete'>❌</button>");
+                    $("#"+item.id).find("#tvaction").append("<button class='btn btn-info add'>⬆</button>   <button class='btn btn-info minus'>⬇</button>     <button class='btn btn-info delete'>❌</button>");
 
                     $("#"+item.id).prop("class","cloned");
                     $("#"+item.id).show();
@@ -343,7 +343,13 @@ $(document).ready(function () {
         var id = $(this).closest("tr")[0].id;
         // console.log(id);
         var type = $(this).closest("table")[0].classList[2];
-        var cLevel = $(this).parent().parent().find('#level').text();
+        if (type == "movies"){
+            var cLevel = $(this).parent().parent().find('#level').text();
+
+        }else if(type == "tvshows"){
+            var cLevel = $(this).parent().parent().find('#tvlevel').text();
+
+        }
         console.log(cLevel)
         if(cLevel <10) {
             update(id, type,cLevel,'add');
@@ -355,7 +361,14 @@ $(document).ready(function () {
     });
     $(document).on('click', '.minus', function() {
         var id = $(this).closest("tr")[0].id;
-        var cLevel = $(this).parent().parent().find('#level').text();
+        var type = $(this).closest("table")[0].classList[2];
+        if (type == "movies"){
+            var cLevel = $(this).parent().parent().find('#level').text();
+
+        }else if(type == "tvshows"){
+            var cLevel = $(this).parent().parent().find('#tvlevel').text();
+
+        }
         console.log(cLevel)
         if(cLevel >0) {
             update(id, type,cLevel,'minus');
@@ -367,8 +380,16 @@ $(document).ready(function () {
     });
     $(document).on('click', '.delete', function() {
         var id = $(this).closest("tr")[0].id;
-        var name = $(this).parent().parent().find('#mName').text();
+
         var type = $(this).closest("table")[0].classList[2];
+        if (type == "movies"){
+            var name = $(this).parent().parent().find('#mName').text();
+
+        }else if(type == "tvshows"){
+            var name = $(this).parent().parent().find('#tvName').text();
+
+        }
+
 
         if (confirm('Are you sure you want to delete '+name+"?")) {
             // Save it!
