@@ -44,11 +44,15 @@ $(document).ready(function () {
             // $('<img>',{id:'gender',src:'/images/female.jpeg'})
         }
         if (data.content.gender == "male"){
-            $('<img>',{id:'gender',src:'images/male.png'})
+            // console.log(content.gender)
+            var img = document.createElement("IMG");
+            img.src = "images/male.png";
+            $('#gender').html(img);
         }
+        $('.tvs').hide();
+        $('.books').hide();
+        $('.movies').show();
         getMoview();
-        getTV();
-        getBooks();
 
     }).fail(function(data){
         $("#greeting").text("You might want to try it again");
@@ -78,6 +82,35 @@ $(document).ready(function () {
                 $("#getcars").hide();
         })
     });
+    $(".showMovies").click(function (e) {
+        console.log("clicked show Movies")
+        e.preventDefault();
+        $('.tvs').hide();
+        $('.books').hide();
+        $('.movies').show();
+        getMoview();
+
+    });
+
+
+    $(".showTvs").click(function (e) {
+        e.preventDefault();
+        $('.tvs').show();
+        $('.books').hide();
+        $('.movies').hide();
+        getTV();
+
+    })
+
+    $(".showBooks").click(function (e) {
+        e.preventDefault();
+        $('.tvs').hide();
+        $('.books').show();
+        $('.movies').hide();
+        getBooks();
+
+    })
+
     function getMoview() {
         console.log("hit get movie",finalvalue)
 

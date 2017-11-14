@@ -24,15 +24,16 @@ $(function(){
             contentType: "application/json; charset=utf-8"
         }).done(function(data){
             console.log(data)
-            var d = new Date();
-            d.setTime(d.getTime() + (1*24*60*60*1000));
-            var expires = "expires="+ d.toUTCString();
+            // var d = new Date();
+            // d.setTime(d.getTime() + (1*24*60*60*1000));
+            // var expires = "expires="+ d.toUTCString();
 
             token = data.content.token;
 
             if (userType == "User"){
                 $("#greeting").text("User: "+data.content.username);
-                document.cookie =  "name = "+data.content.username+"; token=" + token + ";"+ expires + ";path=/";
+                // document.cookie =  "name = "+data.content.username+"; token=" + token + ";"+ expires + ";path=/";
+                localStorage.setItem('user', JSON.stringify(data.content));
                 window.location.replace("http://localhost:8080/users/");
             }
             if (userType == "Contributor"){

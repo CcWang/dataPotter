@@ -55,9 +55,9 @@
                     <li id="medias">
                         <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" style="color:black;">Media</a>
                         <ul class="collapse list-unstyled" id="pageSubmenu">
-                            <li><a href="#movies">Movies</a></li>
-                            <li><a href="#tvshows">TV Shows</a></li>
-                            <li><a href="#books">Books</a></li>
+                            <li><a class="showMovies">Movies</a></li>
+                            <li><a class="showTvs">TV Shows</a></li>
+                            <li><a class="showBooks">Books</a></li>
                         </ul>
                     </li>
                     <li>
@@ -95,9 +95,9 @@
 
                         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                             <ul class="nav navbar-nav navbar-right">
-                                <li><a href="#movies">Movies</a></li>
-                                <li><a href="#tvshows">TV Shows</a></li>
-                                <li><a href="#books">Books</a></li>
+                                <li><a class="showMovies">Movies</a></li>
+                                <li><a class="showTvs">TV Shows</a></li>
+                                <li><a class="showBooks">Books</a></li>
 
                             </ul>
                         </div>
@@ -106,9 +106,9 @@
 
                 <div class="line"></div>
 
-                <h2 id="movies">Movies</h2>
-                <h3 id="movieList"></h3>
-                <table class="table table-striped" id="movieTable">
+                <h2 id="movies" class="movies">Movies</h2>
+                <h3 id="movieList" class="movies"></h3>
+                <table class="table table-striped movies" id="movieTable">
                     <thead >
                     <tr>
                         <th scope="col">#</th>
@@ -129,11 +129,9 @@
                     </tbody>
                 </table>
 
-                <div class="line"></div>
-
-                <h2 id="tvshows">TV Shows</h2>
-                <h3 id="tvList"></h3>
-                <table class="table table-striped" id="tvTable">
+                <h2 id="tvshows" class="tvs">TV Shows</h2>
+                <h3 id="tvList" class="tvs"></h3>
+                <table class="table table-striped tvs" id="tvTable">
                     <thead >
                     <tr>
                         <th scope="col">#</th>
@@ -153,11 +151,10 @@
                     </tr>
                     </tbody>
                 </table>
-                <div class="line"></div>
 
-                <h3 id="books">books</h3>
-                <h3 id="bookList"></h3>
-                <table class="table table-striped" id="bookTable">
+                <h3 id="books" class="books">books</h3>
+                <h3 id="bookList" class="books"></h3>
+                <table class="table table-striped books" id="bookTable">
                     <thead >
                     <tr>
                         <th scope="col">#</th>
