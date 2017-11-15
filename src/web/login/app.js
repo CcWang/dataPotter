@@ -54,4 +54,11 @@ $(function(){
 
         })
     });
+    $("#signUpPage").click(function (e) {
+        console.log("click signup")
+        e.preventDefault();
+        location.href=("/signup");
+
+
+    })
 })
