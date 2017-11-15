@@ -188,42 +188,52 @@ public class UsersInterface {
     @Consumes({ MediaType.APPLICATION_JSON})
     @Produces({ MediaType.APPLICATION_JSON})
     public APPResponse update(@Context HttpHeaders headers, @PathParam("id") String id, Object obj) {
-        try {
-            JSONObject json = null;
+        JSONObject json = null;
+        try{
+            String value = ow.writeValueAsString(obj);
 
-            json = new JSONObject(ow.writeValueAsString(obj));
-            checkAuthentication(headers,id);
+            json = new JSONObject(value);
+            System.out.println("\n");
+        }catch (JsonProcessingException e){
+            throw  new APPBadRequestException(33, e.getMessage());
+        }
+        try {
+
+//            checkAuthentication(headers, id);
             BasicDBObject query = new BasicDBObject();
             query.put("_id", new ObjectId(id));
 
             Document doc = new Document();
             if (json.has("username"))
-                doc.append("username",json.getString("username"));
+                doc.append("username", json.getString("username"));
             if (json.has("email"))
-                json.append("email",json.getString("email"));
+                doc.append("email", json.getString("email"));
             if (json.has("password"))
-                doc.append("password",json.getString("password"));
+                doc.append("password", json.getString("password"));
             if (json.has("nativeLanguage"))
-                doc.append("nativeLanguage",json.getString("nativeLanguage"));
+                doc.append("nativeLanguage", json.getString("nativeLanguage"));
             if (json.has("englishLevel"))
-                doc.append("englishLevel",json.getInt("englishLevel"));
+                doc.append("englishLevel", json.getInt("englishLevel"));
             if (json.has("phone"))
-                doc.append("phone",json.getString("phone"));
+                doc.append("phone", json.getString("phone"));
             if (json.has("gender"))
-                doc.append("gender",json.getString("gender"));
+                doc.append("gender", json.getString("gender"));
             if (json.has("birthday"))
-                doc.append("birthday",json.getString("birthday"));
+                doc.append("birthday", json.getString("birthday"));
 
 
             Document set = new Document("$set", doc);
-            collection.updateOne(query,set);
-
-        } catch(APPNotFoundException e) {
-            throw new APPNotFoundException(0,"No such user");
-        } catch(IllegalArgumentException e) {
-            throw new APPBadRequestException(45,"Doesn't look like MongoDB ID");
-        }  catch(Exception e) {
-            throw new APPInternalServerException(99,"Something happened, pinch me!");
+            collection.updateOne(query, set);
+        }
+//        catch (APPUnauthorizedException e){
+//            throw e;
+//        }
+//        } catch(APPNotFoundException e) {
+//            throw new APPNotFoundException(0,"No such user");
+//        } catch(IllegalArgumentException e) {
+//            throw new APPBadRequestException(45,"Doesn't look like MongoDB ID");}
+         catch(Exception e) {
+            throw new APPInternalServerException(99,"Something happened in patch, pinch me!");
         }
         return new APPResponse(obj);
     }

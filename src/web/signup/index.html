@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" >
+    <title>MTBA</title>
+    <!--<link rel="stylesheet" type="text/css"  href="main.css">-->
+    <script
+            src="https://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+            crossorigin="anonymous"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+    <script src="app.js"></script>
+
+
+</head>
+<div class="container container-fluid">
+    <div class="row col-md-7 col-md-offset-3">
+        <h1 class="center row col-md-6 col-md-offset-2" style="margin-bottom:50px; margin-top: 50px;">
+            Sign up <span id="greeting"></span>
+        </h1>
+
+        <form class="row col-md-7 col-md-offset-2">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="name" class="form-control" id="name" placeholder="Enter name">
+            </div>
+            <div class="form-group">
+                <label for="email">Email address</label>
+                <input type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email">
+                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+            </div>
+            <div class="form-group">
+                <label for="pwd">Password</label>
+                <input type="password" class="form-control" id="pwd" placeholder="Password">
+            </div>
+            <div class="form-group">
+                <label for="nativeLanguage">Native Language</label>
+                <input type="nativeLanguage" class="form-control" id="nativeLanguage" placeholder="Enter native language">
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone</label>
+                <input type="phone" class="form-control" id="phone" aria-describedby="phoneHelp" placeholder="Enter phone number">
+                <small id="phoneHelp" class="form-text text-muted">We'll never share your phone with anyone else.</small>
+            </div>
+            <div class="form-group">
+                <label for="gender">Gender</label>
+                <input type="gender" class="form-control" id="gender" aria-describedby="genderHelp" placeholder="Enter gender">
+                <small id="genderHelp" class="form-text text-muted">Enter one of "male","female".</small>
+            </div>
+
+            <div>
+                <button type="submit" class="btn btn-primary " style="margin-left: 25%; margin-top: 10px" id="advSignUp">Sign up as Advisor</button>
+            </div>
+
+            <div class="form-group">
+                <label for="birthday">Birthday</label>
+                <input type="birthday" class="form-control" id="birthday" aria-describedby="birthdayHelp" placeholder="Enter birthday">
+                <small id="birthdayHelp" class="form-text text-muted">Enter it in this format "2017-01-30".</small>
+            </div>
+            <div class="form-group">
+                <label for="englishLevel">English Level</label>
+                <input type="number" class="form-control" id="englishLevel" aria-describedby="levelHelp" placeholder="Enter english level">
+                <small id="levelHelp" class="form-text text-muted">Evaluate and enter your english level between 10 to 1. 10 means native level, 1 means only know little.</small>
+            </div>
+
+            <div>
+                <button type="submit" class="btn btn-primary " style="margin-left: 25%; margin-top: 10px" id="leaSignUp">Sign up as Learner</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+
+</html>
