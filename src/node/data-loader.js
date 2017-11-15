@@ -114,7 +114,7 @@ function addContributor() {
             "password": "343434",
             "nativeLanguage": "French",
             "phone": "1111111111",
-            "gender": "female"
+            "gender": "male"
         },
         {
             "name": "Jon",
