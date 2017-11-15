@@ -65,15 +65,13 @@
                     </li>
 
                 </ul>
-                <form class="form-edit" id = 'editForm'>
-                    <label for="changeEmail" class="sr-only">Email address</label>
-                    <input type="email" id="changeEmail" class="form-control"  value="" required autofocus>
-                    <label for="changePwd" class="sr-only">Email address</label>
-                    <input type="password" id="changePwd" class="form-control"  value="" required autofocus>
-                    <label for="changeLan" class="sr-only">Native Lanuage</label>
-                    <input type="text" id="changeLan" class="form-control"  value="" required>
-                    <label for="changeCell" class="sr-only">Phone Number</label>
-                    <input type="text" id="changeCell" class="form-control"  value="" required>
+                <form class="form-edit" id = 'editForm' style="margin: 5px;">
+
+                    Email address: <input type="email" id="changeEmail" class="form-control"  value="" required autofocus>
+                    Change Password:<input type="password" id="changePwd" class="form-control"  value="" required autofocus>
+                    Native Language: <input type="text" id="changeLan" class="form-control"  value="" required>
+                    Phone Number:<input type="text" id="changeCell" class="form-control"  value="" required>
+
                     <hr>
                     <button id="save" class="btn btn-warning btn-block" type="submit">SAVE</button>
                 </form>
@@ -116,10 +114,14 @@
                 <h3 id="movieList" class="movies"></h3>
 
                 <table class="table table-striped movies" id="movieTable">
-                    <li class="movies" id='mp' style="display: inline-block; ">Previous Page</li>
-                    <span class="movies"> | </span><li class="movies" id="mpage"  style="display: inline-block; ">Page</li>
-                    <span class="movies"> | </span><li class="movies" id="mn" style="display: inline-block; ">Next Page</li>
-                    <div class="line"></div>
+                    <div style="display: inline-block">
+                        <li class="movies" id='mp' style="display: inline-block; ">Previous Page</li>
+                        <span class="movies"> | </span><li class="movies" id="mpage"  style="display: inline-block; ">Page</li>
+                        <span class="movies"> | </span><li class="movies" id="mn" style="display: inline-block; ">Next Page</li>
+                    </div>
+                    <!--<div style="display: inline-block" class="row col-md-3 col-md-offset-1">-->
+                     <!--<button class="btn btn-primary col-md-1 addNew" id = "add_movie" style="margin-left: 90%;  display: inline-block">Add Movie</button>-->
+                    <!--</div>-->
                     <thead >
                     <tr>
                         <th scope="col">#</th>
@@ -130,13 +132,21 @@
                     </tr>
                     </thead>
                     <tbody>
+                    <tr class="movies">
+                        <th scope="row">*</th>
+                        <td>Movie Name: <input type="text" placeholder="name" class="moviesnewName"></td>
+                        <td>Movie Genre<input type="text" class="moviesgenres genres"></td>
+                        <td>Movie Level(number) <input type="number" placeholder="difficult level" class="moviesdl" min="0" max="10"></td>
+                        <td><button class="btn btn-sm btn-primary addNew">Add Movie</button></td>
+
+                    </tr>
                     <tr id="movieRow" style="display: none">
                         <th scope="row">*</th>
                         <td id="mName"></td>
                         <td id="genre"></td>
                         <td id="level"></td>
                         <td id="action"></td>
-                        <input id="movieId" type="hidden" >
+
                     </tr>
                     </tbody>
                 </table>
@@ -144,10 +154,12 @@
                 <h2 id="tvshows" class="tvs">TV Shows</h2>
                 <h3 id="tvList" class="tvs"></h3>
                 <table class="table table-striped tvshows tvs" id="tvTable">
-                    <li class="tvs" style="display: inline-block; " id="ptv">Previous Page</li>
-                    <span class="tvs"> | </span><li class=" tvs" style="display: inline-block; " id="pagetv">Page</li>
-                    <span class="tvs"> | </span><li class="next tvs " style="display: inline-block; " id="ntv">Next Page</li>
-                    <div class="line tvs"></div>
+                    <div class="tvshows" style=" display: inline-block;">
+                        <li class="tvs" style="display: inline-block; " id="ptv">Previous Page</li>
+                        <span class="tvs"> | </span><li class=" tvs" style="display: inline-block; " id="pagetv">Page</li>
+                        <span class="tvs"> | </span><li class="next tvs " style="display: inline-block; " id="ntv">Next Page</li>
+                    </div>
+
                     <thead >
                     <tr>
                         <th scope="col">#</th>
@@ -158,6 +170,14 @@
                     </tr>
                     </thead>
                     <tbody>
+                    <tr class="tvshows">
+                        <th scope="row">*</th>
+                        <td>TV Name: <input type="text" placeholder="name" class="tvshowsnewName"></td>
+                        <td>TV Genre<input type="text" class="tvshowsgenres genres"></td>
+                        <td>TV Level(number) <input type="number" placeholder="difficult level" class="tvshowsdl" min="0" max="10"></td>
+                        <td><button class="btn btn-sm btn-primary addNew">Add TV Show</button></td>
+
+                    </tr>
                     <tr id="tvRow" style="display: none">
                         <th scope="row">*</th>
                         <td id="tvName"></td>
@@ -168,13 +188,15 @@
                     </tbody>
                 </table>
 
-                <h3 id="books" class="books">books</h3>
+                <h3 id="books" class="books">Books</h3>
                 <h3 id="bookList" class="books"></h3>
                 <table class="table table-striped books" id="bookTable">
-                    <li class="books" style="display: inline-block; " id="pBook">Previous Page</li>
-                    <span class="books"> | </span><li class=" books" style="display: inline-block; " id="pageBook">Page</li>
-                    <span class="books"> | </span><li class=" books " style="display: inline-block; " id="nBook">Next Page</li>
-                    <div class="line books"></div>
+                    <div class="books" style=" display: inline-block">
+                        <li class="books" style="display: inline-block; " id="pBook">Previous Page</li>
+                        <span class="books"> | </span><li class=" books" style="display: inline-block; " id="pageBook">Page</li>
+                        <span class="books"> | </span><li class=" books " style="display: inline-block; " id="nBook">Next Page</li>
+                    </div>
+
                     <thead >
                     <tr>
                         <th scope="col">#</th>
@@ -185,7 +207,15 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr id="bookRow">
+                    <tr class="books">
+                        <th scope="row">*</th>
+                        <td>Book Name: <input type="text" placeholder="name" class="booksnewName"></td>
+                        <td>Book Genre<input type="text" class="booksgenres genres"></td>
+                        <td>Book Level(number) <input type="number" placeholder="difficult level" class="booksdl" min=0 max=10></td>
+                        <td><button class="btn btn-sm btn-primary addNew">Add Book</button></td>
+
+                    </tr>
+                    <tr id="bookRow" style="display: none">
                         <th scope="row">*</th>
                         <td id="bName"></td>
                         <td id="bgenre"></td>

@@ -1,5 +1,27 @@
 $(document).ready(function () {
 
+    var genres = ['Adventure',"Fantasy","Animation","Drama","Horror","Action","Comedy","History","Western","Thriller","Crime","Documentary","Science Fiction",
+                "Mystery","Music","Romance","Family","War","TV Movie"]
+    var gmap={ 'ad': 'Adventure',
+        'fan': 'Fantasy',
+        'an': 'Animation',
+        'dr': 'Drama',
+        'ho': 'Horror',
+        'ac': 'Action',
+        'co': 'Comedy',
+        'hi': 'History',
+        'we': 'Western',
+        'th': 'Thriller',
+        'cr': 'Crime',
+        'do': 'Documentary',
+        'sc': 'Science Fiction',
+        'my': 'Mystery',
+        'mu': 'Music',
+        'ro': 'Romance',
+        'fam': 'Family',
+        'wa': 'War',
+        'tv': 'TV Movie' };
+
     $('#sidebarCollapse').on('click', function () {
         $('#sidebar').toggleClass('active');
     });
@@ -469,5 +491,87 @@ $(document).ready(function () {
             $("#greeting").text("You might want to try it again");
         })
     }
+
+    //check genre values:
+    $('.genres').on("keyup",function () {
+        var g = this.value;
+        g=g.toLowerCase();
+
+
+        if(g.length >1 && !g.startsWith("fa")){
+            if (gmap[g]){
+                this.value = (gmap[g])
+                return;
+            }else{
+                alert("No such genre, please try again");
+                this.value = "";
+                return;
+            }
+        }else if(g.length >2 && g.startsWith("fa")){
+            if (gmap[g]){
+                this.value = (gmap[g])
+                return
+            }else{
+                alert("No such genre, please try again");
+                this.value = "";
+                return;
+            }
+        }
+
+
+
+    });
+    $(".addNew").click(function (e) {
+        e.preventDefault();
+
+        var type =  $(this).closest("tr")[0].classList[0];
+        var name = $("."+type+"newName").val();
+
+
+        var genre = $("."+type+"genres").val();
+
+        var dl = parseInt($("."+type+"dl").val());
+        if(dl<0){
+            alert("the level should be greater than 0, please re-enter");
+            return;
+
+        }
+        if(dl>10){
+            alert("the level should be less than 11, please re-enter");
+            return;
+        }
+
+        var data = JSON.stringify({name:name, genre:genre, level:dl});
+
+        jQuery.ajax ({
+            url: "../api/"+type+"/create/" +finalvalue.contributorId,
+            type: "POST",
+            data: data,
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            beforeSend:function (xhr) {
+                xhr.setRequestHeader ("Authorization", token);
+            }
+        }).done(function(data){
+            alert("success!");
+            $("."+type+"newName").val("");
+            $("."+type+"genres").val("");
+            $("."+type+"dl").val(parseInt(0));
+            if (type == "movies"){
+                getMovies();
+            }
+            if (type == "tvshows"){
+                getTV();
+            }
+            if (type = 'books'){
+                getBooks();
+            }
+        }).fail(function(data){
+            alert("sorry, try again!");
+        })
+
+
+    });
+
 
 });

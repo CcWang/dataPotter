@@ -355,42 +355,42 @@ public class ContributorInterface {
     }
 
 
-    @POST
-    @Path("{id}/books")
-    @Consumes({ MediaType.APPLICATION_JSON})
-    @Produces({ MediaType.APPLICATION_JSON})
-    public APPResponse create(@Context HttpHeaders headers,
-                              @PathParam("id") String id, Object request) {
-
-        JSONObject json = null;
-        try {
-            checkAuthentication(headers,id);
-
-            json = new JSONObject(ow.writeValueAsString(request));
-
-
-        if (!json.has("name"))
-            throw new APPBadRequestException(55,"name");
-        if (!json.has("genre"))
-            throw new APPBadRequestException(55,"genre");
-        if (!json.has("level"))
-            throw new APPBadRequestException(55,"level");
-//        if (!json.has("contributorId"))
-//            throw new APPBadRequestException(55,"contributorId");
-
-            Document doc = new Document("name", json.getString("name"))
-                    .append("genre", json.getString("genre"))
-                    .append("level", json.getInt("level"))
-                    .append("contributorId", id);
-            booksCollection.insertOne(doc);
-            return new APPResponse(request);
-
-        } catch(APPUnauthorizedException e) {
-            throw e;
-        } catch(Exception e) {
-            throw new APPInternalServerException(99,"Something happened, pinch me!");
-        }
-    }
+//    @POST
+//    @Path("{id}/books")
+//    @Consumes({ MediaType.APPLICATION_JSON})
+//    @Produces({ MediaType.APPLICATION_JSON})
+//    public APPResponse create(@Context HttpHeaders headers,
+//                              @PathParam("id") String id, Object request) {
+//
+//        JSONObject json = null;
+//        try {
+//            checkAuthentication(headers,id);
+//
+//            json = new JSONObject(ow.writeValueAsString(request));
+//
+//
+//        if (!json.has("name"))
+//            throw new APPBadRequestException(55,"name");
+//        if (!json.has("genre"))
+//            throw new APPBadRequestException(55,"genre");
+//        if (!json.has("level"))
+//            throw new APPBadRequestException(55,"level");
+////        if (!json.has("contributorId"))
+////            throw new APPBadRequestException(55,"contributorId");
+//
+//            Document doc = new Document("name", json.getString("name"))
+//                    .append("genre", json.getString("genre"))
+//                    .append("level", json.getInt("level"))
+//                    .append("contributorId", id);
+//            booksCollection.insertOne(doc);
+//            return new APPResponse(request);
+//
+//        } catch(APPUnauthorizedException e) {
+//            throw e;
+//        } catch(Exception e) {
+//            throw new APPInternalServerException(99,"Something happened, pinch me!");
+//        }
+//    }
 
 
     @PATCH

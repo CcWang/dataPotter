@@ -12,6 +12,8 @@ import com.mongodb.client.result.DeleteResult;
 import edu.cmu.sv.app17.exceptions.APPBadRequestException;
 import edu.cmu.sv.app17.exceptions.APPInternalServerException;
 import edu.cmu.sv.app17.exceptions.APPNotFoundException;
+import edu.cmu.sv.app17.exceptions.APPUnauthorizedException;
+import edu.cmu.sv.app17.helpers.APPCrypt;
 import edu.cmu.sv.app17.helpers.APPListResponse;
 import edu.cmu.sv.app17.helpers.PATCH;
 import edu.cmu.sv.app17.helpers.APPResponse;
@@ -25,6 +27,8 @@ import org.json.JSONObject;
 
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -219,44 +223,44 @@ public class BooksInterface {
     }
 
 
-        @POST
-        @Path("{id}/books")
-        @Consumes({ MediaType.APPLICATION_JSON})
-        @Produces({ MediaType.APPLICATION_JSON})
-        public APPResponse create( Object request, @PathParam("id") String id) {
-            JSONObject json = null;
-            try {
-                json = new JSONObject(ow.writeValueAsString(request));
-            }
-            catch (JsonProcessingException e) {
-                throw new APPBadRequestException(33, e.getMessage());
-            }
+    @POST
+    @Path("create/{id}")
+    @Consumes({ MediaType.APPLICATION_JSON})
+    @Produces({ MediaType.APPLICATION_JSON})
+    public APPResponse create(@Context HttpHeaders headers,
+                              @PathParam("id") String id, Object request) {
 
-            BasicDBObject query = new BasicDBObject();
-            query.put("_id", new ObjectId(id));
-            Document item = collection.find(query).first();
-            if (item == null) {
-                throw new APPNotFoundException(0, "Sorry, we could not find that user. ");
-            }
+        JSONObject json = null;
+        try {
+            checkAuthentication(headers,id);
+
+            json = new JSONObject(ow.writeValueAsString(request));
 
 
             if (!json.has("name"))
-                throw new APPBadRequestException(55,"missing name");
-            if (!json.has("level"))
-                throw new APPBadRequestException(55,"missing level");
+                throw new APPBadRequestException(55,"name");
             if (!json.has("genre"))
-                throw new APPBadRequestException(55,"missing genre");
+                throw new APPBadRequestException(55,"genre");
+            if (!json.has("level"))
+                throw new APPBadRequestException(55,"level");
+//        if (!json.has("contributorId"))
+//            throw new APPBadRequestException(55,"contributorId");
 
-            try {
-                Document doc = new Document("name", json.getString("name"))
-                        .append("genre", json.getString("genre"))
-                        .append("level", json.getInt("level"));
-                collection.insertOne(doc);
-                return new APPResponse(request);
-            } catch (Exception e) {
-                throw new APPInternalServerException(99, "Something happened, pinch me!");
-            }
+            Document doc = new Document("name", json.getString("name"))
+                    .append("genre", json.getString("genre"))
+                    .append("level", json.getInt("level"))
+                    .append("contributorId", id);
+            collection.insertOne(doc);
+
+            return new APPResponse(request);
+
+        } catch(APPUnauthorizedException e) {
+            throw e;
+        } catch(Exception e) {
+            throw new APPInternalServerException(99,"Something happened, pinch me!");
         }
+    }
+
 
 
     @PATCH
@@ -317,6 +321,17 @@ public class BooksInterface {
         }
         return new JSONObject();
 
+    }
+
+    private void checkAuthentication(HttpHeaders headers, String id) throws Exception{
+        List<String> authHeaders = headers.getRequestHeader(HttpHeaders.AUTHORIZATION);
+        if (authHeaders == null)
+            throw new APPUnauthorizedException(70, "No Auhthorization Headers");
+        String token = authHeaders.get(0);
+        String clearToken = APPCrypt.decrypt(token);
+        if (id.compareTo(clearToken) != 0) {
+            throw new APPUnauthorizedException(71, "Invalid token. Please try getting a new token");
+        }
     }
 
 

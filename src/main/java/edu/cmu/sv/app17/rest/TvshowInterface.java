@@ -274,7 +274,8 @@ public class TvshowInterface {
             throw new APPBadRequestException(55,"genre");
         if (!json.has("level"))
             throw new APPBadRequestException(55,"level");
-
+//        if (!json.has("contributorId"))
+//            throw new APPBadRequestException(55,"contributorId");
 
         try {
             Document doc = new Document("name", json.getString("name"))
@@ -287,6 +288,8 @@ public class TvshowInterface {
             throw new APPInternalServerException(99,"Something happened, pinch me!");
         }
     }
+
+
     @PATCH
     @Path("{id}")
     @Consumes({ MediaType.APPLICATION_JSON})
