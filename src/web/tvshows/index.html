@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" >
+        <title>MTBA</title>
+        <link rel="stylesheet" type="text/css"  href="main.css">
+        <script
+                src="https://code.jquery.com/jquery-3.2.1.min.js"
+                integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+                crossorigin="anonymous"></script>
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+              rel="stylesheet"
+              integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+              crossorigin="anonymous">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+                crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="app.js"></script>
+
+
+    </head>
+    <body>
+
+
+
+        <div class="wrapper">
+
+            <!-- Page Content Holder -->
+            <div id="content" class="container-fluid" >
+                <nav aria-label="Page navigation" id="#p" class="hw7">
+                    <ul class="pagination">
+                        <li class="page-item"><a class="page-link" href="#"  id="previous">Previous</a></li>
+                        <li class="page-item"><a class="page-link" href="#" id="page">page</a></li>
+                        <li class="page-item"><a class="page-link" href="#" id="sortG">sort by genre</a></li>
+
+                        <li class="page-item"><a class="page-link" href="#" id="sortN">sort by name</a></li>
+                        <li class="page-item"><a class="page-link" href="#"  id="next">Next</a></li>
+                    </ul>
+                </nav>
+
+                <h2 id="tvshows" class="tvs">TV Shows</h2>
+                <h3 id="tvList" class="tvs"></h3>
+                <table class="table table-striped tvs" id="tvTable">
+                    <thead >
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">TV Show Name</th>
+                        <th scope="col">TV Show Genre</th>
+                        <th scope="col">TV Show Level</th>
+                        <th scope="col">TV Show Image</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr id="tvRow">
+                        <th scope="row">*</th>
+                        <td id="tvName"></td>
+                        <td id="tvgenre"></td>
+                        <td id="tvlevel"></td>
+                        <td id="tvimg"></td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div class="line"></div>
+
+            </div>
+        </div>
+    </body>
+
+</html>

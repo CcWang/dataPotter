@@ -1,7 +1,9 @@
 $(function(){
-
+    $('#loading').hide();
     $("#logIn").click(function (e) {
         e.preventDefault();
+        $('#loading').show();
+        $("form").hide();
         var url = ""
         var userType = ""
         if( $('#user').is(":checked") && !$("#contributor").is(":checked")){
@@ -14,7 +16,7 @@ $(function(){
             alert("Please choose one!")
         }
 
-        console.log(url)
+
 
         jQuery.ajax ({
             url:  url,

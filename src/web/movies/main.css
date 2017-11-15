@@ -23,7 +23,6 @@ a, a:hover, a:focus {
     transition: all 0.3s;
 }
 
-li { cursor: pointer; }
 .navbar {
     padding: 15px 10px;
     background: #fff;
@@ -135,10 +134,7 @@ ul ul a{
     min-height: 100vh;
     transition: all 0.3s;
 }
-#favlist ul li a, #edit {
-    color: black;
-}
-#watlist ul li a, #edit {
+#medias ul li a, #edit {
     color:black;
 }
 
