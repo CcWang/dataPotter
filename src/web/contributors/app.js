@@ -67,7 +67,7 @@ $(document).ready(function () {
             }
         }).done(function(data){
             alert("Your information has been updated");
-            location.reload()
+            getUser(token)
         }).fail(function(data){
                 $("#greeting").text("You might want to try it again");
                 $("#getcars").hide();
