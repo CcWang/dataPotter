@@ -27,7 +27,7 @@ $(function() {
             xhr.setRequestHeader("Authorization", token);
         }
     }).done(function (data) {
-        $(".name").text(data.content.name);
+        $(".name").text(data.content.username);
         $("#email").text(data.content.email);
         $("#changeEmail").val(data.content.email);
         $("#changePwd").val(data.content.password);
@@ -37,6 +37,8 @@ $(function() {
         $("#cell").text(data.content.phone);
         $("#birthday").text(data.content.username);
         $("#lanLevel").text(data.content.englishLevel);
+        $("#changeEng").val(data.content.englishLevel);
+        console.log(data.content)
 
 
         if (data.content.gender == "female") {
@@ -54,31 +56,38 @@ $(function() {
             $('#gender').html(img);
         }
 
-        $("#edit").click(function (e) {
-            e.preventDefault();
-            $("#editForm").toggle();
-        })
 
-        $("#save").click(function (e) {
-            e.preventDefault();
-            jQuery.ajax ({
-                url: url,
-                type: "PATCH",
-                data: JSON.stringify({email:$("#changeEmail").val(), nativeLanguage: $("#changeLan").val(),
-                    phone:$("#changeCell").val(), englishLevel:$("#changeEng").val()}),
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                beforeSend:function (xhr) {
-                    xhr.setRequestHeader ("Authorization", token);
-                }
-            }).done(function(data){
-                alert("Your information has been updated");
-                location.reload()
-            }).fail(function(data){
-                $("#greeting").text("You might want to try it again");
-                $("#getcars").hide();
-            })
-        });
 
+    }).fail(function (data) {
+        alert("fail to get information")
+    });
+
+    $("#edit").click(function (e) {
+        e.preventDefault();
+        $("#editForm").toggle();
     })
+
+    $("#save").click(function (e) {
+        e.preventDefault();
+        console.log("save: ",token);
+        var data = JSON.stringify({email:$("#changeEmail").val(), nativeLanguage: $("#changeLan").val(),
+            phone:$("#changeCell").val(), password:$("#changePwd").val(),englishLevel:parseInt($("#changeEng").val())});
+        console.log(data);
+        console.log(typeof(data));
+        jQuery.ajax ({
+            url: url,
+            type: "PATCH",
+            data: data,
+            dataType: "json",
+            contentType: "application/json; charset=utf-8"
+            // beforeSend:function (xhr) {
+            //     xhr.setRequestHeader ("Authorization", token);
+            // }
+        }).done(function(data){
+            alert("Your information has been updated");
+            location.reload()
+        }).fail(function(data){
+            $("#greeting").text("You might want to try it again");
+        })
+    });
 })
