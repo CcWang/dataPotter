@@ -14,6 +14,9 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.result.DeleteResult;
 import edu.cmu.sv.app17.models.FavoriteList;
+import edu.cmu.sv.app17.models.Movie;
+import edu.cmu.sv.app17.models.Tvshow;
+import edu.cmu.sv.app17.models.Book;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.json.JSONException;
@@ -22,20 +25,30 @@ import org.json.JSONException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
+import java.util.HashMap;
+
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
+
+import static com.mongodb.client.model.Filters.eq;
 
 @Path("favoriteLists")
 public class FavoriteListInterface {
 
     private MongoCollection<Document> collection = null;
+    private MongoCollection<Document> movieCollection = null;
+    private MongoCollection<Document> bookCollection = null;
+    private MongoCollection<Document> tvshowCollection = null;
     private ObjectWriter ow;
 
     public FavoriteListInterface() {
         MongoClient mongoClient = new MongoClient();
         MongoDatabase database = mongoClient.getDatabase("dataPotter");
         collection = database.getCollection("favoriteLists");
+        movieCollection = database.getCollection("movie");
+        bookCollection = database.getCollection("books");
+        tvshowCollection = database.getCollection("tvshow");
         ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
     }
 
@@ -52,10 +65,9 @@ public class FavoriteListInterface {
                 String users_id = item.getString("userID");
                 FavoriteList favoriteList = new FavoriteList(
                         users_id,
-                        item.getString("movieID"),
-                        item.getString("tvShowID"),
-                        item.getString("bookID"),
-                        item.getString("audioBookID")
+                        item.getString("movie"),
+                        item.getString("tvShow"),
+                        item.getString("book")
                 );
                 favoriteList.setId(item.getObjectId("_id").toString());
                 favoriteListList.add(favoriteList);
@@ -69,6 +81,81 @@ public class FavoriteListInterface {
         }
 
     }
+
+    /*
+    *
+    * the getall/id will return the all the favlists under that userid
+    * {id} is the user id
+    * return value
+    * example
+    * {
+    "content": {
+        "movies": {
+            "Sleight": "5a2744c0772e1773deb33ba0", / favlistId
+            "name": "Sleight" / movieName
+        },
+        "tvshows": {},
+        "book": {},
+        "userID": {
+            "userid": "5a028d3257ba5f33d2bff3c3"
+        }
+    },
+    "success": true
+}
+    *
+    *
+    * */
+    @GET
+    @Path("getall/{id}")
+    @Produces({ MediaType.APPLICATION_JSON})
+    @Consumes({ MediaType.APPLICATION_JSON})
+    public  APPResponse getAllUser(@PathParam("id") String id){
+        BasicDBObject query = new BasicDBObject();
+        HashMap <String, String> movieList = new HashMap<String, String>();
+        HashMap <String, String>  tvshowsList = new HashMap<String, String>();
+        HashMap <String, String>  bookList = new HashMap<String, String>();
+        HashMap <String, String>  user = new HashMap<String, String>();
+        user.put("userid", id);
+        HashMap<String, HashMap <String, String>> favlists = new HashMap<String, HashMap <String, String>>();
+
+
+        try{
+            FindIterable<Document> results = collection.find(eq("userID",id));
+            for (Document item: results) {
+                String nameMovie =item.getString("movie");
+                String nameTV = item.getString("tvShow");
+                String nameBook = item.getString("book");
+                if (nameMovie != null){
+                    movieList.put("name",nameMovie);
+//                    the value is favlist id, easy for delete function
+                    movieList.put(nameMovie,item.getObjectId("_id").toString());
+                }
+                if (nameTV !=null){
+                    tvshowsList.put("name",nameTV);
+                    tvshowsList.put(nameTV, item.getObjectId("_id").toString());
+                }
+                if (nameBook !=null){
+                    bookList.put("name",nameBook);
+                    bookList.put(nameBook, item.getObjectId("_id").toString());
+                }
+            }
+            favlists.put("movies",movieList);
+            favlists.put("tvshows",tvshowsList);
+            favlists.put("book",bookList);
+            favlists.put("userID",user);
+            System.out.print(favlists);
+
+            return new APPResponse(favlists);
+        }catch(APPNotFoundException e) {
+            throw new APPNotFoundException(0, "You have no favorite list");
+        } catch(Exception e) {
+            System.out.println("EXCEPTION!!!!");
+            e.printStackTrace();
+            throw new APPInternalServerException(99,e.getMessage());
+        }
+
+    }
+
 
     @GET
     @Path("{id}")
@@ -86,10 +173,9 @@ public class FavoriteListInterface {
             }
             FavoriteList favoriteList = new FavoriteList(
                     item.getString("userID"),
-                    item.getString("movieID"),
-                    item.getString("tvShowID"),
-                    item.getString("bookID"),
-                    item.getString("audioBookID")
+                    item.getString("movie"),
+                    item.getString("tvShow"),
+                    item.getString("book")
             );
             favoriteList.setId(item.getObjectId("_id").toString());
             return new APPResponse(favoriteList);
@@ -107,7 +193,7 @@ public class FavoriteListInterface {
     @POST
     @Consumes({ MediaType.APPLICATION_JSON})
     @Produces({ MediaType.APPLICATION_JSON})
-    public APPResponse create( Object request) {
+    public APPResponse create(Object request) {
         JSONObject json = null;
         try {
             json = new JSONObject(ow.writeValueAsString(request));
@@ -115,25 +201,37 @@ public class FavoriteListInterface {
         catch (JsonProcessingException e) {
             throw new APPBadRequestException(33, e.getMessage());
         }
-        if (!json.has("userID"))
-            throw new APPBadRequestException(55,"missing userID");
-        Document doc = new Document("userID", json.getString("userID"));
-//                .append("movieID", json.getString("movieID"))
-//                .append("tvShowID", json.getString("tvShowID"))
-//                .append("bookID", json.getString("bookID"))
-//                .append("audiobookID", json.getString("audiobookID"));
-        if(json.has("movieID")){
-            doc.append("movieID", json.getString("movieID"));
+        if (!json.has("type")){
+
+            throw new APPBadRequestException(55,"missing type");
         }
-        if(json.has("tvShowID")){
-            doc.append("tvShowID", json.getString("tvShowID"));
+        if(!json.has("media")){
+            throw new APPBadRequestException(55,"missing media name");
         }
-        if(json.has("bookID")){
-            doc.append("bookID", json.getString("bookID"));
+
+        if (!json.has("userId")){
+            throw new APPBadRequestException(55,"missing user Id");
         }
-        if(json.has("audiobookID")){
-            doc.append("audiobookID", json.getString("audiobookID"));
+        String type = json.getString("type");
+        Document doc = new Document("userID", json.getString("userId"))
+                .append("movie", null)
+                .append("tvShow", null)
+                .append("book", null);
+        if (type.equals("movie")){
+            doc.put("movie", json.getString("media"));
         }
+
+        if (type.equals("tvshow")){
+
+            doc.put("tvShow",  json.getString("media"));
+        }
+
+        if (type.equals("book")){
+
+            doc.put("book",  json.getString("media"));
+
+        }
+
         collection.insertOne(doc);
         return new APPResponse(request);
     }
