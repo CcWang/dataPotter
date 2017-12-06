@@ -1,7 +1,5 @@
 $(document).ready(function () {
 
-    var genres = ['Adventure',"Fantasy","Animation","Drama","Horror","Action","Comedy","History","Western","Thriller","Crime","Documentary","Science Fiction",
-                "Mystery","Music","Romance","Family","War","TV Movie"]
     var gmap={ 'ad': 'Adventure',
         'fan': 'Fantasy',
         'an': 'Animation',
