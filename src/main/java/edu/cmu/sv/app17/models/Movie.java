@@ -11,13 +11,16 @@ public class Movie {
      String genre;
      Number level;
      String contributorId;
+     Number movieid;
+
 //    List<String> genre
     public Movie(String name, String genre,
-                 Number level, String contributorId) {
+                 Number level, String contributorId, Number movieid) {
         this.name = name;
         this.genre = genre;
         this.level = level;
         this.contributorId = contributorId;
+        this.movieid = movieid;
     }
     public void setId(String id) {
         this.id = id;

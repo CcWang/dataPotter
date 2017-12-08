@@ -413,7 +413,9 @@ function movies (a,id) {
                 "name": name,
                 "genre": genre,
                 "level": level,
-                "contributorId":id
+                "contributorId":id,
+                "movieid":g[i]['id'],
+                "created":new Date()
             };
 
         movieColletction.insertOne(m,function (err,doc) {

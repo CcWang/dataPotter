@@ -73,7 +73,8 @@ public class MovieInterface {
                         item.getString("name"),
                         item.getString("genre"),
                         item.getInteger("level"),
-                        item.getString("contributorId")
+                        item.getString("contributorId"),
+                        item.getInteger("movieid")
                 );
                 movie.setId(item.getObjectId("_id").toString());
 //                System.out.print(movie);
@@ -109,7 +110,8 @@ public APPResponse getOne(@PathParam("id") String id) { ;
                 item.getString("genre"),
 //                item.getInteger("level"),
                 avg,
-                item.getString("contributorId")
+                item.getString("contributorId"),
+                item.getInteger("movie")
         );
         movie.setId(item.getObjectId("_id").toString());
         return new APPResponse(movie);
@@ -170,7 +172,8 @@ public APPResponse searchByName(@PathParam("search") String search) {
                     item.getString("name"),
                     item.getString("genre"),
                     item.getInteger("level"),
-                    item.getString("contributorId")
+                    item.getString("contributorId"),
+                    item.getInteger("movieid")
             );
             movie.setId(item.getObjectId("_id").toString());
             System.out.print(movie);
@@ -203,10 +206,11 @@ public APPResponse searchByName(@PathParam("search") String search) {
                         item.getString("name"),
                         item.getString("genre"),
                         item.getInteger("level"),
-                        item.getString("contributorId")
+                        item.getString("contributorId"),
+                        item.getInteger("movieid")
                 );
                 movie.setId(item.getObjectId("_id").toString());
-                System.out.print(movie);
+//                System.out.print(movie);
                 movieRet.add(movie);
             }
             return new APPResponse(movieRet);
@@ -235,7 +239,8 @@ public APPResponse searchByName(@PathParam("search") String search) {
                         item.getString("name"),
                         item.getString("genre"),
                         item.getInteger("level"),
-                        item.getString("contributorId")
+                        item.getString("contributorId"),
+                        item.getInteger("movieid")
                 );
                 movie.setId(item.getObjectId("_id").toString());
                 System.out.print(movie);
@@ -251,6 +256,8 @@ public APPResponse searchByName(@PathParam("search") String search) {
             throw new APPInternalServerException(99,e.getMessage());
         }
     }
+
+//    will use API java to create new movie
     @POST
     @Path("create/{id}")
     @Consumes({ MediaType.APPLICATION_JSON})
