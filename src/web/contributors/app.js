@@ -570,6 +570,30 @@ $(document).ready(function () {
 
 
     });
+    
+    $(document).on('click',"#mName", function () {
+        var name = $(this).text();
+
+        localStorage.setItem('media', JSON.stringify({"type":"movies", "name":name}));
+        location.href=("/media")
+    })
+    $(document).on('click',"#tvName", function () {
+        var name = $(this).text();
+
+
+        localStorage.setItem('media', JSON.stringify({"type":"tvshows", "name":name}));
+        location.href=("/media");
+        //
+    })
+    $(document).on('click',"#bName", function () {
+        var name = $(this).text();
+
+
+        localStorage.setItem('media', JSON.stringify({"type":"books", "name":name}));
+        location.href=("/media");
+        //
+    })
+
 
 
 });
