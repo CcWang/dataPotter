@@ -1,7 +1,5 @@
 $(document).ready(function () {
 
-    var genres = ['Adventure',"Fantasy","Animation","Drama","Horror","Action","Comedy","History","Western","Thriller","Crime","Documentary","Science Fiction",
-                "Mystery","Music","Romance","Family","War","TV Movie"]
     var gmap={ 'ad': 'Adventure',
         'fan': 'Fantasy',
         'an': 'Animation',
@@ -282,7 +280,7 @@ $(document).ready(function () {
                 });
             })
             .fail(function(data){
-                $("#movieList").text("Sorry no cars");
+                $("#movieList").text("Sorry no movies");
             })
 
     }

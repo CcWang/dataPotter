@@ -3,6 +3,7 @@ $(function(){
     $("#logIn").click(function (e) {
         e.preventDefault();
         $('#loading').show();
+        $("#greeting").text("Loading.....");
         $("form").hide();
         var url = ""
         var userType = ""
@@ -13,7 +14,10 @@ $(function(){
             url = "/api/contributorSession";
             userType = "Contributor";
         }else{
-            alert("Please choose one!")
+            alert("Please choose one!");
+            // $('#loading').hide();
+            location.href=("/login");
+
         }
 
 
@@ -50,7 +54,8 @@ $(function(){
             }
 
         }).fail(function(data){
-            $("#greeting").text("You might want to try it again");
+            alert("Sorry, we cannot find you based on your email address and password combination. You might want to try it again");
+            location.href=("/login");
 
         })
     });
