@@ -30,6 +30,8 @@ import edu.cmu.sv.app17.rest.MovieInterface;
 
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.regex;
+import static com.mongodb.client.model.Sorts.descending;
+import static com.mongodb.client.model.Sorts.orderBy;
 
 @Path("tvshows")
 public class TvshowInterface {
@@ -60,7 +62,7 @@ public class TvshowInterface {
         });
 
         try {
-            FindIterable<Document> results = collection.find().skip(offset).limit(count).sort(sortParams);
+            FindIterable<Document> results = collection.find().skip(offset).limit(count).sort(sortParams).sort(orderBy(descending("_id")));
             for (Document item : results) {
                 System.out.println(item);
 
@@ -70,7 +72,8 @@ public class TvshowInterface {
                         item.getString("name"),
                         item.getString("genre"),
                         item.getInteger("level"),
-                        item.getString("contributorId")
+                        item.getString("contributorId"),
+                        item.getInteger("tvid")
                 );
                 System.out.println(tv);
                 tv.setId(item.getObjectId("_id").toString());
@@ -109,7 +112,8 @@ public class TvshowInterface {
                     item.getString("genre"),
 //                    item.getInteger("level"),
                     avgLevel,
-                    item.getString("contributorId")
+                    item.getString("contributorId"),
+                    item.getInteger("tvid")
             );
             tv.setId(item.getObjectId("_id").toString());
             return new APPResponse(tv);
@@ -168,7 +172,8 @@ public class TvshowInterface {
                         item.getString("name"),
                         item.getString("genre"),
                         item.getInteger("level"),
-                        item.getString("contributorId")
+                        item.getString("contributorId"),
+                        item.getInteger("tvid")
                 );
                 tvshow.setId(item.getObjectId("_id").toString());
                 System.out.print(tvshow);
@@ -202,7 +207,8 @@ public class TvshowInterface {
                         item.getString("name"),
                         item.getString("genre"),
                         item.getInteger("level"),
-                        item.getString("contributorId")
+                        item.getString("contributorId"),
+                        item.getInteger("tvid")
                 );
                 tvshow.setId(item.getObjectId("_id").toString());
                 System.out.print(tvshow);
@@ -237,7 +243,8 @@ public class TvshowInterface {
                         item.getString("name"),
                         item.getString("genre"),
                         item.getInteger("level"),
-                        item.getString("contributorId")
+                        item.getString("contributorId"),
+                        item.getInteger("tvid")
                 );
                 tvshow.setId(item.getObjectId("_id").toString());
                 System.out.print(tvshow);
