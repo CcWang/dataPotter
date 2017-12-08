@@ -92,7 +92,6 @@ public class FavoriteListInterface {
     "content": {
         "movies": {
             "Sleight": "5a2744c0772e1773deb33ba0", / favlistId
-            "name": "Sleight" / movieName
         },
         "tvshows": {},
         "book": {},
@@ -126,16 +125,16 @@ public class FavoriteListInterface {
                 String nameTV = item.getString("tvShow");
                 String nameBook = item.getString("book");
                 if (nameMovie != null){
-                    movieList.put("name",nameMovie);
+//                    movieList.put("name",nameMovie);
 //                    the value is favlist id, easy for delete function
                     movieList.put(nameMovie,item.getObjectId("_id").toString());
                 }
                 if (nameTV !=null){
-                    tvshowsList.put("name",nameTV);
+//                    tvshowsList.put("name",nameTV);
                     tvshowsList.put(nameTV, item.getObjectId("_id").toString());
                 }
                 if (nameBook !=null){
-                    bookList.put("name",nameBook);
+//                    bookList.put("name",nameBook);
                     bookList.put(nameBook, item.getObjectId("_id").toString());
                 }
             }

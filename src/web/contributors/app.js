@@ -280,7 +280,7 @@ $(document).ready(function () {
                 });
             })
             .fail(function(data){
-                $("#movieList").text("Sorry no cars");
+                $("#movieList").text("Sorry no movies");
             })
 
     }
