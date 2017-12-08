@@ -414,8 +414,7 @@ function movies (a,id) {
                 "genre": genre,
                 "level": level,
                 "contributorId":id,
-                "movieid":g[i]['id'],
-                "created":new Date()
+                "movieid":g[i]['id']
             };
 
         movieColletction.insertOne(m,function (err,doc) {
@@ -481,7 +480,8 @@ function tvs (a,id) {
             "name": name,
             "genre": genre,
             "level": level,
-            "contributorId":id
+            "contributorId":id,
+            "tvid":g[i]['id']
         };
 
         tvColletction.insertOne(tv,function (err,doc) {

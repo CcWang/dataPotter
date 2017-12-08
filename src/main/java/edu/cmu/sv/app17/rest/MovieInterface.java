@@ -14,6 +14,9 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import static com.mongodb.client.model.Filters.*;
+import static com.mongodb.client.model.Sorts.ascending;
+import static com.mongodb.client.model.Sorts.descending;
+import static com.mongodb.client.model.Sorts.orderBy;
 import static java.lang.Math.toIntExact;
 
 import com.mongodb.client.result.DeleteResult;
@@ -67,7 +70,7 @@ public class MovieInterface {
         });
 
         try {
-            FindIterable<Document> results = collection.find().skip(offset).limit(count).sort(sortParams);
+            FindIterable<Document> results = collection.find().skip(offset).limit(count).sort(sortParams).sort( orderBy(ascending("_id")));
             for (Document item : results) {
                 Movie movie = new Movie(
                         item.getString("name"),
@@ -75,6 +78,7 @@ public class MovieInterface {
                         item.getInteger("level"),
                         item.getString("contributorId"),
                         item.getInteger("movieid")
+
                 );
                 movie.setId(item.getObjectId("_id").toString());
 //                System.out.print(movie);

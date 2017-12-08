@@ -340,7 +340,8 @@ public class ContributorInterface {
                         item.getString("name"),
                         item.getString("genre"),
                         item.getInteger("level"),
-                        item.getString("contributorId")
+                        item.getString("contributorId"),
+                        item.getInteger("tvid")
                 );
                 tv.setId(item.getObjectId("_id").toString());
                 tvList.add(tv);
