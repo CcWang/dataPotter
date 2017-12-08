@@ -35,11 +35,18 @@ $(document).ready(function () {
     })
     $(document).on('click',".detail", function () {
         var name = $(this).next().val();
-        console.log(name)
+        var type =this.classList[this.classList.length-1];
+    //    link to media page for individual media
+        localStorage.setItem('media', JSON.stringify({"type":type, "name":name}));
+        location.href=("/media");
+
     })
     $(document).on('click',".analysis", function () {
         var name = $(this).next().val();
-        console.log(name)
+        var type =this.classList[this.classList.length-1];
+        //    link to media page for individual media
+        localStorage.setItem('media', JSON.stringify({"type":type, "name":name}));
+        location.href=("/scoreAnlysis");
     })
 })
 
@@ -65,8 +72,8 @@ function getFavs(id,token) {
                 var tableRow = '<tr> <th scope="row">*</th><td>';
                 tableRow =tableRow+item+"</td><td>";
                 tableRow = tableRow + '<button class="btn btn-sm btn-warning remove">Remove</button><input type = "hidden" value = '+movie[item]+'></td><td>';
-                tableRow = tableRow + '<button class="btn btn-sm btn-primary detail">Detail</button><input type = "hidden" value = "'+item+'"></td><td>';
-                tableRow = tableRow + '<button class="btn btn-sm btn-info analysis">Analysis</button><input type = "hidden" value = "'+item+'"></td><td>';
+                tableRow = tableRow + '<button class="btn btn-sm btn-primary detail movies">Detail</button><input type = "hidden" value = "'+item+'"></td><td>';
+                tableRow = tableRow + '<button class="btn btn-sm btn-info analysis movies">Analysis</button><input type = "hidden" value = "'+item+'"></td><td>';
 
                 $('#movieTable > tbody:last-child').append(tableRow);
 
@@ -76,8 +83,8 @@ function getFavs(id,token) {
                 var tableRow = '<tr> <th scope="row">*</th><td>';
                 tableRow =tableRow+item+"</td><td>";
                 tableRow = tableRow + '<button class="btn btn-sm btn-warning remove">Remove</button><input type = "hidden" value = '+tvshow[item]+'></td><td>';
-                tableRow = tableRow + '<button class="btn btn-sm btn-primary detail">Detail</button><input type = "hidden" value = "'+item+'"></td><td>';
-                tableRow = tableRow + '<button class="btn btn-sm btn-info analysis">Analysis</button><input type = "hidden" value = "'+item+'"></td><td>';
+                tableRow = tableRow + '<button class="btn btn-sm btn-primary detail tvshows">Detail</button><input type = "hidden" value = "'+item+'"></td><td>';
+                tableRow = tableRow + '<button class="btn btn-sm btn-info analysis tvshows">Analysis</button><input type = "hidden" value = "'+item+'"></td><td>';
 
                 $('#tvTable > tbody:last-child').append(tableRow);
 
@@ -87,8 +94,8 @@ function getFavs(id,token) {
                 var tableRow = '<tr> <th scope="row">*</th><td>';
                 tableRow =tableRow+item+"</td><td>";
                 tableRow = tableRow + '<button class="btn btn-sm btn-warning remove">Remove</button><input type = "hidden" value = '+book[item]+'></td><td>';
-                tableRow = tableRow + '<button class="btn btn-sm btn-primary detail">Detail</button><input type = "hidden" value = "'+item+'"></td><td>';
-                tableRow = tableRow + '<button class="btn btn-sm btn-info analysis">Analysis</button><input type = "hidden" value = "'+item+'"></td><td>';
+                tableRow = tableRow + '<button class="btn btn-sm btn-primary detail books">Detail</button><input type = "hidden" value = "'+item+'"></td><td>';
+                tableRow = tableRow + '<button class="btn btn-sm btn-info analysis books">Analysis</button><input type = "hidden" value = "'+item+'"></td><td>';
 
 
                 $('#bookTable > tbody:last-child').append(tableRow);
