@@ -29,6 +29,10 @@ $(document).ready(function () {
     $("#editForm").hide();
     // console.log(document.cookie)
     var listvalues = localStorage.getItem('contributor');
+    var userType = localStorage.getItem('userType');
+    console.log(userType)
+    console.log(typeof(userType))
+    console.log(localStorage)
     //check if user has loged in
     if (listvalues == null){
         alert("please log in");
