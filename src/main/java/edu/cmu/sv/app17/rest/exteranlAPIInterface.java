@@ -63,19 +63,32 @@ public class exteranlAPIInterface {
     }
 
 //get movie information from themoviedb
+//    movies
     @GET
-    @Path("movies/{name}")
+    @Path("{type}/{name}")
     @Produces({ MediaType.APPLICATION_JSON})
     @Consumes({ MediaType.APPLICATION_JSON})
-    public  APPResponse getMovie(@PathParam("name") String name){
+    public  APPResponse getMovie(@PathParam("type") String type, @PathParam("name") String name){
         BasicDBObject query = new BasicDBObject();
         query.put("name", name);
 
 
         try{
-            Document result = movieCollection.find(query).first();
-            Integer movieid = result.getInteger("movieid");
-            String urlAddress = "https://api.themoviedb.org/3/movie/"+movieid+"?language=en-US&api_key="+apikey;
+            Document result;
+            Integer id;
+            String mediaType;
+            if (type.equals("movies")){
+                result = movieCollection.find(query).first();
+                mediaType = "movie";
+                id = result.getInteger("movieid");
+            }else{
+                result = tvshowCollection.find(query).first();
+                mediaType = "tv";
+                id = result.getInteger("tvid");
+            }
+
+
+            String urlAddress = "https://api.themoviedb.org/3/"+mediaType+"/"+id+"?language=en-US&api_key="+apikey;
 
             OkHttpClient client = new OkHttpClient();
 
@@ -101,6 +114,46 @@ public class exteranlAPIInterface {
 
     }
 
+//    get TV Show Infor from themoviedb
+//@GET
+//@Path("tv/{name}")
+//@Produces({ MediaType.APPLICATION_JSON})
+//@Consumes({ MediaType.APPLICATION_JSON})
+//public  APPResponse getTV(@PathParam("name") String name){
+//    BasicDBObject query = new BasicDBObject();
+//    query.put("name", name);
+//
+//
+//    try{
+//        Document result = tvshowCollection.find(query).first();
+//        Integer tvid = result.getInteger("tvid");
+//        String urlAddress = "https://api.themoviedb.org/3/tv/"+tvid+"?language=en-US&api_key="+apikey;
+//
+//        OkHttpClient client = new OkHttpClient();
+//
+//        Request request = new Request.Builder()
+//                .url(urlAddress)
+//                .build();
+//        try (Response response = client.newCall(request).execute()) {
+//            // converts response into an array of books
+//            String resStr = response.body().string().toString();
+//            return new APPResponse(resStr);
+//        }catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return new APPResponse("wrong");
+//    }catch(APPNotFoundException e) {
+//        throw new APPNotFoundException(0, "You have no favorite list");
+//    } catch(Exception e) {
+//        System.out.println("EXCEPTION!!!!");
+//        e.printStackTrace();
+//        throw new APPInternalServerException(99,e.getMessage());
+//    }
+//
+//}
+
+//    below here is example, do not use
     /*
     *
     * the getall/id will return the all the favlists under that userid

@@ -37,7 +37,13 @@ $(document).ready(function () {
         location.href = ("/login");
     }
     $("#user").text(finalvalue.username);
-    getMedia(media.type, media["name"]);
+    if (media.type == "movies" || media.type == "tvshows"){
+        getMedia(media.type, media["name"]);
+    }else{
+        getBook(media["name"])
+    }
+
+
 
 
 })
@@ -58,16 +64,52 @@ function getMedia(type,name) {
         $("#overview").html(overview);
         $('#name').text(name);
         $('#rate').html("Rate: "+ data.vote_average);
-        $('#year').html("Year:" + data.release_date);
-        data.genres.forEach(function (item) {
-            var genre = "<p style='display:inline-block'>"+item.name+"</p> | ";
-            $('#genre').append(genre)
-        })
+        if(type == 'movies'){
+            $('#year').html("Year:" + data.release_date);
+            if(data.spoken_languages.length>1){
+                data.spoken_languages.forEach(function (item) {
+                    var lang = "<p style='display:inline-block'>"+item.name+"</p> | ";
+                    $('#lang').append(lang)
+                })
+            }else{
+                var lang = "<p style='display:inline-block'>"+data.spoken_languages.name+"</p> | ";
+                $('#lang').append(lang)
+            }
+        }
+        if (type == 'tvshows'){
+            if(data.languages.length>1){
+                data.languages.forEach(function (item) {
+                    var lang = "<p style='display:inline-block'>"+item+"</p> | ";
+                    $('#lang').append(lang)
+                })
+            }else{
+                var lang = "<p style='display:inline-block'>"+data.languages[0]+"</p> | ";
+                $('#lang').append(lang)
+            }
 
-        data.spoken_languages.forEach(function (item) {
-            var lang = "<p style='display:inline-block'>"+item.name+"</p> | ";
-            $('#lang').append(lang)
-        })
+            if (data.seasons.length>1){
+                data.seasons.forEach(function (item) {
+                    var season = "<p style='display:inline-block'>"+item.air_date+"</p> | ";
+                    $('#season').append(season)
+                })
+            }else{
+                var season = "<p style='display:inline-block'>"+data.seasons.air_date+"</p> | ";
+                $('#season').append(season)
+            }
+
+        }
+       if(data.genres.length>1){
+           data.genres.forEach(function (item) {
+               var genre = "<p style='display:inline-block'>"+item.name+"</p> | ";
+               $('#genre').append(genre)
+           })
+       }else{
+           var genre = "<p style='display:inline-block'>"+data.genres[0].name+"</p> | ";
+           $('#genre').append(genre)
+       }
+
+
+
 
     }).fail(function(data){
         $("#greeting").text("You might want to try it again");
@@ -75,6 +117,7 @@ function getMedia(type,name) {
 }
 
 function getMediaLevel(type, id,name) {
+    console.log(type);
     jQuery.ajax({
         url:"../api/"+type+"/levels/"+id+"/"+name,
         type: "GET",
@@ -89,4 +132,21 @@ function getMediaLevel(type, id,name) {
         $("#yourLev").text(data.indLev +'.');
     })
 
+}
+
+function getBook(name) {
+    jQuery.ajax({
+        url:"../api/books/bookOne/"+name,
+        type: "GET",
+        data: JSON.stringify({}),
+        dataType: "json",
+        contentType: "application/json; charset=utf-8"
+    }).done(function(data){
+        data = data.content;
+        console.log(data)
+        $('#name').text(data.name);
+        $('#genre').text(data.genre);
+        $('#lang').append("<p> English </p>");
+
+    })
 }

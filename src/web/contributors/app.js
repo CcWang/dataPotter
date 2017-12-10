@@ -581,7 +581,7 @@ $(document).ready(function () {
         var name = $(this).text();
 
 
-        localStorage.setItem('media', JSON.stringify({"type":"tvshows", "name":name}));
+        localStorage.setItem('media', JSON.stringify({"type":"tv", "name":name}));
         location.href=("/media");
         //
     })
