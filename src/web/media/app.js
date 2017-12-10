@@ -13,9 +13,10 @@ $(document).ready(function () {
     if (userType == "user"){
         listvalues = localStorage.getItem('user');
         finalvalue = JSON.parse(listvalues);
-        console.log(finalvalue)
         $(".userSec").show();
         $(".conSec").hide();
+        var links = '<li><a href="../favorites/">Favorite List</a></li><li><a href="../watches/">Watch List</a></li>'
+        $('nav').append(links);
         if (media.type == "movies" || media.type=="books") {
             checkFav(media.type, finalvalue.userId, media["name"],finalvalue.token);
             checkWatch(media.type, finalvalue.userId, media["name"],finalvalue.token);
