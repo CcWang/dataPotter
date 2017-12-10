@@ -17,12 +17,12 @@ $(document).ready(function () {
         $(".userSec").show();
         $(".conSec").hide();
         if (media.type == "movies" || media.type=="books") {
-            checkFav(media.type, finalvalue.userId, media["name"]);
-            $('.userSec').on('click',".toggleFav", function () {
-                console.log($(this))
+            checkFav(media.type, finalvalue.userId, media["name"],finalvalue.token);
+            checkWatch(media.type, finalvalue.userId, media["name"],finalvalue.token);
 
-                // toogleFav(media.type, finalvalue.userId, media["name"])
-            })
+        }else{
+            checkFav('tv', finalvalue.userId, media["name"],finalvalue.token);
+            checkWatch('tv', finalvalue.userId, media["name"],finalvalue.token);
         }
 
 
@@ -30,7 +30,6 @@ $(document).ready(function () {
     if (userType == "contributor"){
         listvalues = localStorage.getItem("contributor");
         finalvalue = JSON.parse(listvalues)
-        console.log(finalvalue)
         $(".userSec").hide();
         $(".conSec").show();
         if (media.type == "movies" || media.type=="books"){
@@ -75,7 +74,6 @@ function getMedia(type,name) {
         contentType: "application/json; charset=utf-8"
     }).done(function(data){
         var data = JSON.parse(data.content)
-        console.log(data)
         var imageUrl = "https://image.tmdb.org/t/p/w300/"+data.poster_path;
         var overview = "<p>"+data.overview+"</p>"
         $("#img").attr('src', imageUrl);
@@ -171,8 +169,9 @@ function getBook(name) {
     })
 }
 
-function checkFav(type, id, name) {
-    console.log(type)
+function checkFav(type, id, name,token) {
+    console.log(type,id,name)
+    console.log("../api/favoriteLists/check/"+type+"/"+id+"/"+name)
     //check/{type}/{userId}/{name}
     jQuery.ajax({
         url:"../api/favoriteLists/check/"+type+"/"+id+"/"+name,
@@ -183,8 +182,8 @@ function checkFav(type, id, name) {
     }).done(function(data){
         data = data.content;
         console.log(data)
-        console.log(data.fav)
-        if (data.fav == true){
+
+        if (data){
             $('#inFav').show();
             $('#notInFav').hide();
         }else{
@@ -192,6 +191,141 @@ function checkFav(type, id, name) {
             $('#notInFav').show();
 
         }
+        $('.userSec').on('click',"#inFav", function () {
+
+        //    if data.fav, true, remove from favlist
+            if(data){
+
+                jQuery.ajax({
+                    url:"../api/favoriteLists/"+data.favID,
+                    type:"DELETE",
+                    data: null,
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    beforeSend:function (xhr) {
+                        xhr.setRequestHeader("Authorization", token);
+
+                    }
+                })
+                    .done(function (data) {
+                        alert("You have remove "+name+" from favorites list.");
+                        checkFav(type, id, name)
+
+                    })
+                    .fail(function (data) {
+                        alert("Try again later");
+                    })
+            }
+
+        })
+
+        if(data == null){
+            $('.userSec').on('click',"#notInFav", function () {
+
+
+                    //    if data.fav, false, add to favlist
+                jQuery.ajax({
+                    url:"../api/favoriteLists/",
+                    type:"POST",
+                    data: JSON.stringify({type:type, media: name, userId:id}),
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    beforeSend:function (xhr) {
+                        xhr.setRequestHeader("Authorization", token);
+
+                    }
+
+                }).done(function(data){
+                    alert("Your have added "+name+" in your favorite list.");
+                    checkFav(type, id, name)
+
+                }).fail(function(data){
+                    alert("please try again");
+                })
+            })
+
+        }
+
+
+
+    })
+}
+function checkWatch(type, id, name,token) {
+    console.log(type,id,name)
+
+    jQuery.ajax({
+        url:"../api/watchlists/check/"+type+"/"+id+"/"+name,
+        type:"GET",
+        data: null,
+        dataType: "json",
+        contentType: "application/json; charset=utf-8"
+    }).done(function(data){
+        data = data.content;
+        console.log(data)
+
+        if (data){
+            $('#inWat').show();
+            $('#notInWat').hide();
+        }else{
+            $('#inWat').hide();
+            $('#notInWat').show();
+
+        }
+        $('.userSec').on('click',"#inWat", function () {
+
+            //    if data.fav, true, remove from watchlist
+            if(data){
+
+                jQuery.ajax({
+                    url:"../api/watchlists/"+data.watchID,
+                    type:"DELETE",
+                    data: null,
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    beforeSend:function (xhr) {
+                        xhr.setRequestHeader("Authorization", token);
+
+                    }
+                })
+                    .done(function (data) {
+                        alert("You have remove "+name+" from watch list.");
+                        checkWatch(type, id, name)
+
+                    })
+                    .fail(function (data) {
+                        alert("Try again later");
+                    })
+            }
+
+        })
+
+        if(data == null){
+            $('.userSec').on('click',"#notInWat", function () {
+                   console.log( "here?")
+
+                //    if data.fav, false, add to watchlist
+                jQuery.ajax({
+                    url:"../api/watchlists/",
+                    type:"POST",
+                    data: JSON.stringify({type:type, media: name, userId:id}),
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    beforeSend:function (xhr) {
+                        xhr.setRequestHeader("Authorization", token);
+
+                    }
+
+                }).done(function(data){
+                    alert("Your have added "+name+" in your watch list.");
+                    checkWatch(type, id, name)
+
+                }).fail(function(data){
+                    alert("please try again");
+                })
+            })
+
+        }
+
 
 
     })

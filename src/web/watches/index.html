@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+    <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <title>Favorite Movies</title>
+            <link rel="stylesheet" type="text/css"  href="main.css">
+            <script
+                    src="https://code.jquery.com/jquery-3.2.1.min.js"
+                    integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+                    crossorigin="anonymous"></script>
+            <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+                  rel="stylesheet"
+                  integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+                  crossorigin="anonymous">
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+                    integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+                    crossorigin="anonymous"></script>
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+            <script src="app.js"></script>
+
+        </head>
+        <body>
+
+        <div class="container">
+            <h1>Hello, <span id = "user"></span>, welcome to your watch list</h1>
+
+            <div class="row">
+                <div class="col-6 col-md-4">
+                    <h2>MOVIES</h2>
+                    <table class="table table-striped" id="movieTable">
+                        <thead >
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Name </th>
+                            <th scope="col"> </th>
+                            <th scope="col">Actions</th>
+                            <th scope="col"> </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr id="movieRow" style="display: none">
+                            <th scope="row">*</th>
+                            <td></td>
+                            <td><button class="btn btn-sm btn-warning">Remove</button></td>
+                            <td><button class="btn btn-sm btn-primary">Detail</button></td>
+                            <td><button class="btn btn-sm btn-info">Analysis</button></td>
+
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+                <div class="col-6 col-md-4">
+                    <h2>TVSHOWS</h2>
+                    <table class="table table-striped" id="tvTable">
+                        <thead >
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Name </th>
+                            <th scope="col"> </th>
+                            <th scope="col">Actions</th>
+                            <th scope="col"> </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr id="tvRow" style="display: none">
+                            <th scope="row">*</th>
+                            <td></td>
+                            <td><button class="btn btn-sm btn-warning">Remove</button></td>
+                            <td><button class="btn btn-sm btn-primary">Detail</button></td>
+                            <td><button class="btn btn-sm btn-info">Analysis</button></td>
+
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-6 col-md-4">
+                    <h2>BOOKS</h2>
+                    <table class="table table-striped" id="bookTable">
+                        <thead >
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Name </th>
+                            <th scope="col"> </th>
+                            <th scope="col">Actions</th>
+                            <th scope="col"> </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr id="bookRow" style="display: none">
+                            <th scope="row">*</th>
+                            <td></td>
+                            <td><button class="btn btn-sm btn-warning">Remove</button></td>
+                            <td><button class="btn btn-sm btn-primary">Detail</button></td>
+                            <td><button class="btn btn-sm btn-info">Analysis</button></td>
+
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+
+        </body>
+    </html>

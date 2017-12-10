@@ -61,5 +61,12 @@ $(document).ready(function () {
             })
 
     }
+    $(document).on('click',"#mName", function () {
+        console.log("clicked")
+        var name = $(this).text();
+
+        localStorage.setItem('media', JSON.stringify({"type":"movies", "name":name}));
+        location.href=("/media")
+    })
 
 });
