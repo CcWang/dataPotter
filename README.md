@@ -1,3 +1,3 @@
 # dataPotter
 
-GARY WAS HERE!
+a website to teach you learn English through different medias
