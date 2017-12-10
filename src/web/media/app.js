@@ -17,10 +17,15 @@ $(document).ready(function () {
         $(".userSec").show();
         $(".conSec").hide();
         if (media.type == "movies" || media.type=="books") {
+<<<<<<< HEAD
             checkFav(media.type, finalvalue.userId, media["name"],finalvalue.token);
 
         }else{
             checkFav('tv', finalvalue.userId, media["name"],finalvalue.token);
+=======
+            checkFav(media.type, finalvalue.userId, media["name"]);
+
+>>>>>>> 0ea19c4288a07f7fe61e7e980f05964c17ec7db3
         }
 
 
@@ -246,6 +251,7 @@ function checkFav(type, id, name,token) {
             })
 
         }
+
 
 
     })
