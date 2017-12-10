@@ -17,15 +17,12 @@ $(document).ready(function () {
         $(".userSec").show();
         $(".conSec").hide();
         if (media.type == "movies" || media.type=="books") {
-<<<<<<< HEAD
             checkFav(media.type, finalvalue.userId, media["name"],finalvalue.token);
+            checkWatch(media.type, finalvalue.userId, media["name"],finalvalue.token);
 
         }else{
             checkFav('tv', finalvalue.userId, media["name"],finalvalue.token);
-=======
-            checkFav(media.type, finalvalue.userId, media["name"]);
-
->>>>>>> 0ea19c4288a07f7fe61e7e980f05964c17ec7db3
+            checkWatch('tv', finalvalue.userId, media["name"],finalvalue.token);
         }
 
 
@@ -220,9 +217,6 @@ function checkFav(type, id, name,token) {
                     })
             }
 
-
-
-
         })
 
         if(data == null){
@@ -244,6 +238,86 @@ function checkFav(type, id, name,token) {
                 }).done(function(data){
                     alert("Your have added "+name+" in your favorite list.");
                     checkFav(type, id, name)
+
+                }).fail(function(data){
+                    alert("please try again");
+                })
+            })
+
+        }
+
+
+
+    })
+}
+function checkWatch(type, id, name,token) {
+    console.log(type,id,name)
+
+    jQuery.ajax({
+        url:"../api/watchlists/check/"+type+"/"+id+"/"+name,
+        type:"GET",
+        data: null,
+        dataType: "json",
+        contentType: "application/json; charset=utf-8"
+    }).done(function(data){
+        data = data.content;
+        console.log(data)
+
+        if (data){
+            $('#inWat').show();
+            $('#notInWat').hide();
+        }else{
+            $('#inWat').hide();
+            $('#notInWat').show();
+
+        }
+        $('.userSec').on('click',"#inWat", function () {
+
+            //    if data.fav, true, remove from watchlist
+            if(data){
+
+                jQuery.ajax({
+                    url:"../api/watchlists/"+data.watchID,
+                    type:"DELETE",
+                    data: null,
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    beforeSend:function (xhr) {
+                        xhr.setRequestHeader("Authorization", token);
+
+                    }
+                })
+                    .done(function (data) {
+                        alert("You have remove "+name+" from watch list.");
+                        checkWatch(type, id, name)
+
+                    })
+                    .fail(function (data) {
+                        alert("Try again later");
+                    })
+            }
+
+        })
+
+        if(data == null){
+            $('.userSec').on('click',"#notInWat", function () {
+                   console.log( "here?")
+
+                //    if data.fav, false, add to watchlist
+                jQuery.ajax({
+                    url:"../api/watchlists/",
+                    type:"POST",
+                    data: JSON.stringify({type:type, media: name, userId:id}),
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    beforeSend:function (xhr) {
+                        xhr.setRequestHeader("Authorization", token);
+
+                    }
+
+                }).done(function(data){
+                    alert("Your have added "+name+" in your watch list.");
+                    checkWatch(type, id, name)
 
                 }).fail(function(data){
                     alert("please try again");
