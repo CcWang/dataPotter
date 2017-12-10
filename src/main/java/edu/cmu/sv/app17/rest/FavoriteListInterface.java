@@ -85,6 +85,41 @@ public class FavoriteListInterface {
 
     }
 
+    @GET
+    @Path("check/{type}/{userId}/{name}")
+    @Produces({ MediaType.APPLICATION_JSON})
+    @Consumes({ MediaType.APPLICATION_JSON})
+    public APPResponse checkFav(@PathParam("type") String type, @PathParam("userId") String id, @PathParam("name") String name){
+        BasicDBObject query = new BasicDBObject();
+        query.put("userID", id);
+        if(type.equals("movies")){
+            query.put("movie",name);
+        }else if(type.equals("tv")){
+            query.put("tvShow",name);
+        }else{
+            query.put("book",name);
+        }
+        try {
+            Document item = collection.find(query).first();
+            HashMap <String, Boolean> result = new HashMap<String, Boolean>();
+            if (item !=null){
+                result.put("fav",Boolean.TRUE);
+            }else{
+                result.put("fav",Boolean.FALSE);
+            }
+
+            return new APPResponse(result);
+        }catch(APPNotFoundException e) {
+            throw new APPNotFoundException(0, "You have no favorite list");
+        } catch(Exception e) {
+            System.out.println("EXCEPTION!!!!");
+            e.printStackTrace();
+            throw new APPInternalServerException(99,e.getMessage());
+        }
+
+
+    }
+
     /*
     *
     * the getall/id will return the all the favlists under that userid

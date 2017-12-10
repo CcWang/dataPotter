@@ -13,9 +13,19 @@ $(document).ready(function () {
     if (userType == "user"){
         listvalues = localStorage.getItem('user');
         finalvalue = JSON.parse(listvalues);
-        // console.log(listvalues)
+        console.log(finalvalue)
         $(".userSec").show();
         $(".conSec").hide();
+        if (media.type == "movies" || media.type=="books") {
+            checkFav(media.type, finalvalue.userId, media["name"]);
+            $('.userSec').on('click',".toggleFav", function () {
+                console.log($(this))
+
+                // toogleFav(media.type, finalvalue.userId, media["name"])
+            })
+        }
+
+
     }
     if (userType == "contributor"){
         listvalues = localStorage.getItem("contributor");
@@ -154,6 +164,32 @@ function getBook(name) {
         $('#name').text(data.name);
         $('#genre').text(data.genre);
         $('#lang').append("<p> English </p>");
+
+    })
+}
+
+function checkFav(type, id, name) {
+    console.log(type)
+    //check/{type}/{userId}/{name}
+    jQuery.ajax({
+        url:"../api/favoriteLists/check/"+type+"/"+id+"/"+name,
+        type:"GET",
+        data: JSON.stringify({}),
+        dataType: "json",
+        contentType: "application/json; charset=utf-8"
+    }).done(function(data){
+        data = data.content;
+        console.log(data)
+        console.log(data.fav)
+        if (data.fav == true){
+            $('#inFav').show();
+            $('#notInFav').hide();
+        }else{
+            $('#inFav').hide();
+            $('#notInFav').show();
+
+        }
+
 
     })
 }

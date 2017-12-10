@@ -1,3 +1,8 @@
 .conSec span{
     font-weight: bold;
 }
+
+.toggleFav a:hover{
+    font-weight: bold;
+    font-size: larger;
+}
