@@ -12,6 +12,7 @@ var request= require('request');
 var userID = [];
 var contributorID=[];
 var savyID=[];
+var advancedSearchID=[];
 
 
 function getDbConnection(callback){
@@ -39,6 +40,7 @@ getDbConnection(function(){
             addUser();
             addContributor();
             addSavy();
+            addAdvancedSearch();
             // addBook();
     });
 });
@@ -228,6 +230,185 @@ function addSavy() {
                 console.log("Could not add savy "+i)
             }else{
                 savyID[i] = doc.ops[0]._id.toString();
+            }
+
+        })
+    }
+}
+
+function addAdvancedSearch() {
+    var aa = [{
+        "metaCategory": "Genre",
+        "category": "Adventure"
+    },
+
+        {
+            "metaCategory": "Genre",
+            "category": "Fantasy"
+        },
+
+        {
+            "metaCategory": "Genre",
+            "category": "Drama"
+        },
+
+        {
+            "metaCategory": "Genre",
+            "category": "Horror"
+        },
+
+        {
+            "metaCategory": "Genre",
+            "category": "Action"
+        },
+
+        {
+            "metaCategory": "Genre",
+            "category": "Comedy"
+        },
+
+        {
+            "metaCategory": "Genre",
+            "category": "History"
+        },
+
+        {
+            "metaCategory": "Genre",
+            "category": "Western"
+        },
+
+        {
+            "metaCategory": "Genre",
+            "category": "Thriller"
+        },
+
+        {
+            "metaCategory": "Genre",
+            "category": "Crime"
+        },
+
+        {
+            "metaCategory": "Genre",
+            "category": "Documentary"
+        },
+
+        {
+            "metaCategory": "Genre",
+            "category": "Thriller"
+        },
+
+        {
+            "metaCategory": "Genre",
+            "category": "Science Fiction"
+        },
+
+        {
+            "metaCategory": "Genre",
+            "category": "Mystery"
+        },
+
+        {
+            "metaCategory": "Genre",
+            "category": "Music"
+        },
+
+        {
+            "metaCategory": "Genre",
+            "category": "Romance"
+        },
+
+        {
+            "metaCategory": "Genre",
+            "category": "Family"
+        },
+
+        {
+            "metaCategory": "Genre",
+            "category": "War"
+        },
+
+        {
+            "metaCategory": "General Level",
+            "category": "Easy"
+        },
+
+        {
+            "metaCategory": "General Level",
+            "category": "Medium"
+        },
+
+        {
+            "metaCategory": "General Level",
+            "category": "Hard"
+        },
+
+        {
+            "metaCategory": "Specific Level",
+            "category": "1"
+        },
+
+        {
+            "metaCategory": "Specific Level",
+            "category": "2"
+        },
+
+        {
+            "metaCategory": "Specific Level",
+            "category": "3"
+        },
+
+        {
+            "metaCategory": "Specific Level",
+            "category": "4"
+        },
+
+        {
+            "metaCategory": "Specific Level",
+            "category": "5"
+        },
+
+        {
+            "metaCategory": "Specific Level",
+            "category": "6"
+        },
+
+        {
+            "metaCategory": "Specific Level",
+            "category": "7"
+        },
+
+        {
+            "metaCategory": "Specific Level",
+            "category": "8"
+        },
+
+        {
+            "metaCategory": "Specific Level",
+            "category": "9"
+        },
+
+        {
+            "metaCategory": "Specific Level",
+            "category": "10"
+        },
+
+        {
+            "metaCategory": "Genre",
+            "category": "TV Movie"
+        },
+
+        {
+            "metaCategory": "Genre",
+            "category": "Animation"
+        }];
+
+    var advancedSearch = dbConnection.collection('advancedSearch');
+    for (var i = 0; i<aa.length;i++ ){
+        advancedSearch.insertOne(aa[i], function (err, doc) {
+            if (err){
+                console.log("Could not add Advanced Search "+i)
+            }else{
+                advancedSearchID[i] = doc.ops[0]._id.toString();
             }
 
         })
