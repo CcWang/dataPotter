@@ -1,5 +1,6 @@
 $(document).ready(function () {
     var listvalues = localStorage.getItem('user');
+    
     if (listvalues == null) {
         alert("please log in");
         location.href = ("/login");
@@ -36,8 +37,14 @@ $(document).ready(function () {
     $(document).on('click',".detail", function () {
         var name = $(this).next().val();
         var type =this.classList[this.classList.length-1];
+        console.log(type)
     //    link to media page for individual media
-        localStorage.setItem('media', JSON.stringify({"type":type, "name":name}));
+        if(type == "tvshows"){
+            localStorage.setItem('media', JSON.stringify({"type":"tv", "name":name}));
+        }else{
+            localStorage.setItem('media', JSON.stringify({"type":type, "name":name}));
+        }
+
         location.href=("/media");
 
     })

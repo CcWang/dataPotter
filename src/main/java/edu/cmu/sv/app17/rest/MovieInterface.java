@@ -108,7 +108,7 @@ public APPResponse getOne(@PathParam("id") String id) { ;
             throw new APPNotFoundException(0, "No such movie, my friend");
         }
         String name = item.getString("name");
-        int avg = avgLevel(name);
+        int avg = avgLevel(name).get("avgLev");
         Movie movie = new Movie(
                 item.getString("name"),
                 item.getString("genre"),
@@ -130,10 +130,40 @@ public APPResponse getOne(@PathParam("id") String id) { ;
 }
 //
 
+//return that movie's individual level and avg level
+@GET
+@Path("levels/{conId}/{movieName}")
+@Produces({MediaType.APPLICATION_JSON})
+public APPResponse getOne(@PathParam("conId") String id, @PathParam("movieName") String name) { ;
+    BasicDBObject query = new BasicDBObject();
+    try {
+        query.put("contributorId", id);
+        query.put("name",name);
+        Document item = collection.find(query).first();
+        if (item == null) {
+            throw new APPNotFoundException(0, "No such movie, my friend");
+        }
+        Integer indLev = item.getInteger("level");
+        Integer size = avgLevel(name).get("size");
+        Integer avgLev = avgLevel(name).get("avgLev");
+        HashMap<String,Integer> levels = new HashMap<String,Integer>();
+        levels.put("indLev",indLev);
+        levels.put("avgLev",avgLev);
+        levels.put("size",size);
 
+        return new APPResponse(levels);
+
+    } catch (APPNotFoundException e) {
+        throw new APPNotFoundException(0, "No such book");
+    } catch (IllegalArgumentException e) {
+        throw new APPBadRequestException(45, "Doesn't look like MongoDB ID");
+    } catch (Exception e) {
+        throw new APPInternalServerException(99, "Something happened, pinch me!");
+    }
+}
 // get all level for same movie
 
-public Integer avgLevel( String name) {
+public HashMap<String, Integer> avgLevel( String name) {
 
     Integer totalLevel = 0;
 
@@ -145,8 +175,10 @@ public Integer avgLevel( String name) {
            totalLevel = totalLevel+ item.getInteger("level");
            size = size +1;
         }
-
-        return totalLevel/size;
+        HashMap<String,Integer> totals = new HashMap<String,Integer>();
+        totals.put("size",size);
+        totals.put("avgLev",totalLevel/size);
+        return totals;
 
     } catch(APPNotFoundException e) {
         throw new APPNotFoundException(0, "No Movies");

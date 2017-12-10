@@ -1,11 +1,8 @@
 package edu.cmu.sv.app17.rest;
 
+
 import com.fasterxml.jackson.core.JsonProcessingException;
-import edu.cmu.sv.app17.exceptions.APPBadRequestException;
-import edu.cmu.sv.app17.exceptions.APPInternalServerException;
-import edu.cmu.sv.app17.exceptions.APPNotFoundException;
-import edu.cmu.sv.app17.helpers.PATCH;
-import edu.cmu.sv.app17.helpers.APPResponse;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
@@ -13,39 +10,49 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.result.DeleteResult;
-import static com.mongodb.client.model.Sorts.ascending;
-import static com.mongodb.client.model.Sorts.descending;
-import static com.mongodb.client.model.Sorts.orderBy;
+import edu.cmu.sv.app17.exceptions.APPBadRequestException;
+import edu.cmu.sv.app17.exceptions.APPInternalServerException;
+import edu.cmu.sv.app17.exceptions.APPNotFoundException;
+import edu.cmu.sv.app17.helpers.APPResponse;
 import edu.cmu.sv.app17.models.FavoriteList;
-import edu.cmu.sv.app17.models.Movie;
-import edu.cmu.sv.app17.models.Tvshow;
-import edu.cmu.sv.app17.models.Book;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import org.apache.http.HttpResponse;
+import org.apache.logging.log4j.core.util.IOUtils;
 import org.bson.Document;
 import org.bson.types.ObjectId;
-import org.json.JSONException;
-
+import org.json.JSONObject;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.ArrayList;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.HashMap;
+import org.apache.commons.io.*;
+
+import java.io.IOException;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.json.JSONObject;
+
 
 import static com.mongodb.client.model.Filters.eq;
 
-@Path("favoriteLists")
-public class FavoriteListInterface {
+
+
+@Path("themoviedb")
+public class exteranlAPIInterface {
 
     private MongoCollection<Document> collection = null;
     private MongoCollection<Document> movieCollection = null;
     private MongoCollection<Document> bookCollection = null;
     private MongoCollection<Document> tvshowCollection = null;
     private ObjectWriter ow;
+    private String apikey = "664f8054c78de425d08aba35e84e6a11";
 
-    public FavoriteListInterface() {
+    public exteranlAPIInterface() {
         MongoClient mongoClient = new MongoClient();
         MongoDatabase database = mongoClient.getDatabase("dataPotter");
         collection = database.getCollection("favoriteLists");
@@ -55,60 +62,48 @@ public class FavoriteListInterface {
         ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
     }
 
-
+//get movie information from themoviedb
+//    movies
     @GET
-    @Produces({ MediaType.APPLICATION_JSON})
-    public APPResponse getAll() {
-
-        ArrayList<FavoriteList> favoriteListList = new ArrayList<FavoriteList>();
-
-        try {
-            FindIterable<Document> results = collection.find();
-            for (Document item : results) {
-                String users_id = item.getString("userID");
-                FavoriteList favoriteList = new FavoriteList(
-                        users_id,
-                        item.getString("movie"),
-                        item.getString("tvShow"),
-                        item.getString("book")
-                );
-                favoriteList.setId(item.getObjectId("_id").toString());
-                favoriteListList.add(favoriteList);
-            }
-            return new APPResponse(favoriteListList);
-
-        } catch(Exception e) {
-            System.out.println("EXCEPTION!!!!");
-            e.printStackTrace();
-            throw new APPInternalServerException(99,e.getMessage());
-        }
-
-    }
-
-    @GET
-    @Path("check/{type}/{userId}/{name}")
+    @Path("{type}/{name}")
     @Produces({ MediaType.APPLICATION_JSON})
     @Consumes({ MediaType.APPLICATION_JSON})
-    public APPResponse checkFav(@PathParam("type") String type, @PathParam("userId") String id, @PathParam("name") String name){
+    public  APPResponse getMovie(@PathParam("type") String type, @PathParam("name") String name){
         BasicDBObject query = new BasicDBObject();
-        query.put("userID", id);
-        if(type.equals("movies")){
-            query.put("movie",name);
-        }else if(type.equals("tv")){
-            query.put("tvShow",name);
-        }else{
-            query.put("book",name);
-        }
-        try {
-            Document item = collection.find(query).first();
-            HashMap <String, Boolean> result = new HashMap<String, Boolean>();
-            if (item !=null){
-                result.put("fav",Boolean.TRUE);
+        query.put("name", name);
+
+
+        try{
+            Document result;
+            Integer id;
+            String mediaType;
+            if (type.equals("movies")){
+                result = movieCollection.find(query).first();
+                mediaType = "movie";
+                id = result.getInteger("movieid");
             }else{
-                result.put("fav",Boolean.FALSE);
+                result = tvshowCollection.find(query).first();
+                mediaType = "tv";
+                id = result.getInteger("tvid");
             }
 
-            return new APPResponse(result);
+
+            String urlAddress = "https://api.themoviedb.org/3/"+mediaType+"/"+id+"?language=en-US&api_key="+apikey;
+
+            OkHttpClient client = new OkHttpClient();
+
+            Request request = new Request.Builder()
+                    .url(urlAddress)
+                    .build();
+            try (Response response = client.newCall(request).execute()) {
+                // converts response into an array of books
+                String resStr = response.body().string().toString();
+                return new APPResponse(resStr);
+            }catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return new APPResponse("wrong");
         }catch(APPNotFoundException e) {
             throw new APPNotFoundException(0, "You have no favorite list");
         } catch(Exception e) {
@@ -117,9 +112,48 @@ public class FavoriteListInterface {
             throw new APPInternalServerException(99,e.getMessage());
         }
 
-
     }
 
+//    get TV Show Infor from themoviedb
+//@GET
+//@Path("tv/{name}")
+//@Produces({ MediaType.APPLICATION_JSON})
+//@Consumes({ MediaType.APPLICATION_JSON})
+//public  APPResponse getTV(@PathParam("name") String name){
+//    BasicDBObject query = new BasicDBObject();
+//    query.put("name", name);
+//
+//
+//    try{
+//        Document result = tvshowCollection.find(query).first();
+//        Integer tvid = result.getInteger("tvid");
+//        String urlAddress = "https://api.themoviedb.org/3/tv/"+tvid+"?language=en-US&api_key="+apikey;
+//
+//        OkHttpClient client = new OkHttpClient();
+//
+//        Request request = new Request.Builder()
+//                .url(urlAddress)
+//                .build();
+//        try (Response response = client.newCall(request).execute()) {
+//            // converts response into an array of books
+//            String resStr = response.body().string().toString();
+//            return new APPResponse(resStr);
+//        }catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return new APPResponse("wrong");
+//    }catch(APPNotFoundException e) {
+//        throw new APPNotFoundException(0, "You have no favorite list");
+//    } catch(Exception e) {
+//        System.out.println("EXCEPTION!!!!");
+//        e.printStackTrace();
+//        throw new APPInternalServerException(99,e.getMessage());
+//    }
+//
+//}
+
+//    below here is example, do not use
     /*
     *
     * the getall/id will return the all the favlists under that userid
@@ -180,7 +214,7 @@ public class FavoriteListInterface {
             favlists.put("tvshows",tvshowsList);
             favlists.put("book",bookList);
             favlists.put("userID",user);
-//            System.out.print(favlists);
+            System.out.print(favlists);
 
             return new APPResponse(favlists);
         }catch(APPNotFoundException e) {
