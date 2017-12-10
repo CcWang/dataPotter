@@ -23,21 +23,42 @@
 
 <div class="container">
     <div class="row" style="margin-top: 5%">
-        <div class="col-12">
-            <div class="col-6 col-md-6 image_content">
-                image;;;;;
-            </div>
-            <div class="col-6  col-md-6 info">
-                <div>name,rate</div>
-                <div>year, genre</div>
-                <div>dec</div>
-                <hr>
+        <div class="col-md-12">
+
+            <image id="img" class="img-fluid rounded col-md-4"></image>
+
+            <div class=" col-md-8 info">
+                <div id="basic">
+                    <p id = "name" class="text-left"></p>
+                    <span>Rate: </span><p id = "rate" class="text-right"></p>
+                </div>
                 <div>
-                    <div>add to favlist</div>
-                    <div>add to watchlist</div>
+                    <p id="year"></p>
+                    <p id = "season"></p>
+                    Genre: <p id="genre"></p>
+                    Spoken Languages <p id="lang"></p>
+
+                </div>
+                <div ><h4>Overview:</h4><p id="overview"></p></div>
+                <hr>
+
+            </div>
+            <div class="col-md-12">
+                <div class="conSec">
+                    <p><span id="numCon"></span> contributors have given language level scores to this media. </p>
+                    <p>The average level them think this media is <span id="avgLev"></span> </p>
+                    <p>The level you gave is <span id ='yourLev'></span></p>
+
+                </div>
+                <div class="userSec">
+                    <div class="col-2  col-md-2"><p>Do you like this media?</p><h1 id="inFav" class="toggleFav"><a>❤️</a></h1>️
+                        <h1 id="notInFav" class="toggleFav"><a>🖤</a></h1>️
+                    </div>
+                    <div class="col-2  col-md-2">Plan to watch it later?</div>
+                    <div class="col-2  col-md-2"><a href="/scoreAnlysis">check analysis</a></div>
                 </div>
             </div>
-            <div class="col-12 col-md-12 comment" >
+            <div class="col-12 col-md-12 comment userSec" >
                 comment
             </div>
         </div>
