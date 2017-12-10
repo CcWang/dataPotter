@@ -42,7 +42,7 @@ import org.json.JSONObject;
 import com.mongodb.util.JSON;
 import sun.rmi.runtime.Log;
 
-@Path("savy")
+@Path("advancedSearch")
 public class AdvancedSearchInterface {
 
     private MongoCollection<Document> collection = null;
@@ -57,11 +57,12 @@ public class AdvancedSearchInterface {
     }
 
 
+    //NEED TO GET SPECIFIC META CATEGORY
     @GET
     @Produces({ MediaType.APPLICATION_JSON})
     public APPResponse getAll() {
 
-        ArrayList<Savy> savyList = new ArrayList<Savy>();
+        ArrayList<AdvancedSearch> advancedSearchList = new ArrayList<AdvancedSearch>();
 
         /*
         BasicDBObject sortParams = new BasicDBObject();
@@ -73,31 +74,23 @@ public class AdvancedSearchInterface {
 
         FindIterable<Document> results = collection.find();
         if (results == null) {
-            return new APPResponse(savyList);
+            return new APPResponse(advancedSearchList);
         }
 
         try {
             //FindIterable<Document> results = collection.find().skip(offset).limit(count).sort(sortParams).sort( orderBy(ascending("_id")));
             for (Document item : results) {
-                Savy savy = new Savy(
-                        item.getString("question"),
-                        item.getString("answer01"),
-                        item.getString("answer02"),
-                        item.getString("answer03"),
-                        item.getString("answer04"),
-                        item.getInteger("answer01count"),
-                        item.getInteger("answer02count"),
-                        item.getInteger("answer03count"),
-                        item.getInteger("answer04count")
+                AdvancedSearch advancedSearch = new AdvancedSearch(
+                        item.getString("metaCategory"),
+                        item.getString("category")
                 );
-                savy.setId(item.getObjectId("_id").toString());
-//                System.out.print(movie);
-                savyList.add(savy);
+                advancedSearch.setId(item.getObjectId("_id").toString());
+                advancedSearchList.add(advancedSearch);
             }
-            return new APPResponse(savyList);
+            return new APPResponse(advancedSearchList);
 
         } catch(APPNotFoundException e) {
-            throw new APPNotFoundException(0, "No Questionare");
+            throw new APPNotFoundException(0, "No Advanced Search Data");
         } catch(Exception e) {
             System.out.println("EXCEPTION!!!!");
             e.printStackTrace();
@@ -115,26 +108,19 @@ public class AdvancedSearchInterface {
             query.put("_id", new ObjectId(id));
             Document item = collection.find(query).first();
             if (item == null) {
-                throw new APPNotFoundException(0, "No questionare bro");
+                throw new APPNotFoundException(0, "No Advanced Search Material bro");
             }
             //String name = item.getString("name");
             //int avg = avgLevel(name);
-            Savy savy = new Savy(
-                    item.getString("question"),
-                    item.getString("answer01"),
-                    item.getString("answer02"),
-                    item.getString("answer03"),
-                    item.getString("answer04"),
-                    item.getInteger("answer01count"),
-                    item.getInteger("answer02count"),
-                    item.getInteger("answer03count"),
-                    item.getInteger("answer04count")
+            AdvancedSearch advancedSearch = new AdvancedSearch(
+                    item.getString("metaCategory"),
+                    item.getString("category")
             );
-            savy.setId(item.getObjectId("_id").toString());
-            return new APPResponse(savy);
+            advancedSearch.setId(item.getObjectId("_id").toString());
+            return new APPResponse(advancedSearch);
 
         } catch (APPNotFoundException e) {
-            throw new APPNotFoundException(0, "No such questionare");
+            throw new APPNotFoundException(0, "No such Advanced Search Material");
         } catch (IllegalArgumentException e) {
             throw new APPBadRequestException(45, "Doesn't look like MongoDB ID");
         } catch (Exception e) {
@@ -158,36 +144,16 @@ public class AdvancedSearchInterface {
             throw new APPBadRequestException(33, e.getMessage());
         }
 
-        if (!json.has("question"))
-            throw new APPBadRequestException(55,"question");
-        if (!json.has("answer01"))
-            throw new APPBadRequestException(55,"answer01");
-        if (!json.has("answer02"))
-            throw new APPBadRequestException(55,"answer02");
-        if (!json.has("answer03"))
-            throw new APPBadRequestException(55,"answer03");
-        if (!json.has("answer04"))
-            throw new APPBadRequestException(55,"answer04");
-        if (!json.has("answer01count"))
-            throw new APPBadRequestException(55,"answer01count");
-        if (!json.has("answer02count"))
-            throw new APPBadRequestException(55,"answer02count");
-        if (!json.has("answer03count"))
-            throw new APPBadRequestException(55,"answer03count");
-        if (!json.has("answer04count"))
-            throw new APPBadRequestException(55,"answer04count");
+        if (!json.has("metaCategory"))
+            throw new APPBadRequestException(55,"metaCategory");
+        if (!json.has("category"))
+            throw new APPBadRequestException(55,"category");
+
 
 
         try {
-            Document doc = new Document("question", json.getString("question"))
-                    .append("answer01", json.getString("answer01"))
-                    .append("answer02", json.getString("answer02"))
-                    .append("answer03", json.getString("answer03"))
-                    .append("answer04", json.getString("answer04"))
-                    .append("answer01count", json.getInt("answer01count"))
-                    .append("answer02count", json.getInt("answer02count"))
-                    .append("answer03count", json.getInt("answer03count"))
-                    .append("answer04count", json.getInt("answer04count"));
+            Document doc = new Document("metaCategory", json.getString("metaCategory"))
+                    .append("category", json.getInt("category"));
             collection.insertOne(doc);
             return new APPResponse(request);
         } catch(Exception e) {
@@ -216,24 +182,10 @@ public class AdvancedSearchInterface {
             query.put("_id", new ObjectId(id));
 
             Document doc = new Document();
-            if (json.has("question"))
-                doc.append("question",json.getString("question"));
-            if (json.has("answer01"))
-                doc.append("answer01",json.getString("answer01"));
-            if (json.has("answer02"))
-                doc.append("answer02",json.getString("answer02"));
-            if (json.has("answer03"))
-                doc.append("answer03",json.getString("answer03"));
-            if (json.has("answer04"))
-                doc.append("answer04",json.getString("answer04"));
-            if (json.has("answer01count"))
-                doc.append("answer01count",json.getInt("answer01count"));
-            if (json.has("answer02count"))
-                doc.append("answer02count",json.getInt("answer02count"));
-            if (json.has("answer03count"))
-                doc.append("answer03count",json.getInt("answer03count"));
-            if (json.has("answer04count"))
-                doc.append("answer04count",json.getInt("answer04count"));
+            if (json.has("metaCategory"))
+                doc.append("metaCategory",json.getString("metaCategory"));
+            if (json.has("category"))
+                doc.append("category",json.getString("category"));
             Document set = new Document("$set", doc);
             collection.updateOne(query,set);
 
@@ -246,13 +198,13 @@ public class AdvancedSearchInterface {
 
 
     @DELETE
-    @Path("{croId}/{savyId}")
+    @Path("{croId}/{advancedSearchId}")
     @Produces({ MediaType.APPLICATION_JSON})
-    public Object delete(@PathParam("croId") String croId, @PathParam("savyId") String savyId) {
+    public Object delete(@PathParam("croId") String croId, @PathParam("advancedSearchId") String advancedSearchId) {
         BasicDBObject query = new BasicDBObject();
 
-        query.put("_id", new ObjectId(savyId));
-        query.put("contributorId", croId);
+        query.put("_id", new ObjectId(advancedSearchId));
+       // query.put("contributorId", croId);
 
         try{
             DeleteResult deleteResult = collection.deleteOne(query);

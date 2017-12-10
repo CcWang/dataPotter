@@ -1,10 +1,10 @@
 package edu.cmu.sv.app17.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.mongodb.MongoSocketOpenException;
 import edu.cmu.sv.app17.exceptions.APPBadRequestException;
 import edu.cmu.sv.app17.exceptions.APPInternalServerException;
 import edu.cmu.sv.app17.exceptions.APPNotFoundException;
+import edu.cmu.sv.app17.helpers.APPListResponse;
 import edu.cmu.sv.app17.helpers.PATCH;
 import edu.cmu.sv.app17.helpers.APPResponse;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -13,17 +13,13 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import static com.mongodb.client.model.Filters.*;
+
 import static com.mongodb.client.model.Sorts.ascending;
 import static com.mongodb.client.model.Sorts.descending;
 import static com.mongodb.client.model.Sorts.orderBy;
-import static java.lang.Math.toIntExact;
 
 import com.mongodb.client.result.DeleteResult;
-import edu.cmu.sv.app17.models.Book;
-import edu.cmu.sv.app17.models.Movie;
 import edu.cmu.sv.app17.models.Savy;
-import edu.cmu.sv.app17.models.Contributor;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.json.JSONException;
@@ -32,14 +28,9 @@ import org.json.JSONException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
-import com.mongodb.util.JSON;
-import sun.rmi.runtime.Log;
 
 @Path("savy")
 public class SavyInterface {
@@ -58,7 +49,7 @@ public class SavyInterface {
 
     @GET
     @Produces({ MediaType.APPLICATION_JSON})
-    public APPResponse getAll() {
+    public APPListResponse getAll() {
 
         ArrayList<Savy> savyList = new ArrayList<Savy>();
 
@@ -71,8 +62,9 @@ public class SavyInterface {
         */
 
         FindIterable<Document> results = collection.find();
+
         if (results == null) {
-            return new APPResponse(savyList);
+            return new APPListResponse(savyList,0,0,0);
         }
 
         try {
@@ -93,7 +85,7 @@ public class SavyInterface {
 //                System.out.print(movie);
                 savyList.add(savy);
             }
-            return new APPResponse(savyList);
+            return new APPListResponse(savyList,savyList.size(),0,savyList.size());
 
         } catch(APPNotFoundException e) {
             throw new APPNotFoundException(0, "No Questionare");
@@ -245,13 +237,13 @@ public class SavyInterface {
 
 
     @DELETE
-    @Path("{croId}/{movieId}")
+    @Path("{croId}/{savyId}")
     @Produces({ MediaType.APPLICATION_JSON})
-    public Object delete(@PathParam("croId") String croId, @PathParam("movieId") String movieId) {
+    public Object delete(@PathParam("croId") String croId, @PathParam("savyId") String savyId) {
         BasicDBObject query = new BasicDBObject();
 
-        query.put("_id", new ObjectId(movieId));
-        query.put("contributorId", croId);
+        query.put("_id", new ObjectId(savyId));
+        //query.put("contributorId", croId);
 
         try{
             DeleteResult deleteResult = collection.deleteOne(query);
@@ -259,7 +251,7 @@ public class SavyInterface {
                 throw new APPNotFoundException(66,"Could not delete");
         }
         catch(APPNotFoundException e) {
-            throw new APPNotFoundException(0, "That Movie was not found");
+            throw new APPNotFoundException(0, "That Questionare was not found");
         } catch(IllegalArgumentException e) {
             throw new APPBadRequestException(45,"Doesn't look like MongoDB ID");
         }  catch(Exception e) {
