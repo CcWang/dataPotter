@@ -18,11 +18,7 @@ $(document).ready(function () {
         $(".conSec").hide();
         if (media.type == "movies" || media.type=="books") {
             checkFav(media.type, finalvalue.userId, media["name"]);
-            $('.userSec').on('click',".toggleFav", function () {
-                console.log($(this))
 
-                // toogleFav(media.type, finalvalue.userId, media["name"])
-            })
         }
 
 
@@ -183,8 +179,8 @@ function checkFav(type, id, name) {
     }).done(function(data){
         data = data.content;
         console.log(data)
-        console.log(data.fav)
-        if (data.fav == true){
+
+        if (data){
             $('#inFav').show();
             $('#notInFav').hide();
         }else{
@@ -192,6 +188,13 @@ function checkFav(type, id, name) {
             $('#notInFav').show();
 
         }
+        $('.userSec').on('click',".toggleFav", function () {
+            console.log(data)
+        //    if data.fav, true, remove from favlist
+
+        //    if data.fav, false, add to favlist
+
+        })
 
 
     })

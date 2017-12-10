@@ -101,14 +101,7 @@ public class FavoriteListInterface {
         }
         try {
             Document item = collection.find(query).first();
-            HashMap <String, Boolean> result = new HashMap<String, Boolean>();
-            if (item !=null){
-                result.put("fav",Boolean.TRUE);
-            }else{
-                result.put("fav",Boolean.FALSE);
-            }
-
-            return new APPResponse(result);
+            return new APPResponse(item);
         }catch(APPNotFoundException e) {
             throw new APPNotFoundException(0, "You have no favorite list");
         } catch(Exception e) {
