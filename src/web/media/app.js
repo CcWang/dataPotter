@@ -66,10 +66,11 @@ $(document).ready(function () {
 })
 
 function getMedia(type,name) {
+
     jQuery.ajax ({
         url: "../api/themoviedb/" +type+"/"+name,
         type: "GET",
-        data: JSON.stringify({}),
+        data: null,
         dataType: "json",
         contentType: "application/json; charset=utf-8"
     }).done(function(data){
@@ -129,16 +130,18 @@ function getMedia(type,name) {
 
 
     }).fail(function(data){
+        console.log("fail")
         $("#greeting").text("You might want to try it again");
     })
 }
 
 function getMediaLevel(type, id,name) {
-    console.log(type);
+    var u ="../api/"+type+"/levels/"+id+"/"+name;
+    console.log(u)
     jQuery.ajax({
         url:"../api/"+type+"/levels/"+id+"/"+name,
         type: "GET",
-        data: JSON.stringify({}),
+        data: null,
         dataType: "json",
         contentType: "application/json; charset=utf-8"
     }).done(function(data){
@@ -155,7 +158,7 @@ function getBook(name) {
     jQuery.ajax({
         url:"../api/books/bookOne/"+name,
         type: "GET",
-        data: JSON.stringify({}),
+        data: null,
         dataType: "json",
         contentType: "application/json; charset=utf-8"
     }).done(function(data){
@@ -174,7 +177,7 @@ function checkFav(type, id, name) {
     jQuery.ajax({
         url:"../api/favoriteLists/check/"+type+"/"+id+"/"+name,
         type:"GET",
-        data: JSON.stringify({}),
+        data: null,
         dataType: "json",
         contentType: "application/json; charset=utf-8"
     }).done(function(data){
