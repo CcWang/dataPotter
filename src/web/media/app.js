@@ -23,7 +23,12 @@ $(document).ready(function () {
         console.log(finalvalue)
         $(".userSec").hide();
         $(".conSec").show();
-        getMediaLevel(media.type, finalvalue.contributorId,media["name"]);
+        if (media.type == "movies" || media.type=="books"){
+            getMediaLevel(media.type, finalvalue.contributorId,media["name"]);
+        }else if( media.type == "tv"){
+            getMediaLevel("tvshows", finalvalue.contributorId,media["name"]);
+        }
+
     }
     finalvalue = JSON.parse(listvalues);
 
@@ -37,9 +42,11 @@ $(document).ready(function () {
         location.href = ("/login");
     }
     $("#user").text(finalvalue.username);
-    if (media.type == "movies" || media.type == "tvshows"){
+    if (media.type == "movies"){
         getMedia(media.type, media["name"]);
-    }else{
+    }else if( media.type == "tv"){
+        getMedia(media.type, media["name"]);
+    } else{
         getBook(media["name"])
     }
 
@@ -76,7 +83,7 @@ function getMedia(type,name) {
                 $('#lang').append(lang)
             }
         }
-        if (type == 'tvshows'){
+        if (type == 'tv'){
             if(data.languages.length>1){
                 data.languages.forEach(function (item) {
                     var lang = "<p style='display:inline-block'>"+item+"</p> | ";
