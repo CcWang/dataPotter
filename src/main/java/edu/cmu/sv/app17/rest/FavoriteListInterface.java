@@ -145,7 +145,7 @@ public class FavoriteListInterface {
             favlists.put("tvshows",tvshowsList);
             favlists.put("book",bookList);
             favlists.put("userID",user);
-            System.out.print(favlists);
+//            System.out.print(favlists);
 
             return new APPResponse(favlists);
         }catch(APPNotFoundException e) {

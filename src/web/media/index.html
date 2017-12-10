@@ -30,18 +30,29 @@
             <div class=" col-md-4 info">
                 <div id="basic">
                     <p id = "name" class="text-left"></p>
-                    <p id = "rate" class="text-right"></p>
+                    <span>Rate: </span><p id = "rate" class="text-right"></p>
                 </div>
-                <div>year, genre</div>
+                <div>
+                    <p id="year"></p>
+                    Genre: <p id="genre"></p>
+                    Spoken Languages <p id="lang"></p>
+
+                </div>
                 <div ><h4>Overview:</h4><p id="overview"></p></div>
                 <hr>
-                <div>
+                <div class="conSec">
+                    <p><span id="numCon"></span> contributors have given language level scores to this media. </p>
+                    <p>The average level them think this media is <span id="avgLev"></span> </p>
+                    <p>The level you gave is <span id ='yourLev'></span></p>
+
+                </div>
+                <div class="userSec">
                     <div class="col-2  col-md-2">add to favlist</div>
                     <div class="col-2  col-md-2">add to watchlist</div>
                     <div class="col-2  col-md-2">check analysis</div>
                 </div>
             </div>
-            <div class="col-12 col-md-12 comment" >
+            <div class="col-12 col-md-12 comment userSec" >
                 comment
             </div>
         </div>

@@ -41,7 +41,7 @@ $(function(){
             if (userType == "User"){
                 $("#greeting").text("User: "+data.content.username);
                 // document.cookie =  "name = "+data.content.username+"; token=" + token + ";"+ expires + ";path=/";
-                localStorage.clear();
+                // localStorage.clear();
                 localStorage.setItem('user', JSON.stringify(data.content));
                 localStorage.setItem('userType', "user");
                 location.href=("/users");
@@ -50,7 +50,7 @@ $(function(){
             }
             if (userType == "Contributor"){
                 $("#greeting").text(data.content.name);
-                localStorage.clear();
+                // localStorage.clear();
                 localStorage.setItem('contributor', JSON.stringify(data.content));
                 // localStorage.setItem('userType', JSON.stringify({"usertype":"contributor"}));
                 localStorage.setItem('userType', "contributor");
