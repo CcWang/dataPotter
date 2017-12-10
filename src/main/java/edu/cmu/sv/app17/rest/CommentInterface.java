@@ -117,13 +117,10 @@ public class CommentInterface {
 
 
     @POST
-    @Path("{mediaType}/{name}/{userId}")
+//    @Path("{mediaType}/{name}/{userId}")
     @Consumes({ MediaType.APPLICATION_JSON})
     @Produces({ MediaType.APPLICATION_JSON})
-    public APPResponse getCommentsForMovie(@PathParam("mediaType") String mediaType,
-                                           @PathParam("name") String name,
-                                           @PathParam("userId") String userId,
-                                           Object request) {
+    public APPResponse getCommentsForMovie(Object request) {
 
         JSONObject json = null;
         try {
@@ -131,9 +128,12 @@ public class CommentInterface {
             json = new JSONObject(ow.writeValueAsString(request));
             if (!json.has("content"))
                 throw new APPBadRequestException(55,"name");
-
+            System.out.print(json);
             Document doc = new Document("content", json.getString("content"))
-                    .append("userId", userId);
+                        .append("userId", json.getString("userId"))
+                        .append("mediaType", json.getString("mediaType"))
+                        .append("mediaName", json.getString("mediaName"));
+
             collection.insertOne(doc);
             return new APPResponse(request);
 

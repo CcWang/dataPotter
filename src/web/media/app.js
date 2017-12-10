@@ -2,6 +2,7 @@ $(document).ready(function () {
     $(".userSec").hide();
     $(".conSec").hide();
     var media = localStorage.getItem('media');
+
     if (media == null) {
         alert("please log in");
         location.href = ("/login");
@@ -10,6 +11,7 @@ $(document).ready(function () {
     var listvalues;
     var finalvalue;
     media = JSON.parse(media)
+    console.log("watching media",media, media.type);
     if (userType == "user"){
         listvalues = localStorage.getItem('user');
         finalvalue = JSON.parse(listvalues);
