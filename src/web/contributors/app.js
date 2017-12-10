@@ -468,7 +468,7 @@ $(document).ready(function () {
         jQuery.ajax ({
             url: "../api/"+type+"/" +finalvalue.contributorId+"/"+id,
             type: "DELETE",
-            data: JSON.stringify({}),
+            data: null,
             dataType: "json",
             contentType: "application/json; charset=utf-8",
             beforeSend:function (xhr) {
