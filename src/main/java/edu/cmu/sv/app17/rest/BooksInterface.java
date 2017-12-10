@@ -53,6 +53,7 @@ public class BooksInterface {
 
     }
 
+
     @GET
     @Produces({MediaType.APPLICATION_JSON})
     public APPResponse getAll(@DefaultValue("_id") @QueryParam("sort") String sortArg ,@DefaultValue("100") @QueryParam("count") int count,
@@ -121,19 +122,17 @@ public class BooksInterface {
     }
 
 
-    //    search
+//  search
     @GET
     @Path("name/{search}")
     @Consumes({ MediaType.APPLICATION_JSON})
     @Produces({ MediaType.APPLICATION_JSON})
     public APPResponse searchByName(@PathParam("search") String search) {
-
-
         BasicDBObject query = new BasicDBObject();
         ArrayList<Book> bookRet = new ArrayList<>();
 
         try {
-//        query = {"name":{search}};
+//  query = {"name":{search}};
             FindIterable<Document> results = collection.find(regex("name",".*"+search+".*"));
             for (Document item : results) {
                 Book book = new Book(
@@ -163,7 +162,6 @@ public class BooksInterface {
     @Produces({ MediaType.APPLICATION_JSON})
     public APPResponse searchByGenre(@PathParam("genre") String genre) {
 
-
         ArrayList<Book> bookRet = new ArrayList<>();
 
         try {
@@ -189,6 +187,7 @@ public class BooksInterface {
             throw new APPInternalServerException(99,e.getMessage());
         }
     }
+
     @GET
     @Path("level/{level}")
     @Consumes({ MediaType.APPLICATION_JSON})

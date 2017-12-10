@@ -36,8 +36,6 @@ $(document).ready(function () {
     })
 
     function getBooks(sort_term) {
-
-
         jQuery.ajax ({
             // url:  "/api/contributors/" + finalvalue.contributorId + "/books?offset=" + offset + "&count="  + count,
             url:"/api/books?sort="+sort_term+"&offset="+offset + "&count=" +count,
@@ -59,7 +57,7 @@ $(document).ready(function () {
             })
             .fail(function(data){
                 console.log("here");
-                $("#bookList").text("Sorry no tvs");
+                $("#bookList").text("Sorry no books");
             })
 
     }

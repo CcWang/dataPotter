@@ -90,4 +90,44 @@ $(function() {
             $("#greeting").text("You might want to try it again");
         })
     });
+
+
+   var url2 = "/api/users/" + finalvalue.userId+"/langs";
+   console.log(finalvalue);
+   jQuery.ajax({
+     url: url2,
+     type: "GET",
+     beforeSend: function (xhr) {
+        xhr.setRequestHeader("Authorization", token);
+     }
+    }).done(function(data){
+       //      console.log("here"+data.content);
+       // console.log("here"+data.content.movies_level);
+       var movies_level = data.content.movies_level;
+       var tv_level = data.content.tvshows_level;
+       var books_level = data.content.books_level;
+       $("#mLevel").html(movies_level);
+       $("#tLevel").text(tv_level);
+       $("#bLevel").text(books_level);
+
+
+        })
+        .fail(function(data){
+            console.log("here");
+            $("#languageList").text("Sorry coundn't find language level");
+        })
+
+    var img = document.createElement("IMG");
+        // img.src = "/image/pic1.jpg";
+        $('#image1').html(img);
+        $('#image1').attr("src","/image/pic1.jpg");
+
+    // if (data.content.gender == "male") {
+    //     var img = document.createElement("IMG");
+    //     img.src = "../contributors/images/male.png";
+    //     $('#gender').html(img);
+    // }
+
+
+
 })

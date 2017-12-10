@@ -17,6 +17,8 @@ import edu.cmu.sv.app17.helpers.APPCrypt;
 import edu.cmu.sv.app17.helpers.APPResponse;
 import edu.cmu.sv.app17.helpers.PATCH;
 import edu.cmu.sv.app17.models.Book;
+import edu.cmu.sv.app17.models.Comment;
+import jdk.nashorn.internal.lookup.MethodHandleFactory;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.json.JSONException;
@@ -38,154 +40,101 @@ import static com.mongodb.client.model.Filters.type;
 public class CommentInterface {
 
     private MongoCollection<Document> collection;
+    private MongoCollection<Document> usersCollection;
+    private MongoCollection<Document> booksCollection;
+    private MongoCollection<Document> movieCollection;
+    private MongoCollection<Document> tvshowCollection;
     private ObjectWriter ow;
 
 
     public CommentInterface() {
         MongoClient mongoClient = new MongoClient();
         MongoDatabase database = mongoClient.getDatabase("dataPotter");
-
         this.collection = database.getCollection("comment");
-        ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        usersCollection = database.getCollection("users");
+        booksCollection = database.getCollection("books");
+        movieCollection = database.getCollection("movie");
+        tvshowCollection = database.getCollection("tvshow");
+       ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 
     }
 
+
+
+//GET comments
+
     @GET
-    @Produces({MediaType.APPLICATION_JSON})
-    public APPResponse getAll(@DefaultValue("_id") @QueryParam("sort") String sortArg ,@DefaultValue("100") @QueryParam("count") int count,
-    @DefaultValue("0") @QueryParam("offset") int offset) {
-
-        ArrayList<Book> bookList = new ArrayList<Book>();
-
-        BasicDBObject sortParams = new BasicDBObject();
-        List<String> sortList = Arrays.asList(sortArg.split(","));
-        sortList.forEach(sortItem -> {
-            sortParams.put(sortItem,1);
-        });
+    @Path("{mediaType}/{name}")
+    @Consumes({ MediaType.APPLICATION_JSON})
+    @Produces({ MediaType.APPLICATION_JSON})
+    public APPResponse getCommentsForMovie(@PathParam("mediaType") String mediaType,
+                                           @PathParam("name") String name ) {
+        ArrayList<Comment> comments = new ArrayList<Comment>();
 
         try {
-            FindIterable<Document> results = collection.find().skip(offset).limit(count).sort(sortParams);
+//            FindIterable<Document> results;
+//            if (new String("mediaType").equals("movie") ) {
+//                results = collection.find(regex("mediaName", ".*" + name + ".*"));
+//
+//
+//
+//            }else if (new String("mediaType").equals("tvshow") ) {
+//                results = tvshowCollection.find(regex("name", ".*" + name + ".*"));
+//            }else if (new String("mediaType").equals("book") ) {
+//                results = booksCollection.find(regex("name", ".*" + name + ".*"));
+//            }else {
+//                results = movieCollection.find(regex("name", ".*" + name + ".*"));;
+//                System.out.println("confirm your mediatype");
+//            }
+
+            FindIterable<Document> results = collection.find();
             for (Document item : results) {
-                Book book = new Book(
-                        item.getString("name"),
-                        item.getString("genre"),
-                        item.getInteger("level"),
-                        item.getString("contributorId")
-                );
-            book.setId(item.getObjectId("_id").toString());
-            bookList.add(book);
+                String mtype = item.getString("mediaType");
+                Comment comment = new Comment(
+                        item.getString("mediaType"),
+                        item.getString("mediaName"),
+                        item.getString("content"),
+                        item.getString("userId")
+            );
+
+                comment.setId(item.getObjectId("_id").toString());
+
+                if (mtype.equals(mediaType)){
+                    System.out.print(comment);
+                    comments.add(comment);
+                }
             }
-            return new APPResponse(bookList);
+            return new APPResponse(comments);
 
         } catch(APPNotFoundException e) {
-            throw new APPNotFoundException(0, "No TV Shows");
+            throw new APPNotFoundException(0, "No comments yet");
         } catch(Exception e) {
             System.out.println("EXCEPTION!!!!");
             e.printStackTrace();
             throw new APPInternalServerException(99,e.getMessage());
         }
-
     }
-
-
-
-
-//    @DELETE
-//    @Path("{croId}/{bookId}")
-//    @Produces({ MediaType.APPLICATION_JSON})
-//    public Object delete(@PathParam("croId") String croId, @PathParam("bookId") String bookId) {
-//        BasicDBObject query = new BasicDBObject();
-//
-//        query.put("_id", new ObjectId(bookId));
-//        query.put("contributorId", croId);
-//            try{
-//        DeleteResult deleteResult = collection.deleteOne(query);
-//        if (deleteResult.getDeletedCount() < 1)
-//            throw new APPNotFoundException(66,"Could not delete");
-//    }
-//        catch(APPNotFoundException e) {
-//        throw new APPNotFoundException(0, "That Book was not found");
-//    } catch(IllegalArgumentException e) {
-//        throw new APPBadRequestException(45,"Doesn't look like MongoDB ID");
-//    }  catch(Exception e) {
-//        throw new APPInternalServerException(99,"Something happened, pinch me!");
-//    }
-//        return new JSONObject();
-//
-//}
-//
-//    private void checkAuthentication(HttpHeaders headers, String id) throws Exception{
-//        List<String> authHeaders = headers.getRequestHeader(HttpHeaders.AUTHORIZATION);
-//        if (authHeaders == null)
-//            throw new APPUnauthorizedException(70, "No Auhthorization Headers");
-//        String token = authHeaders.get(0);
-//        String clearToken = APPCrypt.decrypt(token);
-//        if (id.compareTo(clearToken) != 0) {
-//            throw new APPUnauthorizedException(71, "Invalid token. Please try getting a new token");
-//        }
-//    }
-
-    @GET
-    @Path("{type}/{name}")
-    @Produces({ MediaType.APPLICATION_JSON})
-    public APPResponse getOne(@PathParam("type") String type, @PathParam("name") String name ) {
-        BasicDBObject query = new BasicDBObject();
-        try {
-            query.put("mediaType", type);
-            query.put("mediaName", name);
-            Document item = collection.find(query).first();
-            if (item == null) {
-                throw new APPNotFoundException(0, "No such book, my friend");
-            }
-            Book book = new Book(
-                    item.getString("name"),
-                    item.getString("genre"),
-                    item.getInteger("level"),
-                    item.getString("contributorId")
-            );
-            book.setId(item.getObjectId("_id").toString());
-            return new APPResponse(book);
-
-        } catch (APPNotFoundException e) {
-            throw new APPNotFoundException(0, "No such book");
-        } catch (IllegalArgumentException e) {
-            throw new APPBadRequestException(45, "Doesn't look like MongoDB ID");
-        } catch (Exception e) {
-            throw new APPInternalServerException(99, "Something happened, pinch me!");
-        }
-    }
-
 
 
     @POST
-    @Path("create/{id}")
+    @Path("{mediaType}/{name}/{userId}")
     @Consumes({ MediaType.APPLICATION_JSON})
     @Produces({ MediaType.APPLICATION_JSON})
-    public APPResponse create(@Context HttpHeaders headers,
-                              @PathParam("id") String id, Object request) {
+    public APPResponse getCommentsForMovie(@PathParam("mediaType") String mediaType,
+                                           @PathParam("name") String name,
+                                           @PathParam("userId") String userId,
+                                           Object request) {
 
         JSONObject json = null;
         try {
-            checkAuthentication(headers,id);
 
             json = new JSONObject(ow.writeValueAsString(request));
-
-
-            if (!json.has("name"))
+            if (!json.has("content"))
                 throw new APPBadRequestException(55,"name");
-            if (!json.has("genre"))
-                throw new APPBadRequestException(55,"genre");
-            if (!json.has("level"))
-                throw new APPBadRequestException(55,"level");
-//        if (!json.has("contributorId"))
-//            throw new APPBadRequestException(55,"contributorId");
 
-            Document doc = new Document("name", json.getString("name"))
-                    .append("genre", json.getString("genre"))
-                    .append("level", json.getInt("level"))
-                    .append("contributorId", id);
+            Document doc = new Document("content", json.getString("content"))
+                    .append("userId", userId);
             collection.insertOne(doc);
-
             return new APPResponse(request);
 
         } catch(APPUnauthorizedException e) {
@@ -216,30 +165,26 @@ public class CommentInterface {
             query.put("_id", new ObjectId(id));
 
             Document doc = new Document();
-            if (json.has("name"))
-                doc.append("name",json.getString("name"));
-            if (json.has("level"))
-                doc.append("level",json.getInt("level"));
-            if (json.has("genre"))
-                doc.append("genre",json.getString("genre"));
+            if (json.has("content"))
+                doc.append("content",json.getString("content"));
             Document set = new Document("$set", doc);
             collection.updateOne(query,set);
 
         } catch(JSONException e) {
-            System.out.println("Failed to create a document");
+            System.out.println("Failed to edit a comment");
 
         }
         return new APPResponse(request);
     }
 
     @DELETE
-    @Path("{croId}/{bookId}")
+    @Path("{id}")
     @Produces({ MediaType.APPLICATION_JSON})
-    public Object delete(@PathParam("croId") String croId, @PathParam("bookId") String bookId) {
+    public Object delete(@PathParam("id") String id) {
+
         BasicDBObject query = new BasicDBObject();
 
-        query.put("_id", new ObjectId(bookId));
-        query.put("contributorId", croId);
+        query.put("_id", new ObjectId(id));
 
         try{
             DeleteResult deleteResult = collection.deleteOne(query);
@@ -247,7 +192,7 @@ public class CommentInterface {
                 throw new APPNotFoundException(66,"Could not delete");
         }
         catch(APPNotFoundException e) {
-            throw new APPNotFoundException(0, "That Book was not found");
+            throw new APPNotFoundException(0, "That Comment was not found");
         } catch(IllegalArgumentException e) {
             throw new APPBadRequestException(45,"Doesn't look like MongoDB ID");
         }  catch(Exception e) {
