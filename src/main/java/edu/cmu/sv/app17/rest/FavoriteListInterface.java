@@ -101,14 +101,14 @@ public class FavoriteListInterface {
         }
         try {
             Document item = collection.find(query).first();
-            HashMap <String, Boolean> result = new HashMap<String, Boolean>();
             if (item !=null){
-                result.put("fav",Boolean.TRUE);
+                item.put("favID",item.getObjectId("_id").toString());
+
             }else{
-                result.put("fav",Boolean.FALSE);
+                item = null;
             }
 
-            return new APPResponse(result);
+            return new APPResponse(item);
         }catch(APPNotFoundException e) {
             throw new APPNotFoundException(0, "You have no favorite list");
         } catch(Exception e) {
@@ -238,6 +238,7 @@ public class FavoriteListInterface {
         catch (JsonProcessingException e) {
             throw new APPBadRequestException(33, e.getMessage());
         }
+        System.out.print(json);
         if (!json.has("type")){
 
             throw new APPBadRequestException(55,"missing type");
@@ -254,21 +255,21 @@ public class FavoriteListInterface {
                 .append("movie", null)
                 .append("tvShow", null)
                 .append("book", null);
-        if (type.equals("movie")){
+        if (type.equals("movies")){
             doc.put("movie", json.getString("media"));
         }
 
-        if (type.equals("tvshow")){
+        if (type.equals("tv")){
 
             doc.put("tvShow",  json.getString("media"));
         }
 
-        if (type.equals("book")){
+        if (type.equals("books")){
 
             doc.put("book",  json.getString("media"));
 
         }
-
+        System.out.print(doc);
         collection.insertOne(doc);
         return new APPResponse(request);
     }

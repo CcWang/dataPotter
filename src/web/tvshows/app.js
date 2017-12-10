@@ -59,5 +59,13 @@ $(document).ready(function () {
             })
 
     }
+    $(document).on('click',"#tvName", function () {
+        var name = $(this).text();
+
+
+        localStorage.setItem('media', JSON.stringify({"type":"tv", "name":name}));
+        location.href=("/media");
+        //
+    })
 
 });

@@ -43,7 +43,7 @@ $(document).ready(function () {
         })
             .done(function(data){
 
-                console.log("here"+data.content);
+                // console.log("here"+data.content);
                 $("#bookTable").find(".cloned").remove();
                 $("#page").text("Page " + Math.floor(offset/count+1) + " of " + (Math.ceil(total/count)));
                 data.content.forEach(function(item){
@@ -62,4 +62,12 @@ $(document).ready(function () {
 
     }
 
+    $(document).on('click',"#bName", function () {
+        var name = $(this).text();
+
+
+        localStorage.setItem('media', JSON.stringify({"type":"books", "name":name}));
+        location.href=("/media");
+        //
+    })
 });
