@@ -11,6 +11,7 @@ var request= require('request');
 
 var userID = [];
 var contributorID=[];
+var savyID=[];
 
 
 function getDbConnection(callback){
@@ -37,6 +38,7 @@ getDbConnection(function(){
         else
             addUser();
             addContributor();
+            addSavy();
             // addBook();
     });
 });
@@ -170,6 +172,67 @@ function addContributor() {
         })
     }
 };
+
+function addSavy() {
+    var s = [{
+            "question": "This is Question 1",
+            "answer01": "Answer 1",
+            "answer02": "Answer 2",
+            "answer03": "Answer 3",
+            "answer04": "Answer 4",
+            "answer01count": 0,
+            "answer02count": 0,
+            "answer03count": 0,
+            "answer04count": 0
+        },
+
+        {
+            "question": "This is Question 2",
+            "answer01": "Answer 11",
+            "answer02": "Answer 22",
+            "answer03": "Answer 33",
+            "answer04": "Answer 44",
+            "answer01count": 11,
+            "answer02count": 22,
+            "answer03count": 33,
+            "answer04count": 44
+        },
+
+        {
+            "question": "This is Question 3",
+            "answer01": "Answer 101",
+            "answer02": "Answer 202",
+            "answer03": "Answer 303",
+            "answer04": "Answer 404",
+            "answer01count": 10,
+            "answer02count": 20,
+            "answer03count": 30,
+            "answer04count": 40
+        },
+        {
+            "question": "This is Question 4",
+            "answer01": "Answer 111",
+            "answer02": "Answer 222",
+            "answer03": "Answer 333",
+            "answer04": "Answer 444",
+            "answer01count": 111,
+            "answer02count": 222,
+            "answer03count": 333,
+            "answer04count": 444
+        }];
+
+    var savy = dbConnection.collection('savy');
+    for (var i = 0; i<s.length;i++ ){
+        savy.insertOne(s[i], function (err, doc) {
+            if (err){
+                console.log("Could not add savy "+i)
+            }else{
+                savyID[i] = doc.ops[0]._id.toString();
+            }
+
+        })
+    }
+}
 
 function addMovie(cId) {
     var m = [{
