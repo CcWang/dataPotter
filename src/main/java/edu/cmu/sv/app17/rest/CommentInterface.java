@@ -117,7 +117,6 @@ public class CommentInterface {
 
 
     @POST
-//    @Path("{mediaType}/{name}/{userId}")
     @Consumes({ MediaType.APPLICATION_JSON})
     @Produces({ MediaType.APPLICATION_JSON})
     public APPResponse getCommentsForMovie(Object request) {

@@ -2,9 +2,9 @@ package edu.cmu.sv.app17.rest;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
-import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import edu.cmu.sv.app17.helpers.APPResponse;
 import org.bson.Document;
 
 import javax.ws.rs.*;
@@ -15,6 +15,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -27,10 +28,11 @@ public class ScoreInterface {
     private final String zipFile = System.getProperty("user.dir")+ "//temp.zip";
     private int low_frequent_count = 0;
     private int high_frequent_count = 0;
-    //private int low_count = 0;
+    private int low_count = 0;
     private int total_count = 0;
     HashMap<String, Integer> lowList = new HashMap<String, Integer>();
     HashMap<String, Integer> highList = new HashMap<String, Integer>();
+    private int[] data = new int[6];
 
     public ScoreInterface() {
         MongoClient mongoClient = new MongoClient();
@@ -40,7 +42,7 @@ public class ScoreInterface {
 
     @GET
     @Produces({ MediaType.APPLICATION_JSON})
-    public int getScore(@QueryParam("url") String url) {
+    public APPResponse getScore(@QueryParam("url") String url) {
 
         /* This is to download the zip file from subscene.com */
         int flag = 0;
@@ -59,8 +61,10 @@ public class ScoreInterface {
             rbc.close();
             flag = 1;
         } catch (MalformedURLException e) {
+            data[5] = 0;
             e.printStackTrace();
         } catch (IOException e) {
+            data[5] = 0;
             e.printStackTrace();
         }
 
@@ -95,8 +99,10 @@ public class ScoreInterface {
                 }
                 zipIn.close();
             } catch (FileNotFoundException e) {
+                data[5] = 0;
                 e.printStackTrace();
             } catch (IOException e) {
+                data[5] = 0;
                 e.printStackTrace();
             }
         }
@@ -106,7 +112,6 @@ public class ScoreInterface {
            mongoimport:https://docs.mongodb.com/manual/reference/program/mongoimport/
            command: mongoimport --db wordfre --collection wordfre --type csv --headerline --file /path/to/myfile.csv
            In my example: "C:/Program Files/MongoDB/Server/3.4/bin>mongoimport --db wordfre --collection wordfre --type csv --headerline --file C:/Users/wangf/IdeaProjects/untitled/heatmap.csv"
-           Sorry for the naming convention - upper/lower cases are just randomly picked. Please correct yourself to align with the project..
          */
 
         /* This is to read the srt file */
@@ -142,11 +147,11 @@ public class ScoreInterface {
                                 Document item = col.find(new BasicDBObject("Word", splited[j].toLowerCase())).first();
                                 /* Low frequency: cannot find in database heatmap collection; First occurrence: cannot find in in-memory hashmap */
                                 if ((item == null && !splited[j].contains("-") && !splited[j].contains(")"))){
-                                    //low_count++;
+                                    low_count++;
                                     if (lowList.get(splited[j]) ==null){
                                         lowList.put(splited[j], 1);
                                         low_frequent_count++;
-                                        System.out.println(splited[j]);
+                                        //System.out.println(splited[j]);
                                     }
                                 } else if (highList.get(splited[j]) ==null) {
                                     highList.put(splited[j],1);
@@ -168,13 +173,21 @@ public class ScoreInterface {
                 }
             }
         }
-        if (total_count == 0) return 0; //Unsupported Files
-        if (low_frequent_count < total_count*0.05 && low_frequent_count < high_frequent_count*0.3) return 1; //Easy
-        if (low_frequent_count > total_count*0.06 && low_frequent_count > high_frequent_count*0.35) return 3; //Difficult
-        else return 2; //Normal
 
+        data[0] = total_count;
+        data[1] = low_count;
+        data[2] = total_count-low_count;
+        data[3] = low_frequent_count;
+        data[4] = high_frequent_count;
 
-        /* Examples - War deployed as context path /app
+        if (total_count == 0) data[5] = 0; //Unsupported Files
+        if (low_frequent_count < total_count*0.05 && low_frequent_count < high_frequent_count*0.3) data[5] = 1; //Easy
+        if (low_frequent_count > total_count*0.06 && low_frequent_count > high_frequent_count*0.35) data[5] = 3; //Difficult
+        else data[5] = 2; //Normal
+
+        return new APPResponse(data);
+
+        /* Examples - War deployed as context path /app - Note subscene.com changes its link every day.
         Easy:
         Inside out: http://localhost:8080/app/score/?url=https://subscene.com/subtitle/download?mac=kdxfT0L_-RdjSwRN_WHV3-GHGoC-LWHULx4tM2qrIG1mVxa6gxbtcAsxKs9jJpoimamHRFQicTB2Z1308AdyRYqkWZxLePDm437DpaLsuWh98tiknaDeWpeXY7oKmqff0
         Forrest Gump: http://localhost:8080/app/score/?url=https://subscene.com/subtitle/download?mac=0idGtMfTgWruJ6UGFgZhFYGQ2mMnYga5QOmpFaB7ujx1qv1yOKvpydFl7i69N5LvOvomuGVWRtPVVO3NRep7YauKlfvwqTAunKAk86fcPZQZ3-K9GaI_gkVTSoJFDiL60
