@@ -133,7 +133,6 @@ public class UsersInterface {
             throw new APPInternalServerException(99,"Something happened, pinch me!");
         }
 
-
     }
 
     
@@ -250,20 +249,23 @@ public class UsersInterface {
             BasicDBObject query = new BasicDBObject();
             query.put("usersId", id);
 
-            FindIterable<Document> results = langLevelCollection.find(query);
-            for (Document item : results) {
+//            FindIterable<Document> results = langLevelCollection.find(query);
+            Document results = langLevelCollection.find(query).first();
+//
                 LanguageLevel lang = new LanguageLevel(
-                        item.getString("usersId"),
-                        item.getInteger("movies_level"),
-                        item.getInteger("tvshows_level"),
-                        item.getInteger("books_level")
+                        results.getString("usersId"),
+                        results.getInteger("movies_level"),
+                        results.getInteger("tvshows_level"),
+                        results.getInteger("books_level")
 //                        item.getInteger("audioBooks_level")
 
                 );
-                lang.setId(item.getObjectId("_id").toString());
+                lang.setId(results.getObjectId("_id").toString());
                 lanList.add(lang);
-            }
-            return new APPResponse(lanList);
+//
+            System.out.println(lang);
+            System.out.println(results);
+            return new APPResponse(results);
 
         } catch(APPNotFoundException e) {
                 throw new APPNotFoundException(0,"No such User");
@@ -282,7 +284,7 @@ public class UsersInterface {
     public APPResponse create(@Context HttpHeaders headers, @PathParam("id") String id, Object request) {
         JSONObject json = null;
         try {
-            checkAuthentication(headers,id);
+//            checkAuthentication(headers,id);
 
             json = new JSONObject(ow.writeValueAsString(request));
         }

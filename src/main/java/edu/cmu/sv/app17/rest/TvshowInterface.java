@@ -25,6 +25,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import edu.cmu.sv.app17.rest.MovieInterface;
 
@@ -106,7 +107,7 @@ public class TvshowInterface {
                 throw new APPNotFoundException(0, "No such tv, my friend");
             }
             String name = item.getString("name");
-            int avgLevel = getAvg(name);
+            int avgLevel = avgLevel(name).get("avgLev");
             Tvshow tv = new Tvshow(
                     item.getString("name"),
                     item.getString("genre"),
@@ -128,8 +129,40 @@ public class TvshowInterface {
 
 
     }
+    //return that tvshow's individual level and avg level
+    @GET
+    @Path("levels/{conId}/{tvshowName}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public APPResponse getOne(@PathParam("conId") String id, @PathParam("tvshowName") String name) { ;
+        BasicDBObject query = new BasicDBObject();
+        try {
+            query.put("contributorId", id);
+            query.put("name",name);
+            Document item = collection.find(query).first();
+            if (item == null) {
+                throw new APPNotFoundException(0, "No such movie, my friend");
+            }
+            Integer indLev = item.getInteger("level");
+            Integer size = avgLevel(name).get("size");
+            Integer avgLev = avgLevel(name).get("avgLev");
+            HashMap<String,Integer> levels = new HashMap<String,Integer>();
+            levels.put("indLev",indLev);
+            levels.put("avgLev",avgLev);
+            levels.put("size",size);
 
-    public Integer getAvg( String name) {
+            return new APPResponse(levels);
+
+        } catch (APPNotFoundException e) {
+            throw new APPNotFoundException(0, "No such book");
+        } catch (IllegalArgumentException e) {
+            throw new APPBadRequestException(45, "Doesn't look like MongoDB ID");
+        } catch (Exception e) {
+            throw new APPInternalServerException(99, "Something happened, pinch me!");
+        }
+    }
+// get all level for same tvshow
+
+    public HashMap<String, Integer> avgLevel( String name) {
 
         Integer totalLevel = 0;
 
@@ -141,17 +174,22 @@ public class TvshowInterface {
                 totalLevel = totalLevel+ item.getInteger("level");
                 size = size +1;
             }
-
-            return totalLevel/size;
+            HashMap<String,Integer> totals = new HashMap<String,Integer>();
+            totals.put("size",size);
+            totals.put("avgLev",totalLevel/size);
+            return totals;
 
         } catch(APPNotFoundException e) {
-            throw new APPNotFoundException(0, "No TVshows");
+            throw new APPNotFoundException(0, "No Movies");
         } catch(Exception e) {
             System.out.println("EXCEPTION!!!!");
             e.printStackTrace();
             throw new APPInternalServerException(99,e.getMessage());
         }
     }
+
+
+
 
 
     //    search
@@ -288,7 +326,8 @@ public class TvshowInterface {
             Document doc = new Document("name", json.getString("name"))
                     .append("genre", json.getString("genre"))
                     .append("level", json.getInt("level"))
-                    .append("contributorId", id);
+                    .append("contributorId", id)
+                    .append("tvid",json.getInt("tvid"));;
             collection.insertOne(doc);
             return new APPResponse(request);
         } catch(Exception e) {

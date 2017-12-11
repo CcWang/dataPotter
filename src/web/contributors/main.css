@@ -125,7 +125,13 @@ ul ul a{
 #movieRow th {
     align-content: center;
 }
-
+.ui-dialog .ui-dialog-content {
+    border: 0;
+    padding: .5em 1em;
+    background: cadetblue;
+    overflow: auto;
+    zoom: 1;
+}
 
 /* ---------------------------------------------------
     CONTENT STYLE
@@ -157,3 +163,5 @@ ul ul a{
         display: none;
     }
 }
+
+

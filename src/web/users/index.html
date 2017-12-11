@@ -17,6 +17,7 @@
             crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="app.js"></script>
+    <script src="../main.js"></script>
 
 
 </head>
@@ -24,7 +25,7 @@
 
 
 
-<div class="wrapper">
+<div class="wrapper col-md-12">
     <!-- Sidebar Holder -->
     <nav id="sidebar">
         <div class="sidebar-header">
@@ -45,7 +46,7 @@
                 <p id="lan">Native Language</p>
             </li>
 
-                <p id="cell">Phone Number</p>
+            <p id="cell">Phone Number</p>
             </li>
             </li>
             <p id="lanLevel">English Level</p>
@@ -60,11 +61,11 @@
 
             <li id="Watlist"><a href="/watches" style="color:black">Watch List</a></li>
             <li><a href="/favorites" id="favlist" style="color:black">Favorite List</a></li>
-                </ul>
-            </li>
-            <li>
-                <a href="#" id="edit">EDIT</a>
-            </li>
+        </ul>
+        </li>
+        <li>
+            <a href="#" id="edit">EDIT</a>
+        </li>
 
         </ul>
         <form class="form-edit" id = 'editForm'>
@@ -102,16 +103,53 @@
                         <li><a href="/watches">Watch List</a></li>
                         <li><a href="/favorites">Favorite List</a></li>
                         <li><a href="/savy">Take Survey</a></li>
+                        <li><a href="/movies">All Movies</a></li>
+                        <li><a href="/tvshows">All TV Shows</a></li>
+                        <li><a href="/books">All Books</a></li>
+                        <li><button class="btn btn-warning logout">Log Out</button></li>
+
                     </ul>
                 </div>
             </div>
         </nav>
 
+        <div class="col-md-10">
+
+            <!-- Page Content Holder -->
+            <div >
+
+                <!--<div class="line"></div>-->
+
+                <h3 id="Current Language Level" class="Lang">Your Current Language Level</h3>
+                <h3 id="languageList" class="Lang"></h3>
+                <table class="table table-striped Lang" id="langTable">
+                    <thead >
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Level for Movies</th><th></th>
+                        <th scope="col">Level for TVshows</th><th></th>
+                        <th scope="col">Level for Books</th><th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr id="langRow">
+                        <th scope="row">*</th>
+                        <td><input type="text" id="mLevel" style="align-content: center"></td><td><input type="submit" id="mupdate" value="Update"></td>
+                        <td><input type="text" id="tLevel"></td></td><td><input type="submit" id="tupdate" value="Update"></td>
+                        <td><input type="text" id="bLevel"></td></td><td><input type="submit" id="bupdate" value="Update"></td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+            <li><image src = "../users/Image/pic2.jpg" class="img-responsive"></image></li>
+            <li><a href="/image2">Image2</a></li>
+        </div>
         <div class="line"></div>
-        </li>
-        <li id="welcome">Welcome to your personal page</p>
-        </li>
-        <div class="line"></div>
+
+
+
+
 
     </div>
 </div>
@@ -121,4 +159,5 @@
 
 
 
+</html>
 </html>

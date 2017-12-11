@@ -85,6 +85,41 @@ public class FavoriteListInterface {
 
     }
 
+    @GET
+    @Path("check/{type}/{userId}/{name}")
+    @Produces({ MediaType.APPLICATION_JSON})
+    @Consumes({ MediaType.APPLICATION_JSON})
+    public APPResponse checkFav(@PathParam("type") String type, @PathParam("userId") String id, @PathParam("name") String name){
+        BasicDBObject query = new BasicDBObject();
+        query.put("userID", id);
+        if(type.equals("movies")){
+            query.put("movie",name);
+        }else if(type.equals("tv")){
+            query.put("tvShow",name);
+        }else{
+            query.put("book",name);
+        }
+        try {
+            Document item = collection.find(query).first();
+            if (item !=null){
+                item.put("favID",item.getObjectId("_id").toString());
+
+            }else{
+                item = null;
+            }
+
+            return new APPResponse(item);
+        }catch(APPNotFoundException e) {
+            throw new APPNotFoundException(0, "You have no favorite list");
+        } catch(Exception e) {
+            System.out.println("EXCEPTION!!!!");
+            e.printStackTrace();
+            throw new APPInternalServerException(99,e.getMessage());
+        }
+
+
+    }
+
     /*
     *
     * the getall/id will return the all the favlists under that userid
@@ -145,7 +180,7 @@ public class FavoriteListInterface {
             favlists.put("tvshows",tvshowsList);
             favlists.put("book",bookList);
             favlists.put("userID",user);
-            System.out.print(favlists);
+//            System.out.print(favlists);
 
             return new APPResponse(favlists);
         }catch(APPNotFoundException e) {
@@ -203,6 +238,7 @@ public class FavoriteListInterface {
         catch (JsonProcessingException e) {
             throw new APPBadRequestException(33, e.getMessage());
         }
+        System.out.print(json);
         if (!json.has("type")){
 
             throw new APPBadRequestException(55,"missing type");
@@ -219,21 +255,21 @@ public class FavoriteListInterface {
                 .append("movie", null)
                 .append("tvShow", null)
                 .append("book", null);
-        if (type.equals("movie")){
+        if (type.equals("movies")){
             doc.put("movie", json.getString("media"));
         }
 
-        if (type.equals("tvshow")){
+        if (type.equals("tv")){
 
             doc.put("tvShow",  json.getString("media"));
         }
 
-        if (type.equals("book")){
+        if (type.equals("books")){
 
             doc.put("book",  json.getString("media"));
 
         }
-
+        System.out.print(doc);
         collection.insertOne(doc);
         return new APPResponse(request);
     }

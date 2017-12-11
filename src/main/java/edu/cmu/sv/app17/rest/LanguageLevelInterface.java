@@ -91,7 +91,7 @@ public class LanguageLevelInterface {
 //                    item.getInteger("audioBooks_level",0)
             );
             lanlevel.setId(item.getObjectId("_id").toString());
-            return new APPResponse(lanlevel);
+            return new APPResponse(id);
 
         } catch(APPNotFoundException e) {
             throw new APPNotFoundException(0, "That Language was not found");
@@ -141,7 +141,7 @@ public class LanguageLevelInterface {
         try {
 
             BasicDBObject query = new BasicDBObject();
-            query.put("_id", new ObjectId(id));
+            query.put("usersId", id);
 
             Document doc = new Document();
             if (json.has("movies_level"))

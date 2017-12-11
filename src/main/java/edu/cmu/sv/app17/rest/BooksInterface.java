@@ -32,6 +32,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import static com.mongodb.client.model.Filters.eq;
@@ -52,6 +53,7 @@ public class BooksInterface {
         ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 
     }
+
 
     @GET
     @Produces({MediaType.APPLICATION_JSON})
@@ -119,21 +121,106 @@ public class BooksInterface {
             throw new APPInternalServerException(99, "Something happened, pinch me!");
         }
     }
+    @GET
+    @Path("bookOne/{name}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public APPResponse getOneByName(@PathParam("name") String name) {
+        BasicDBObject query = new BasicDBObject();
+        try {
+            query.put("name", name);
+            Document item = collection.find(query).first();
+            if (item == null) {
+                throw new APPNotFoundException(0, "No such book, my friend");
+            }
+            Book book = new Book(
+                    item.getString("name"),
+                    item.getString("genre"),
+                    item.getInteger("level"),
+                    item.getString("contributorId")
+            );
+            book.setId(item.getObjectId("_id").toString());
+            return new APPResponse(book);
+
+        } catch (APPNotFoundException e) {
+            throw new APPNotFoundException(0, "No such book");
+        } catch (IllegalArgumentException e) {
+            throw new APPBadRequestException(45, "Doesn't look like MongoDB ID");
+        } catch (Exception e) {
+            throw new APPInternalServerException(99, "Something happened, pinch me!");
+        }
+    }
+
+    //return that book's individual level and avg level
+    @GET
+    @Path("levels/{conId}/{booksName}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public APPResponse getOne(@PathParam("conId") String id, @PathParam("booksName") String name) { ;
+        BasicDBObject query = new BasicDBObject();
+        try {
+            query.put("contributorId", id);
+            query.put("name",name);
+            Document item = collection.find(query).first();
+            if (item == null) {
+                throw new APPNotFoundException(0, "No such movie, my friend");
+            }
+            Integer indLev = item.getInteger("level");
+            Integer size = avgLevel(name).get("size");
+            Integer avgLev = avgLevel(name).get("avgLev");
+            HashMap<String,Integer> levels = new HashMap<String,Integer>();
+            levels.put("indLev",indLev);
+            levels.put("avgLev",avgLev);
+            levels.put("size",size);
+
+            return new APPResponse(levels);
+
+        } catch (APPNotFoundException e) {
+            throw new APPNotFoundException(0, "No such book");
+        } catch (IllegalArgumentException e) {
+            throw new APPBadRequestException(45, "Doesn't look like MongoDB ID");
+        } catch (Exception e) {
+            throw new APPInternalServerException(99, "Something happened, pinch me!");
+        }
+    }
+// get all level for same book
+
+    public HashMap<String, Integer> avgLevel( String name) {
+
+        Integer totalLevel = 0;
+
+        try {
+
+            FindIterable<Document> results = collection.find(eq("name",name));
+            int size = 0;
+            for (Document item : results) {
+                totalLevel = totalLevel+ item.getInteger("level");
+                size = size +1;
+            }
+            HashMap<String,Integer> totals = new HashMap<String,Integer>();
+            totals.put("size",size);
+            totals.put("avgLev",totalLevel/size);
+            return totals;
+
+        } catch(APPNotFoundException e) {
+            throw new APPNotFoundException(0, "No Movies");
+        } catch(Exception e) {
+            System.out.println("EXCEPTION!!!!");
+            e.printStackTrace();
+            throw new APPInternalServerException(99,e.getMessage());
+        }
+    }
 
 
-    //    search
+//  search
     @GET
     @Path("name/{search}")
     @Consumes({ MediaType.APPLICATION_JSON})
     @Produces({ MediaType.APPLICATION_JSON})
     public APPResponse searchByName(@PathParam("search") String search) {
-
-
         BasicDBObject query = new BasicDBObject();
         ArrayList<Book> bookRet = new ArrayList<>();
 
         try {
-//        query = {"name":{search}};
+//  query = {"name":{search}};
             FindIterable<Document> results = collection.find(regex("name",".*"+search+".*"));
             for (Document item : results) {
                 Book book = new Book(
@@ -163,7 +250,6 @@ public class BooksInterface {
     @Produces({ MediaType.APPLICATION_JSON})
     public APPResponse searchByGenre(@PathParam("genre") String genre) {
 
-
         ArrayList<Book> bookRet = new ArrayList<>();
 
         try {
@@ -189,6 +275,7 @@ public class BooksInterface {
             throw new APPInternalServerException(99,e.getMessage());
         }
     }
+
     @GET
     @Path("level/{level}")
     @Consumes({ MediaType.APPLICATION_JSON})

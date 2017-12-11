@@ -1,0 +1,18 @@
+.conSec span{
+    font-weight: bold;
+}
+
+.toggleFav a:hover{
+    font-weight: bold;
+    font-size: larger;
+    cursor: pointer;
+}
+.toggleWat a:hover{
+    font-weight: bold;
+    font-size: larger;
+    cursor: pointer;
+}
+
+.toggleFav,.toggleWat {
+    display: inline-block;
+}

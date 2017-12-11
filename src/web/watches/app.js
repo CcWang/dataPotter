@@ -14,11 +14,11 @@ $(document).ready(function () {
     }
     $("#user").text(finalvalue.username);
 
-    getFavs(finalvalue.userId,token);
+    getWatch(finalvalue.userId,token);
     $(document).on('click',".remove", function () {
-        var favListId = $(this).next().val();
+        var watListId = $(this).next().val();
         jQuery.ajax({
-            url:"../api/favoriteLists/"+favListId,
+            url:"../api/watchlists/"+watListId,
             type:"DELETE",
             beforeSend:function (xhr) {
                 xhr.setRequestHeader("Authorization", token);
@@ -26,7 +26,7 @@ $(document).ready(function () {
             }
         })
             .done(function (data) {
-                alert("You have remove it from favorites list.");
+                alert("You have remove it from watch list.");
                 location.reload();
 
             })
@@ -57,8 +57,8 @@ $(document).ready(function () {
     })
 })
 
-function getFavs(id,token) {
-    var url = "../api/favoriteLists/getall/"+id;
+function getWatch(id,token) {
+    var url = "../api/watchlists/getall/"+id;
     jQuery.ajax({
         url:url,
         type:"GET",

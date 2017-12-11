@@ -16,30 +16,84 @@
             integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
             crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://blueimp.github.io/JavaScript-MD5/js/md5.js"></script>
     <script src="app.js"></script>
+    <script src = '../main.js'></script>
+
+    <script src="comments.js"></script>
+
 
 </head>
 <body>
 
 <div class="container">
+    <nav>
+        <li class="dashboard"><a>DASHBOARD</a></li>
+
+    </nav>
     <div class="row" style="margin-top: 5%">
-        <div class="col-12">
-            <div class="col-6 col-md-6 image_content">
-                image;;;;;
-            </div>
-            <div class="col-6  col-md-6 info">
-                <div>name,rate</div>
-                <div>year, genre</div>
-                <div>dec</div>
-                <hr>
+        <!--<div class="col-sm-1"><button class="btn btn-info dashboard" >Dashboard</button></div>-->
+        <div class="col-md-12">
+
+            <image id="img" class="img-fluid rounded col-md-4"></image>
+
+            <div class=" col-md-8 info">
+                <div id="basic">
+                    <p id = "name" class="text-left"></p>
+                    <span>Rate: </span><p id = "rate" class="text-right"></p>
+                </div>
                 <div>
-                    <div>add to favlist</div>
-                    <div>add to watchlist</div>
+                    <p id="year"></p>
+                    <p id = "season"></p>
+                    Genre: <p id="genre"></p>
+                    Spoken Languages <p id="lang"></p>
+
+                </div>
+                <div ><h4>Overview:</h4><p id="overview"></p></div>
+                <hr>
+
+            </div>
+            <div class="col-md-12">
+
+                <div class="conSec">
+                    <p><span id="numCon"></span> contributors have given language level scores to this media. </p>
+                    <p>The average level them think this media is <span id="avgLev"></span> </p>
+                    <p>The level you gave is <span id ='yourLev'></span></p>
+
+                </div>
+                <div class="userSec">
+                    <div class="col-2  col-md-2"><p>Do you like this media?</p><h1 id="inFav" class="toggleFav"><a>❤️</a></h1>️
+                        <h1 id="notInFav" class="toggleFav"><a>🖤</a></h1>️
+                    </div>
+                    <div class="col-2  col-md-2"><p> Plan to watch it later?</p>
+                        <h1 id="inWat" class="toggleWat"><a>⭐</a></h1>️
+                        <h1 id="notInWat" class="toggleWat"><a>📺</a></h1>️
+                    </div>
+                    <div class="col-2  col-md-2"><a href="/scoreAnlysis">check analysis</a></div>
+                    <div class="col-2  col-md-2">
+                        <button id="link">Get Share Link</button>
+                        <p id="sLink"></p>
+                        <input type="hidden" id="inputLink">
+                        <button id = "copy">Copy</button>
+
+                    </div>
                 </div>
             </div>
-            <div class="col-12 col-md-12 comment" >
-                comment
+            <div class="col-12 col-md-12 comment userSec" >
+                <div class="form-group">
+                    <input type="comment" class="form-control" id="comment" aria-describedby="commentHelp" placeholder="Write your comment here">
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-primary " style="margin-right: 25%; margin-top: 10px" id="submit">Submit</button>
+                </div>
+
+                <div>
+                    <p id="comments" class="text-left">Previous Comment</p>
+                </div>
             </div>
+
+
+
         </div>
     </div>
 </div>

@@ -1,10 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+    <meta charset="utf-8" >
+    <title>MTBA</title>
+    <link rel="stylesheet" type="text/css"  href="main.css">
+    <script
+            src="https://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+            crossorigin="anonymous"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="app.js"></script>
 
+
+</head>
+
+
+<body>
+<h2 id="title" class="dataAnalysis">Data Analysis</h2>
+<div> Please provide the direct download link of the subtitle file.<br />
+      Our system will automatically uncompress and analyze the srt file and suggest the language difficulty. <br /><br />
+      For example, find movie <a href = https://subscene.com/subtitles/inside-out-2015/english/1206103>Inside Out</a> and there's a green button "Download English Subtitle" on the page. <br />
+      The only thing to do next is to right-click the button and select "Copy Link Address". Paste the link to the text area here.  <br />
+</div>
+
+
+
+
+<div>
+    <label>SRT file download link: </label>
+    <textarea id="link" rows="2" cols="50"></textarea>
+</div>
+</div>Note there's certain limitation to the Java Util.Zip library so not all the zip files are supported.</div>
+<div>
+    <button type="submit" class="btn btn-primary " style="margin-right: 25%; margin-top: 10px" id="btn">Analyze</button>
+</div>
+<div>
+    <div id="total"></div>
+    <div id="low"></div>
+    <div id="high"></div>
+    <div id="low_dup"></div>
+    <div id="high_dup"></div>
+    <h1 id="score"></h1>
+</div>
+<div>
+    <img src="rocket_launch.gif" id="loading" alt="Loading Image" />
+</div>
 </body>
 </html>

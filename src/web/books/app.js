@@ -36,8 +36,6 @@ $(document).ready(function () {
     })
 
     function getBooks(sort_term) {
-
-
         jQuery.ajax ({
             // url:  "/api/contributors/" + finalvalue.contributorId + "/books?offset=" + offset + "&count="  + count,
             url:"/api/books?sort="+sort_term+"&offset="+offset + "&count=" +count,
@@ -45,7 +43,7 @@ $(document).ready(function () {
         })
             .done(function(data){
 
-                console.log("here"+data.content);
+                // console.log("here"+data.content);
                 $("#bookTable").find(".cloned").remove();
                 $("#page").text("Page " + Math.floor(offset/count+1) + " of " + (Math.ceil(total/count)));
                 data.content.forEach(function(item){
@@ -59,9 +57,17 @@ $(document).ready(function () {
             })
             .fail(function(data){
                 console.log("here");
-                $("#bookList").text("Sorry no tvs");
+                $("#bookList").text("Sorry no books");
             })
 
     }
 
+    $(document).on('click',"#bName", function () {
+        var name = $(this).text();
+
+
+        localStorage.setItem('media', JSON.stringify({"type":"books", "name":name}));
+        location.href=("/media");
+        //
+    })
 });
