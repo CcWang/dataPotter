@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" >
+    <title>MTBA</title>
+    <!--<link rel="stylesheet" type="text/css"  href="main.css">-->
+    <script
+            src="https://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+            crossorigin="anonymous"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+    <script src="app.js"></script>
+</head>
+<body>
+    <h1> Advanced Search</h1>
+    <div>
+        <table>
+            <thead >
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Type</th><th></th>
+                <th scope="col">Name</th><th></th>
+                <th scope="col">Level</th><th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <th scope="row">*</th>
+                <td>
+                    <label><input type="radio" name="question1" value="1" checked="checked"/> Movie</label>
+                    <label><input type="radio" name="question1" value="2" /> TV</label>
+                    <label><input type="radio" name="question1" value="3" /> Book</label>
+                </td>
+                <td><input type="text" id="name"></td></td>
+                <td><input type="text" id="level"></td></td>
+            </tr>
+            </tbody>
+        </table>
+        <button type="submit" class="btn btn-primary " style="margin-right: 25%; margin-top: 10px" id="btn">Search</button>
+    </div>
+
+    <table id="searchTable">
+        <thead >
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Genre</th>
+            <th scope="col">Level</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr id="movieRow">
+            <th scope="row">*</th>
+            <td id="oName"></td>
+            <td id="oGenre"></td>
+            <td id="oLevel"></td>
+        </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>
