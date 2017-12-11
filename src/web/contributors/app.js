@@ -628,17 +628,18 @@ $(document).ready(function () {
                                     var d = {name:mediaName, genre:genre, level:dl};
                                     d[mid] = data[idx].id
                                     var mdata = JSON.stringify(d);
-                                    console.log(mdata)
 
                                     addToDb(finalvalue.contributorId,mdata,token,type);
-                                    $(this).dialog("close");
+                                    $('#dialog-confirm').dialog('close')
                                 },
                                 "Next": function () {
-                                    $(this).dialog("close");
+                                    // $(this).dialog("close");
+                                    $('#dialog-confirm').dialog('close')
                                     showdialog(data, idx+1);
                                 },
                                 "Cancel": function () {
-                                    $(this).dialog("close");
+                                    // $(this).dialog("close");
+                                    $('#dialog-confirm').dialog('close')
                                 },
 
 
