@@ -141,7 +141,7 @@ public class LanguageLevelInterface {
         try {
 
             BasicDBObject query = new BasicDBObject();
-            query.put("_id", new ObjectId(id));
+            query.put("usersId", id);
 
             Document doc = new Document();
             if (json.has("movies_level"))
