@@ -31,7 +31,7 @@ $(document).ready(function () {
         $("#link").click(function () {
             console.log('clicked the get share link');
             var hash = getLink(media.type, finalvalue.userId,media["name"]);
-            var link = "localhost:8080/shared/"+hash;
+            var link = "localhost:8080/api/share/click/"+hash;
             $("#sLink").text(link);
             $("#inputLink").val(hash);
 
@@ -73,7 +73,7 @@ $(document).ready(function () {
 
     $("#copy").click(function () {
         var link = $("#inputLink").val();
-        console.log(link);
+        console.log(link)
         var data = JSON.stringify({userId:finalvalue.userId, shoren_link:link, media:media["name"],type:media.type});
         if (link){
             jQuery.ajax ({
@@ -86,9 +86,7 @@ $(document).ready(function () {
                     xhr.setRequestHeader ("Authorization", token);
                 }
             }).done(function(data){
-                document.getElementById("inputLink").focus();
-                document.getElementById("inputLink").select();
-                document.execCommand("Copy", false, null);
+                copyToClipboard('#inputLink');
                 $("#copy").text("Copied");
 
             }).fail(function(data){
@@ -101,7 +99,13 @@ $(document).ready(function () {
 
 
 })
-
+function copyToClipboard(element) {
+    var $temp = $("<input>");
+    $("body").append($temp);
+    $temp.val($(element).text()).select();
+    document.execCommand("copy");
+    $temp.remove();
+}
 function getMedia(type,name) {
 
     jQuery.ajax ({

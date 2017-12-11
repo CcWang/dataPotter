@@ -48,7 +48,7 @@ public class ShareInterface {
 //    get and patch
 
     @GET
-    @Path("{link}")
+    @Path("click/{link}")
     @Produces({ MediaType.APPLICATION_JSON})
     public APPResponse getOne(@PathParam("link") String link) {
 
@@ -62,14 +62,18 @@ public class ShareInterface {
                 throw new APPNotFoundException(0, "No such link, my friend");
             }
             Integer count = item.getInteger("count");
-            count = count+1;
+            System.out.print(count);
+            int newC = count+1;
+            System.out.print(newC);
             try {
                 Document doc = new Document("userId", item.getString("userId"))
                         .append("shoren_link", item.getString("shoren_link"))
-                        .append("count", count)
+                        .append("count", newC)
                         .append("media", item.getString("media"))
                         .append("type",item.getString("type"));
-                collection.insertOne(doc);
+                Document set = new Document("$set", doc);
+                collection.updateOne(query,set);
+                System.out.print(doc);
                 return new APPResponse(doc);
             } catch(Exception e) {
                 throw new APPInternalServerException(99,"Something happened, pinch me!");
