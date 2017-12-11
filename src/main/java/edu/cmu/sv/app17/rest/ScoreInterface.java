@@ -181,8 +181,13 @@ public class ScoreInterface {
         data[4] = high_frequent_count;
 
         if (total_count == 0) data[5] = 0; //Unsupported Files
-        if (low_frequent_count < total_count*0.05 && low_frequent_count < high_frequent_count*0.3) data[5] = 1; //Easy
-        if (low_frequent_count > total_count*0.06 && low_frequent_count > high_frequent_count*0.35) data[5] = 3; //Difficult
+        if (low_count < total_count*0.15) data[5] = 1; //Easy
+
+        //&& low_frequent_count < high_frequent_count*0.3)
+
+        else if (low_count > total_count*0.20) data[5] = 3; //Difficult
+        //&& low_frequent_count > high_frequent_count*0.35)
+
         else data[5] = 2; //Normal
 
         return new APPResponse(data);

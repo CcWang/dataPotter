@@ -168,7 +168,7 @@ $(function() {
 
     $("#bupdate").click(function (e) {
         e.preventDefault();
-        var data = JSON.stringify({tvshows_level: parseInt($("#bLevel").val())});
+        var data = JSON.stringify({books_level: parseInt($("#bLevel").val())});
         console.log(data);
         console.log(typeof(data));
         jQuery.ajax({
