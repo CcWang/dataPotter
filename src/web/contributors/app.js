@@ -19,6 +19,25 @@ $(document).ready(function () {
         'fam': 'Family',
         'wa': 'War',
         'tv': 'TV Movie' };
+    var genresMaps={ '12': 'Adventure',
+        '14': 'Fantasy',
+        '16': 'Animation',
+        '18': 'Drama',
+        '27': 'Horror',
+        '28': 'Action',
+        '35': 'Comedy',
+        '36': 'History',
+        '37': 'Western',
+        '53': 'Thriller',
+        '80': 'Crime',
+        '99': 'Documentary',
+        '878': 'Science Fiction',
+        '9648': 'Mystery',
+        '10402': 'Music',
+        '10749': 'Romance',
+        '10751': 'Family',
+        '10752': 'War',
+        '10770': 'TV Movie' };
 
     $('#sidebarCollapse').on('click', function () {
         $('#sidebar').toggleClass('active');
@@ -519,57 +538,7 @@ $(document).ready(function () {
 
 
     });
-    $(".addNew").click(function (e) {
-        e.preventDefault();
 
-        var type =  $(this).closest("tr")[0].classList[0];
-        var name = $("."+type+"newName").val();
-
-
-        var genre = $("."+type+"genres").val();
-
-        var dl = parseInt($("."+type+"dl").val());
-        if(dl<0){
-            alert("the level should be greater than 0, please re-enter");
-            return;
-
-        }
-        if(dl>10){
-            alert("the level should be less than 11, please re-enter");
-            return;
-        }
-
-        var data = JSON.stringify({name:name, genre:genre, level:dl});
-
-        jQuery.ajax ({
-            url: "../api/"+type+"/create/" +finalvalue.contributorId,
-            type: "POST",
-            data: data,
-            dataType: "json",
-            contentType: "application/json; charset=utf-8",
-            beforeSend:function (xhr) {
-                xhr.setRequestHeader ("Authorization", token);
-            }
-        }).done(function(data){
-            alert("success!");
-            $("."+type+"newName").val("");
-            $("."+type+"genres").val("");
-            $("."+type+"dl").val(parseInt(0));
-            if (type == "movies"){
-                getMovies();
-            }
-            if (type == "tvshows"){
-                getTV();
-            }
-            if (type = 'books'){
-                getBooks();
-            }
-        }).fail(function(data){
-            alert("sorry, try again!");
-        })
-
-
-    });
     
     $(document).on('click',"#mName", function () {
         console.log("clicked")
@@ -595,6 +564,136 @@ $(document).ready(function () {
         //
     })
 
+//    add new movie/tv
+    $(".addNew").click(function (e) {
+        e.preventDefault();
+        console.log("addnew")
+        var type =  $(this).closest("tr")[0].classList[0];
+        var name = $("."+type+"newName").val();
+        var dl = parseInt($("."+type+"dl").val());
+        if(dl<0){
+            alert("the level should be greater than 0, please re-enter");
+            return;
+
+        }
+        if(dl>10){
+            alert("the level should be less than 11, please re-enter");
+            return;
+        }
+        //use ExternalAPIInterface.java to find the movie in that name
+        if (type == "movies" || type =="tvshows"){
+            jQuery.ajax({
+                url:"../api/themoviedb/find/"+type+"/"+name,
+                type:"GET",
+                data:null,
+                dataType:"json",
+                contentType:"application/json; charset=utf-8"
+                
+            }).done(function (data) {
+                data = JSON.parse(data.content);
+                data = data["results"];
+                var stop = false;
+                var idx = 0;
+
+                function showdialog(data, idx) {
+                    if (idx < data.length) {
+                        if (type == "movies") {
+                            var mediaName = data[idx].title;
+                            var mid = "movieid";
+                        } else {
+                            var mediaName = data[idx].name;
+                            var mid = "tvid";
+                        }
+                        var poster = data[idx].poster_path;
+
+                        $('#askingName').html("Do you want to add: " + mediaName + " ?");
+                        $('#askingImg').attr("src", "https://image.tmdb.org/t/p/w300/" + poster);
+                        //style="background: cadetblue
+
+                        $('#dialog-confirm').attr("background-color","cadetblue");
+                        $('#dialog-confirm').dialog({
+                            resizeable: false,
+                            height: "auto",
+                            width: "auto",
+                            modal: true,
+                            buttons: {
+                                "Yes": function () {
+                                    var movieInfo = data[idx];
+                                    var genre = "";
+
+                                    for (var j=0;j<movieInfo['genre_ids'].length;j++){
+                                        genre+= genresMaps[movieInfo['genre_ids'][j]]+" "
+                                    }
+
+                                    var d = {name:mediaName, genre:genre, level:dl};
+                                    d[mid] = data[idx].id
+                                    var mdata = JSON.stringify(d);
+
+                                    addToDb(finalvalue.contributorId,mdata,token,type);
+                                    $(this).dialog("close");
+                                },
+                                "Next": function () {
+                                    $(this).dialog("close");
+                                    showdialog(data, idx+1);
+                                },
+                                "Cancel": function () {
+                                    $(this).dialog("close");
+                                },
 
 
+                            }
+                        });
+                    }
+                }
+
+                if (data.length > 0) {
+                    showdialog(data, idx);
+                }
+
+
+            })
+        }else{
+            var genre = $("."+type+"genres").val();
+            var data = JSON.stringify({name:name, genre:genre, level:dl});
+            addToDb(finalvalue.contributorId,data,token,type);
+
+        }
+
+
+
+
+
+    });
+
+
+function addToDb(conId,data,token,type) {
+
+    jQuery.ajax ({
+        url: "../api/"+type+"/create/" +conId,
+        type: "POST",
+        data: data,
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        beforeSend:function (xhr) {
+            xhr.setRequestHeader ("Authorization", token);
+        }
+    }).done(function(data){
+        alert("success!");
+        $("."+type+"newName").val("");
+        $("."+type+"genres").val("");
+        $("."+type+"dl").val(parseInt(0));
+        if (type == "movies"){
+            getMovies();
+        }
+        if (type == "tvshows"){
+            getTV();
+        }
+        if (type = 'books'){
+            getBooks();
+        }
+    }).fail(function(data){
+        alert("sorry, try again!");
+    })
+
+}
 });
