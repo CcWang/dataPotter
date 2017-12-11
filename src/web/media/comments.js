@@ -18,7 +18,12 @@ $(document).ready(function () {
         // console.log(finalvalue)
         $(".userSec").show();
         $(".conSec").hide();
-        submitComment(media.type,media.name,finalvalue.userId)
+        $("#submit").click(function (e) {
+            e.preventDefault();
+            console.log("submit")
+            submitComment(media.type,media.name,finalvalue.userId)
+        })
+
         getComment(media.type,media.name,finalvalue.userId)
 
     }
@@ -86,9 +91,7 @@ function getComment(type,name,userID) {
 //     }
 
 function submitComment(type,name,userId){
-    $("#submit").click(function (e) {
-        e.preventDefault();
-        console.log("submit")
+
         var url = "../api/comment";
         var getdata = JSON.stringify({userId:userId, content: $("#comment").val(),
             mediaType:type, mediaName:name,})
@@ -112,6 +115,6 @@ function submitComment(type,name,userId){
 
         }).fail(function(data){
             $("#greeting").text("You might want to try it again");
-        })
-    });
+        });
+
 }
