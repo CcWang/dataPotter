@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" >
+        <title>MTBA</title>
+        <link rel="stylesheet" type="text/css"  href="main.css">
+        <script
+                src="https://code.jquery.com/jquery-3.2.1.min.js"
+                integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+                crossorigin="anonymous"></script>
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+              rel="stylesheet"
+              integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+              crossorigin="anonymous">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+                crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="app.js"></script>
+
+
+    </head>
+    <body>
+
+        <div class="wrapper">
+
+            <!-- Page Content Holder -->
+            <div id="content" class="container-fluid" >
+
+                <div class="line"></div>
+
+                <h3 id="savys" class="books">Questions</h3>
+                <h3 id="savyList" class="books"></h3>
+                <table class="table table-striped books" id="savyTable">
+                    <thead >
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Question</th>
+                        <th scope="col">Answer 1</th>
+                        <th scope="col">Select Answer 1</th>
+                        <th scope="col">Answer 2</th>
+                        <th scope="col">Select Answer 2</th>
+                        <th scope="col">Answer 3</th>
+                        <th scope="col">Select Answer 3</th>
+                        <th scope="col">Answer 4</th>
+                        <th scope="col">Select Answer 4</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr id="qRow">
+                        <th scope="row">*</th>
+                        <td id="question"></td>
+                        <td id="qAns1"></td>
+                        <td><button class="btn btn-sm btn-primary ans1">Ans1</button></td>
+                        <td id="qAns2"></td>
+                        <td><button class="btn btn-sm btn-primary ans2">Ans2</button></td>
+                        <td id="qAns3"></td>
+                        <td><button class="btn btn-sm btn-primary ans3">Ans3</button></td>
+                        <td id="qAns4"></td>
+                        <td><button class="btn btn-sm btn-primary ans4">Ans4</button></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="line"></div>
+
+            </div>
+        </div>
+    </body>
+
+
+</html>
