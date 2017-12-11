@@ -61,6 +61,7 @@ $(function() {
     }).fail(function (data) {
         alert("fail to get information")
     });
+    getLan();
 
     $("#edit").click(function (e) {
         e.preventDefault();
@@ -91,31 +92,31 @@ $(function() {
         })
     });
 
-
-    var url2 = "/api/users/" + finalvalue.userId+"/langs";
-    console.log(finalvalue);
-    jQuery.ajax({
-        url: url2,
-        type: "GET",
-        beforeSend: function (xhr) {
-            xhr.setRequestHeader("Authorization", token);
-        }
-    }).done(function(data){
-        //      console.log("here"+data.content);
-        // console.log("here"+data.content.movies_level);
-        var movies_level = data.content.movies_level;
-        var tv_level = data.content.tvshows_level;
-        var books_level = data.content.books_level;
-        $("#mLevel").val(movies_level);
-        $("#tLevel").val(tv_level);
-        $("#bLevel").val(books_level);
+    function getLan() {
+        var url2 = "/api/users/" + finalvalue.userId+"/langs";
+        jQuery.ajax({
+            url: url2,
+            type: "GET",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("Authorization", token);
+            }
+        }).done(function(data){
+            var movies_level = data.content.movies_level;
+            var tv_level = data.content.tvshows_level;
+            var books_level = data.content.books_level;
+            $("#mLevel").val(movies_level);
+            $("#tLevel").val(tv_level);
+            $("#bLevel").val(books_level);
 
 
-    })
-        .fail(function(data){
-            console.log("here");
-            $("#languageList").text("Sorry coundn't find language level");
         })
+            .fail(function(data){
+                console.log("here");
+                $("#languageList").text("Sorry coundn't find language level");
+            })
+    }
+
+
 
     var img = document.createElement("IMG");
     // img.src = "/image/pic1.jpg";
@@ -141,7 +142,7 @@ $(function() {
             contentType: "application/json; charset=utf-8"
         }).done(function (data) {
             alert("Your information has been updated");
-            location.reload()
+            getLan()
         }).fail(function (data) {
             $("#greeting").text("You might want to try it again");
         })
@@ -160,7 +161,7 @@ $(function() {
             contentType: "application/json; charset=utf-8"
         }).done(function (data) {
             alert("Your information has been updated");
-            location.reload()
+            getLan()
         }).fail(function (data) {
             $("#greeting").text("You might want to try it again");
         })
@@ -179,7 +180,7 @@ $(function() {
             contentType: "application/json; charset=utf-8"
         }).done(function (data) {
             alert("Your information has been updated");
-            location.reload()
+            getLan()
         }).fail(function (data) {
             $("#greeting").text("You might want to try it again");
         })
