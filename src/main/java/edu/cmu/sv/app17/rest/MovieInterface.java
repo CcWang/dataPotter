@@ -320,7 +320,8 @@ public APPResponse searchByName(@PathParam("search") String search) {
             Document doc = new Document("name", json.getString("name"))
                     .append("genre", json.getString("genre"))
                     .append("level", json.getInt("level"))
-                    .append("contributorId", id);
+                    .append("contributorId", id)
+                    .append("movieid",json.getInt("movieid"));
             collection.insertOne(doc);
             return new APPResponse(request);
         } catch(Exception e) {

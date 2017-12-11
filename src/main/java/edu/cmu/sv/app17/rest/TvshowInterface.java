@@ -326,7 +326,8 @@ public class TvshowInterface {
             Document doc = new Document("name", json.getString("name"))
                     .append("genre", json.getString("genre"))
                     .append("level", json.getInt("level"))
-                    .append("contributorId", id);
+                    .append("contributorId", id)
+                    .append("tvid",json.getInt("tvid"));;
             collection.insertOne(doc);
             return new APPResponse(request);
         } catch(Exception e) {
