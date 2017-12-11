@@ -26,7 +26,14 @@ $(document).ready(function () {
             checkWatch('tv', finalvalue.userId, media["name"],finalvalue.token);
         }
 
+        $("#link").click(function () {
+            console.log('clicked the get share link');
+            var hash = getLink(media.type, finalvalue.userId,media["name"]);
+            var link = "localhost:8080/shared/"+hash;
+            $("#sLink").text(link);
+            $("#inputLink").val(hash);
 
+        })
     }
     if (userType == "contributor"){
         listvalues = localStorage.getItem("contributor");
@@ -35,6 +42,7 @@ $(document).ready(function () {
         $(".conSec").show();
         if (media.type == "movies" || media.type=="books"){
             getMediaLevel(media.type, finalvalue.contributorId,media["name"]);
+
         }else if( media.type == "tv"){
             getMediaLevel("tvshows", finalvalue.contributorId,media["name"]);
         }
@@ -60,6 +68,33 @@ $(document).ready(function () {
         getBook(media["name"])
     }
 
+
+    $("#copy").click(function () {
+        var link = $("#inputLink").val();
+        console.log(link);
+        var data = JSON.stringify({userId:finalvalue.userId, shoren_link:link, media:media["name"],type:media.type});
+        if (link){
+            jQuery.ajax ({
+                url: "../api/share",
+                type: "POST",
+                data: data,
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                beforeSend:function (xhr) {
+                    xhr.setRequestHeader ("Authorization", token);
+                }
+            }).done(function(data){
+                document.getElementById("inputLink").focus();
+                document.getElementById("inputLink").select();
+                document.execCommand("Copy", false, null);
+                $("#copy").text("Copied");
+
+            }).fail(function(data){
+                alert("sorry, try again!");
+            })
+
+        }
+    })
 
 
 
@@ -331,3 +366,15 @@ function checkWatch(type, id, name,token) {
 
     })
 }
+function getLink(type,id, name){
+    var data = {
+        id: id,
+        type: type,
+        name: name
+    };
+    var hash = md5(JSON.stringify(data));
+    console.log(hash.slice(hash.length-7))
+    return hash.slice(hash.length-7);
+}
+
+
