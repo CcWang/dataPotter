@@ -92,35 +92,35 @@ $(function() {
     });
 
 
-   var url2 = "/api/users/" + finalvalue.userId+"/langs";
-   console.log(finalvalue);
-   jQuery.ajax({
-     url: url2,
-     type: "GET",
-     beforeSend: function (xhr) {
-        xhr.setRequestHeader("Authorization", token);
-     }
+    var url2 = "/api/users/" + finalvalue.userId+"/langs";
+    console.log(finalvalue);
+    jQuery.ajax({
+        url: url2,
+        type: "GET",
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader("Authorization", token);
+        }
     }).done(function(data){
-       //      console.log("here"+data.content);
-       // console.log("here"+data.content.movies_level);
-       var movies_level = data.content.movies_level;
-       var tv_level = data.content.tvshows_level;
-       var books_level = data.content.books_level;
-       $("#mLevel").html(movies_level);
-       $("#tLevel").text(tv_level);
-       $("#bLevel").text(books_level);
+        //      console.log("here"+data.content);
+        // console.log("here"+data.content.movies_level);
+        var movies_level = data.content.movies_level;
+        var tv_level = data.content.tvshows_level;
+        var books_level = data.content.books_level;
+        $("#mLevel").val(movies_level);
+        $("#tLevel").val(tv_level);
+        $("#bLevel").val(books_level);
 
 
-        })
+    })
         .fail(function(data){
             console.log("here");
             $("#languageList").text("Sorry coundn't find language level");
         })
 
     var img = document.createElement("IMG");
-        // img.src = "/image/pic1.jpg";
-        $('#image1').html(img);
-        $('#image1').attr("src","/image/pic1.jpg");
+    // img.src = "/image/pic1.jpg";
+    $('#image1').html(img);
+    $('#image1').attr("src","/image/pic1.jpg");
 
     // if (data.content.gender == "male") {
     //     var img = document.createElement("IMG");
@@ -128,6 +128,61 @@ $(function() {
     //     $('#gender').html(img);
     // }
 
+    $("#mupdate").click(function (e) {
+        e.preventDefault();
+        var data = JSON.stringify({movies_level: parseInt($("#mLevel").val())});
+        console.log(data);
+        console.log(typeof(data));
+        jQuery.ajax({
+            url: "/api/langs/" + finalvalue.userId,
+            type: "PATCH",
+            data: data,
+            dataType: "json",
+            contentType: "application/json; charset=utf-8"
+        }).done(function (data) {
+            alert("Your information has been updated");
+            location.reload()
+        }).fail(function (data) {
+            $("#greeting").text("You might want to try it again");
+        })
+    })
 
+    $("#tupdate").click(function (e) {
+        e.preventDefault();
+        var data = JSON.stringify({tvshows_level: parseInt($("#tLevel").val())});
+        console.log(data);
+        console.log(typeof(data));
+        jQuery.ajax({
+            url: "/api/langs/" + finalvalue.userId,
+            type: "PATCH",
+            data: data,
+            dataType: "json",
+            contentType: "application/json; charset=utf-8"
+        }).done(function (data) {
+            alert("Your information has been updated");
+            location.reload()
+        }).fail(function (data) {
+            $("#greeting").text("You might want to try it again");
+        })
+    })
+
+    $("#bupdate").click(function (e) {
+        e.preventDefault();
+        var data = JSON.stringify({tvshows_level: parseInt($("#bLevel").val())});
+        console.log(data);
+        console.log(typeof(data));
+        jQuery.ajax({
+            url: "/api/langs/" + finalvalue.userId,
+            type: "PATCH",
+            data: data,
+            dataType: "json",
+            contentType: "application/json; charset=utf-8"
+        }).done(function (data) {
+            alert("Your information has been updated");
+            location.reload()
+        }).fail(function (data) {
+            $("#greeting").text("You might want to try it again");
+        })
+    })
 
 })

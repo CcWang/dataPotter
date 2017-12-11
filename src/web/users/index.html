@@ -46,7 +46,7 @@
                 <p id="lan">Native Language</p>
             </li>
 
-                <p id="cell">Phone Number</p>
+            <p id="cell">Phone Number</p>
             </li>
             </li>
             <p id="lanLevel">English Level</p>
@@ -61,11 +61,11 @@
 
             <li id="Watlist"><a href="/watches" style="color:black">Watch List</a></li>
             <li><a href="/favorites" id="favlist" style="color:black">Favorite List</a></li>
-                </ul>
-            </li>
-            <li>
-                <a href="#" id="edit">EDIT</a>
-            </li>
+        </ul>
+        </li>
+        <li>
+            <a href="#" id="edit">EDIT</a>
+        </li>
 
         </ul>
         <form class="form-edit" id = 'editForm'>
@@ -125,18 +125,17 @@
                     <thead >
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Level for Movies</th>
-                        <th scope="col">Level for TVshows</th>
-                        <th scope="col">Level for Books</th>
+                        <th scope="col">Level for Movies</th><th></th>
+                        <th scope="col">Level for TVshows</th><th></th>
+                        <th scope="col">Level for Books</th><th></th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr id="langRow">
                         <th scope="row">*</th>
-                        <td id="mLevel" style="align-content: center"></td>
-                        <td id="tLevel"></td>
-                        <td id="bLevel"></td>
-                        <button class="btn btn-warning Edit">Edit</button>
+                        <td><input type="text" id="mLevel" style="align-content: center"></td><td><input type="submit" id="mupdate" value="Update"></td>
+                        <td><input type="text" id="tLevel"></td></td><td><input type="submit" id="tupdate" value="Update"></td>
+                        <td><input type="text" id="bLevel"></td></td><td><input type="submit" id="bupdate" value="Update"></td>
                     </tr>
                     </tbody>
                 </table>
