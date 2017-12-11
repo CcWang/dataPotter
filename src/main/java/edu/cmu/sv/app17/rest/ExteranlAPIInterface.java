@@ -43,7 +43,7 @@ import static com.mongodb.client.model.Filters.eq;
 
 
 @Path("themoviedb")
-public class exteranlAPIInterface {
+public class ExteranlAPIInterface {
 
     private MongoCollection<Document> collection = null;
     private MongoCollection<Document> movieCollection = null;
@@ -52,7 +52,7 @@ public class exteranlAPIInterface {
     private ObjectWriter ow;
     private String apikey = "664f8054c78de425d08aba35e84e6a11";
 
-    public exteranlAPIInterface() {
+    public ExteranlAPIInterface() {
         MongoClient mongoClient = new MongoClient();
         MongoDatabase database = mongoClient.getDatabase("dataPotter");
         collection = database.getCollection("favoriteLists");
@@ -68,7 +68,7 @@ public class exteranlAPIInterface {
     @Path("{type}/{name}")
     @Produces({ MediaType.APPLICATION_JSON})
     @Consumes({ MediaType.APPLICATION_JSON})
-    public  APPResponse getMovie(@PathParam("type") String type, @PathParam("name") String name){
+    public  APPResponse getMedia(@PathParam("type") String type, @PathParam("name") String name){
         BasicDBObject query = new BasicDBObject();
         query.put("name", name);
         System.out.print(name);
@@ -90,6 +90,51 @@ public class exteranlAPIInterface {
 
             String urlAddress = "https://api.themoviedb.org/3/"+mediaType+"/"+id+"?language=en-US&api_key="+apikey;
             System.out.print(urlAddress);
+            OkHttpClient client = new OkHttpClient();
+
+            Request request = new Request.Builder()
+                    .url(urlAddress)
+                    .build();
+            try (Response response = client.newCall(request).execute()) {
+                // converts response into an array of books
+                String resStr = response.body().string().toString();
+                return new APPResponse(resStr);
+            }catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return new APPResponse("wrong");
+        }catch(APPNotFoundException e) {
+            throw new APPNotFoundException(0, "You have no favorite list");
+        } catch(Exception e) {
+            System.out.println("EXCEPTION!!!!");
+            e.printStackTrace();
+            throw new APPInternalServerException(99,e.getMessage());
+        }
+
+    }
+
+    @GET
+    @Path("find/{type}/{name}")
+    @Produces({ MediaType.APPLICATION_JSON})
+    @Consumes({ MediaType.APPLICATION_JSON})
+    public  APPResponse findMedia(@PathParam("type") String type, @PathParam("name") String name){
+        BasicDBObject query = new BasicDBObject();
+        query.put("name", name);
+        System.out.print(name);
+        String mediaType;
+        if (type.equals("tvshows")){
+            mediaType = "tv";
+        }else {
+            mediaType = "movie";
+        }
+
+        try{
+
+//
+//            https://api.themoviedb.org/3/search/tv?api_key=664f8054c78de425d08aba35e84e6a11&language=en-US&query=how%20I%20met%20your%20mother&page=1
+//            https://api.themoviedb.org/3/search/movie?api_key=664f8054c78de425d08aba35e84e6a11&language=en-US&query=coco&page=1
+            String urlAddress = "https://api.themoviedb.org/3/search/"+mediaType+"?api_key="+apikey+"&language=en-US&query="+name+"&page=1";
             OkHttpClient client = new OkHttpClient();
 
             Request request = new Request.Builder()
